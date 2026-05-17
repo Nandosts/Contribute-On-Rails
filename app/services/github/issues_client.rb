@@ -3,6 +3,8 @@ require "json"
 
 module Github
   class IssuesClient
+    MAX_REDIRECTS = 3
+
     def initialize(token: ENV["GITHUB_TOKEN"])
       @token = token
     end
@@ -33,11 +35,20 @@ module Github
     def request(owner:, repo:, page:)
       uri = URI("https://api.github.com/repos/#{owner}/#{repo}/issues")
       uri.query = URI.encode_www_form(state: "open", per_page: 100, page:)
+      get(uri)
+    end
+
+    def get(uri, redirects_remaining: MAX_REDIRECTS)
       request = Net::HTTP::Get.new(uri)
       request["Accept"] = "application/vnd.github+json"
       request["Authorization"] = "Bearer #{token}"
       request["X-GitHub-Api-Version"] = "2022-11-28"
-      Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }
+      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }
+
+      return response unless response.is_a?(Net::HTTPRedirection)
+      raise "Too many GitHub redirects" if redirects_remaining.zero?
+
+      get(URI(response.fetch("location")), redirects_remaining: redirects_remaining - 1)
     end
   end
 end
