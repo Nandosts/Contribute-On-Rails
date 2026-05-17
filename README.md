@@ -25,6 +25,10 @@ It imports repositories from [`asyraffff/Open-Source-Ruby-and-Rails-Apps`](https
 - English UI with Portuguese (`pt-BR`) translations ready
 - Security and quality tooling for open-source maintenance
 
+## Catalog sources
+
+The catalog combines the upstream application list with a small, hand-curated set of canonical Ruby and Rails repositories in `config/curated_projects.yml`. The curated file is intentionally selective: it is meant for projects that are important references for the ecosystem, not for bulk-importing every repository from large organizations.
+
 ## Setup
 
 ```bash

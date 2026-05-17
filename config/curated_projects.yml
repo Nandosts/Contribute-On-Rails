@@ -1,6 +1,93 @@
+# Projects intentionally curated beyond the upstream catalog.
+# Keep this list focused on canonical Ruby/Rails projects that are useful
+# references for contributors and likely to remain relevant over time.
 - owner: rails
   repo: rails
   category: Core Ruby and Rails
+- owner: ruby
+  repo: ruby
+  category: Core Ruby and Rails
+- owner: rubygems
+  repo: rubygems
+  category: Core Ruby and Rails
+- owner: rubygems
+  repo: bundler
+  category: Core Ruby and Rails
+- owner: ruby
+  repo: irb
+  category: Core Ruby and Rails
+- owner: ruby
+  repo: rdoc
+  category: Core Ruby and Rails
+- owner: rack
+  repo: rack
+  category: Core Ruby and Rails
+- owner: puma
+  repo: puma
+  category: Web Infrastructure
+- owner: hotwired
+  repo: turbo-rails
+  category: Rails Ecosystem
+- owner: hotwired
+  repo: stimulus-rails
+  category: Rails Ecosystem
 - owner: rubocop
   repo: rubocop
   category: Developer Tooling
+- owner: rubocop
+  repo: rubocop-rails
+  category: Developer Tooling
+- owner: rspec
+  repo: rspec-core
+  category: Testing
+- owner: rspec
+  repo: rspec-rails
+  category: Testing
+- owner: thoughtbot
+  repo: factory_bot
+  category: Testing
+- owner: teamcapybara
+  repo: capybara
+  category: Testing
+- owner: heartcombo
+  repo: devise
+  category: Rails Ecosystem
+- owner: varvet
+  repo: pundit
+  category: Rails Ecosystem
+- owner: sidekiq
+  repo: sidekiq
+  category: Background Jobs
+- owner: brakeman
+  repo: brakeman
+  category: Security
+- owner: railsware
+  repo: mailcatcher
+  category: Developer Tooling
+- owner: solidusio
+  repo: solidus
+  category: Rails Applications
+- owner: spree
+  repo: spree
+  category: Rails Applications
+- owner: discourse
+  repo: discourse
+  category: Rails Applications
+- owner: forem
+  repo: forem
+  category: Rails Applications
+- owner: chatwoot
+  repo: chatwoot
+  category: Rails Applications
+- owner: openstreetmap
+  repo: openstreetmap-website
+  category: Rails Applications
+- owner: mastodon
+  repo: mastodon
+  category: Rails Applications
+- owner: opf
+  repo: openproject
+  category: Rails Applications
+- owner: redmine
+  repo: redmine
+  category: Rails Applications
