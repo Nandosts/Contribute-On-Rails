@@ -11,6 +11,7 @@ class IssueSearchQuery
     scoped = filter_by_organization(scoped)
     scoped = filter_by_category(scoped)
     scoped = filter_by_labels(scoped)
+    scoped = filter_by_updated_since(scoped)
     scoped.order(updated_at_from_github: :desc)
   end
 
@@ -40,6 +41,16 @@ class IssueSearchQuery
     return scoped if params[:category].blank?
 
     scoped.joins(:project).where(projects: { source_category: params[:category] })
+  end
+
+  def filter_by_updated_since(scoped)
+    return scoped if params[:updated_since].blank?
+
+    scoped.where("issues.updated_at_from_github >= ?", updated_since_date)
+  end
+
+  def updated_since_date
+    params[:updated_since].to_i.days.ago
   end
 
   def filter_by_labels(scoped)

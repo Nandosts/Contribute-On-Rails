@@ -9,6 +9,6 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find(params[:id])
-    @issues = IssueSearchQuery.new(@project.issues, labels: params[:labels]).call
+    @issues = IssueSearchQuery.new(@project.issues, labels: params[:labels], updated_since: params[:updated_since]).call
   end
 end

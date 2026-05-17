@@ -17,7 +17,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
 
   test "renders issue labels on the project page" do
     project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
-    issue = project.issues.create!(github_id: 200, number: 200, title: "Improve docs", state: "open", github_url: "https://example.test/200", updated_at_from_github: Time.current)
+    issue = project.issues.create!(github_id: 200, number: 200, title: "Improve docs", state: "open", github_url: "https://example.test/200", opened_at: 2.days.ago, updated_at_from_github: Time.current)
     issue.labels << Label.create!(name: "good first issue")
     issue.labels << Label.create!(name: "documentation")
 
@@ -26,5 +26,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "span", text: "good first issue"
     assert_select "span", text: "documentation"
+    assert_select "select[name=updated_since]"
+    assert_select "p", text: /Opened/
   end
 end

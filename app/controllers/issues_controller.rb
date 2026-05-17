@@ -21,7 +21,7 @@ class IssuesController < ApplicationController
   private
 
   def search_params
-    params.permit(:q, :project_id, :organization, :category, labels: [])
+    params.permit(:q, :project_id, :organization, :category, :updated_since, labels: [])
   end
 
   def normalized_search_params

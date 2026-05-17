@@ -32,4 +32,15 @@ class IssueSearchQueryTest < ActiveSupport::TestCase
 
     assert_equal [ rails_issue ], IssueSearchQuery.new(Issue.all, organization: "rails").call
   end
+
+  test "filters by recent updates" do
+    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
+    recent = project.issues.create!(github_id: 15, number: 15, title: "Recent", state: "open", github_url: "https://example.test/15", updated_at_from_github: 10.days.ago)
+    stale = project.issues.create!(github_id: 16, number: 16, title: "Stale", state: "open", github_url: "https://example.test/16", updated_at_from_github: 2.years.ago)
+    label = Label.create!(name: "good first issue")
+    recent.labels << label
+    stale.labels << label
+
+    assert_equal [ recent ], IssueSearchQuery.new(Issue.all, updated_since: 90).call
+  end
 end

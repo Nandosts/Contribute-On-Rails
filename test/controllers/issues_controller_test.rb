@@ -3,7 +3,7 @@ require "test_helper"
 class IssuesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
-    @issue = @project.issues.create!(github_id: 100, number: 100, title: "Improve docs", state: "open", github_url: "https://example.test/100", updated_at_from_github: Time.current)
+    @issue = @project.issues.create!(github_id: 100, number: 100, title: "Improve docs", state: "open", github_url: "https://example.test/100", opened_at: 2.days.ago, updated_at_from_github: Time.current)
     @issue.labels << Label.create!(name: "good first issue")
   end
 
@@ -13,10 +13,12 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "input[type=search][name=q]"
     assert_select "label.sr-only[for=q]", text: "Search issue titles"
-    assert_select "select[data-controller=select]", count: 3
+    assert_select "select[data-controller=select]", count: 4
     assert_select "fieldset legend.sr-only", text: "Labels"
     assert_select "section[aria-labelledby] h2", text: "rails"
     assert_select "input[type=submit][value=Filter]"
+    assert_select "select[name=updated_since]"
+    assert_select "p", text: /Opened/
   end
 
   test "redirects random project to a project with matching issues" do
