@@ -58,10 +58,10 @@
 - owner: sidekiq
   repo: sidekiq
   category: Background Jobs
-- owner: brakeman
+- owner: presidentbeef
   repo: brakeman
   category: Security
-- owner: railsware
+- owner: sj26
   repo: mailcatcher
   category: Developer Tooling
 - owner: solidusio
