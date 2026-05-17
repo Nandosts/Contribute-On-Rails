@@ -1,5 +1,7 @@
 class IssuesController < ApplicationController
   def index
+    return redirect_to issues_path if request.query_parameters.present? && search_params.to_h.values.all?(&:blank?)
+
     scoped_issues = IssueSearchQuery.new(Issue.all, search_params).call
     @project_issue_counts = scoped_issues.unscope(:includes, :order).group(:project_id).count
     @pagy, @issues = pagy(scoped_issues, limit: 30)
@@ -13,7 +15,7 @@ class IssuesController < ApplicationController
     project_ids = IssueSearchQuery.new.call.unscope(:order).pluck(:project_id).uniq
     project = Project.active.where(id: project_ids).order(Arel.sql("RANDOM()")).first
 
-    redirect_to(project || projects_path)
+    redirect_to(project ? project_path(project, from_random: true) : projects_path)
   end
 
   private

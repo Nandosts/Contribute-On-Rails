@@ -22,7 +22,13 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   test "redirects random project to a project with matching issues" do
     get random_issues_url
 
-    assert_redirected_to project_url(@project)
+    assert_redirected_to project_url(@project, from_random: true)
+  end
+
+  test "redirects empty filters back to the canonical issues url" do
+    get issues_url, params: { q: "", project_id: "", organization: "", category: "", labels: [ "" ] }
+
+    assert_redirected_to issues_url
   end
 
   test "renders an empty state when filters match nothing" do

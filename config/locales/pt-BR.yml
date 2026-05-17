@@ -33,5 +33,6 @@ pt-BR:
         one: "%{count} issue aberta"
         other: "%{count} issues abertas"
     show:
+      back_to_issues: "Voltar para issues"
       last_synced: "Última sincronização: %{date}"
       never: "nunca"

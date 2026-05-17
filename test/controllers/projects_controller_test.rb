@@ -7,6 +7,14 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "renders a back link when opened from random selection" do
+    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
+
+    get project_url(project, from_random: true)
+
+    assert_select "a", text: "Back to issues"
+  end
+
   test "renders issue labels on the project page" do
     project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
     issue = project.issues.create!(github_id: 200, number: 200, title: "Improve docs", state: "open", github_url: "https://example.test/200", updated_at_from_github: Time.current)

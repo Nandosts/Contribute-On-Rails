@@ -33,5 +33,6 @@ en:
         one: "%{count} open issue"
         other: "%{count} open issues"
     show:
+      back_to_issues: "Back to issues"
       last_synced: "Last synced: %{date}"
       never: "never"
