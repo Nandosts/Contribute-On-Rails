@@ -10,11 +10,8 @@ class IssuesController < ApplicationController
   end
 
   def random
-    project = Project.active.joins(:issues)
-      .merge(Issue.open.joins(:labels).where(labels: { name: Issue::DEFAULT_LABELS }))
-      .distinct
-      .order(Arel.sql("RANDOM()"))
-      .first
+    project_ids = IssueSearchQuery.new.call.unscope(:order).pluck(:project_id).uniq
+    project = Project.active.where(id: project_ids).order(Arel.sql("RANDOM()")).first
 
     redirect_to(project || projects_path)
   end

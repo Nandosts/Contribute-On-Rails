@@ -3,6 +3,7 @@ en:
     tagline: "Find welcoming Ruby and Rails issues"
   issues:
     random_project: "Choose a random project"
+    pagination: "Issue pages"
     index:
       title: "Open issues"
       heading: "Open issues worth contributing to"
@@ -11,11 +12,16 @@ en:
       results:
         one: "%{count} matching issue"
         other: "%{count} matching issues"
+      empty: "No issues match the current filters."
       project_count:
         one: "%{count} issue"
         other: "%{count} issues"
     filters:
       search: "Search issue titles"
+      project: "Project"
+      organization: "Organization"
+      category: "Category"
+      labels: "Labels"
       all_projects: "All projects"
       all_organizations: "All organizations"
       all_categories: "All categories"

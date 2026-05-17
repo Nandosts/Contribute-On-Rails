@@ -1,9 +1,34 @@
 require "test_helper"
 
 class IssuesControllerTest < ActionDispatch::IntegrationTest
-  test "renders the issue index" do
+  setup do
+    @project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
+    @issue = @project.issues.create!(github_id: 100, number: 100, title: "Improve docs", state: "open", github_url: "https://example.test/100", updated_at_from_github: Time.current)
+    @issue.labels << Label.create!(name: "good first issue")
+  end
+
+  test "renders accessible filters and grouped issues" do
     get issues_url
 
     assert_response :success
+    assert_select "input[type=search][name=q]"
+    assert_select "label.sr-only[for=q]", text: "Search issue titles"
+    assert_select "select[data-controller=select]", count: 3
+    assert_select "fieldset legend.sr-only", text: "Labels"
+    assert_select "section[aria-labelledby] h2", text: "rails"
+    assert_select "input[type=submit][value=Filter]"
+  end
+
+  test "redirects random project to a project with matching issues" do
+    get random_issues_url
+
+    assert_redirected_to project_url(@project)
+  end
+
+  test "renders an empty state when filters match nothing" do
+    get issues_url, params: { q: "nope" }
+
+    assert_response :success
+    assert_select "p", text: "No issues match the current filters."
   end
 end

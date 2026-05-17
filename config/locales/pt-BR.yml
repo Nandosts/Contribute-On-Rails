@@ -3,6 +3,7 @@ pt-BR:
     tagline: "Encontre issues acolhedoras em Ruby e Rails"
   issues:
     random_project: "Escolher projeto aleatório"
+    pagination: "Páginas de issues"
     index:
       title: "Issues abertas"
       heading: "Issues abertas para contribuir"
@@ -11,11 +12,16 @@ pt-BR:
       results:
         one: "%{count} issue encontrada"
         other: "%{count} issues encontradas"
+      empty: "Nenhuma issue corresponde aos filtros atuais."
       project_count:
         one: "%{count} issue"
         other: "%{count} issues"
     filters:
       search: "Buscar nos títulos"
+      project: "Projeto"
+      organization: "Organização"
+      category: "Categoria"
+      labels: "Labels"
       all_projects: "Todos os projetos"
       all_organizations: "Todas as organizações"
       all_categories: "Todas as categorias"
