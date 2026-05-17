@@ -69,6 +69,6 @@ class IssueSearchQuery
     names = Array(params[:labels]).reject(&:blank?)
     return scoped.preload(:labels) if names.empty?
 
-    scoped.joins(:labels).where(labels: { name: names }).distinct.preload(:labels)
+    scoped.joins(:labels).where("LOWER(labels.name) IN (?)", names.map(&:downcase)).distinct.preload(:labels)
   end
 end
