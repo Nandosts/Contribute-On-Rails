@@ -41,7 +41,8 @@ module Issues
 
     def sync_labels(issue, labels)
       records = labels.map do |label_payload|
-        Label.find_or_create_by!(name: label_payload.fetch("name")) do |label|
+        normalized_name = Label.normalize_name(label_payload.fetch("name"))
+        Label.find_or_create_by!(name: normalized_name) do |label|
           label.color = label_payload["color"]
         end
       end

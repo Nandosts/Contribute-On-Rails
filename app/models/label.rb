@@ -6,12 +6,16 @@ class Label < ApplicationRecord
 
   before_validation :normalize_name
 
+  def self.normalize_name(name)
+    return name if name.blank?
+
+    # Replace hyphens with spaces and capitalize each word (Title Case)
+    name.gsub("-", " ").squish.titleize
+  end
+
   private
 
   def normalize_name
-    return if name.blank?
-
-    # Replace hyphens with spaces and capitalize each word (Title Case)
-    self.name = name.gsub("-", " ").squish.titleize
+    self.name = self.class.normalize_name(name)
   end
 end
