@@ -1,5 +1,5 @@
 class Issue < ApplicationRecord
-  DEFAULT_LABELS = [ "good first issue", "help wanted" ].freeze
+  DEFAULT_LABELS = [ "Good First Issue", "Help Wanted" ].freeze
 
   belongs_to :project
   has_many :issue_labels, dependent: :destroy
