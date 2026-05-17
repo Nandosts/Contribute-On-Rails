@@ -5,7 +5,7 @@ class IssueSearchQuery
   end
 
   def call
-    scoped = relation.open.includes(:labels, :project)
+    scoped = relation.open.includes(:project)
     scoped = filter_by_query(scoped)
     scoped = filter_by_project(scoped)
     scoped = filter_by_organization(scoped)
@@ -45,6 +45,6 @@ class IssueSearchQuery
   def filter_by_labels(scoped)
     names = Array(params[:labels]).reject(&:blank?)
     names = Issue::DEFAULT_LABELS if names.empty?
-    scoped.joins(:labels).where(labels: { name: names }).distinct
+    scoped.joins(:labels).where(labels: { name: names }).distinct.preload(:labels)
   end
 end
