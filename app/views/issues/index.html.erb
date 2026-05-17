@@ -1,12 +1,19 @@
 <% content_for :title, t("issues.index.title") %>
 
-<section class="mx-auto max-w-7xl px-6 py-10">
-  <header class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+<section class="mx-auto px-6 py-10 max-w-7xl">
+  <header class="flex md:flex-row flex-col md:justify-between md:items-end gap-4 mb-8">
     <div>
-      <p class="text-sm font-medium text-slate-500"><%= t("app.tagline") %></p>
-      <h1 class="mt-2 text-4xl font-bold tracking-tight text-slate-900"><%= t("issues.index.heading") %></h1>
-      <p class="mt-3 max-w-2xl text-slate-600"><%= t("issues.index.description") %></p>
+      <p class="font-medium text-slate-500 text-sm"><%= t("app.tagline") %></p>
+
+      <h1 class="mt-2 font-bold text-slate-900 text-4xl tracking-tight">
+        <%= t("issues.index.heading") %>
+      </h1>
+
+      <p class="mt-3 max-w-2xl text-slate-600">
+        <%= t("issues.index.description") %>
+      </p>
     </div>
+
     <%= link_to t("issues.random_project"), random_issues_path, class: "inline-flex cursor-pointer items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 font-medium text-slate-900 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900" %>
   </header>
 
@@ -15,18 +22,22 @@
       <%= form.label :q, t("issues.filters.search"), class: "sr-only" %>
       <%= form.search_field :q, value: params[:q], placeholder: t("issues.filters.search"), class: "h-11 w-full rounded-xl border border-slate-300 px-4 shadow-sm outline-none ring-0 placeholder:text-slate-400 focus:border-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900" %>
     </div>
+
     <div>
       <%= form.label :project_id, t("issues.filters.project"), class: "sr-only" %>
       <%= form.select :project_id, options_from_collection_for_select(@projects, :id, ->(project) { "#{project.github_owner}/#{project.github_repo}" }, params[:project_id]), { include_blank: t("issues.filters.all_projects") }, class: "select-control", data: { controller: "select" } %>
     </div>
+
     <div>
       <%= form.label :organization, t("issues.filters.organization"), class: "sr-only" %>
       <%= form.select :organization, options_for_select(@organizations, params[:organization]), { include_blank: t("issues.filters.all_organizations") }, class: "select-control", data: { controller: "select" } %>
     </div>
+
     <div>
       <%= form.label :category, t("issues.filters.category"), class: "sr-only" %>
       <%= form.select :category, options_for_select(@categories, params[:category]), { include_blank: t("issues.filters.all_categories") }, class: "select-control", data: { controller: "select" } %>
     </div>
+
     <div>
       <%= form.label :updated_since, t("issues.filters.updated_since"), class: "sr-only" %>
       <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since]), {}, class: "select-control", data: { controller: "select" } %>
@@ -34,18 +45,23 @@
 
     <fieldset class="flex flex-wrap items-center gap-4 md:col-span-5">
       <legend class="sr-only"><%= t("issues.filters.labels") %></legend>
+
       <% Issue::DEFAULT_LABELS.each do |label| %>
-        <label class="flex items-center gap-2 text-sm text-slate-700">
+        <label class="flex items-center gap-2 text-slate-700 text-sm">
           <%= check_box_tag "labels[]", label, Array(params[:labels]).include?(label), class: "rounded border-slate-300" %>
           <span><%= label %></span>
         </label>
       <% end %>
     </fieldset>
+
     <%= form.submit t("issues.filters.submit"), class: "h-11 cursor-pointer rounded-xl bg-slate-900 px-4 font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900" %>
   <% end %>
 
-  <div class="mb-6 flex items-center justify-between gap-4 text-sm text-slate-500">
-    <p aria-live="polite"><%= t("issues.index.results", count: @pagy.count) %></p>
+  <div class="flex justify-between items-center gap-4 mb-6 text-slate-500 text-sm">
+    <p aria-live="polite">
+      <%= t("issues.index.results", count: @pagy.count) %>
+    </p>
+
     <%== @pagy.series_nav(aria_label: t("issues.pagination")) if @pagy.pages > 1 %>
   </div>
 
@@ -53,23 +69,50 @@
     <div class="space-y-8">
       <% @grouped_issues.each do |(organization, project), issues| %>
         <section aria-labelledby="project-<%= project.id %>">
-          <div class="mb-3 flex items-center gap-3">
-            <p class="text-sm font-medium uppercase tracking-wide text-slate-500"><%= organization %></p>
-            <h2 id="project-<%= project.id %>" class="text-xl font-semibold text-slate-900"><%= link_to project.github_repo, project_path(project) %></h2>
-            <span class="rounded-full bg-slate-900 px-2.5 py-1 text-xs font-semibold text-white"><%= t("issues.index.project_count", count: @project_issue_counts.fetch(project.id, 0)) %></span>
+          <div class="flex items-center gap-3 mb-3">
+            <p class="font-medium text-slate-500 text-sm uppercase tracking-wide">
+              <%= organization %>
+            </p>
+
+            <h2
+              id="project-<%= project.id %>"
+              class="font-semibold text-slate-900 text-xl"
+            >
+              <%= link_to project.github_repo, project_path(project) %>
+            </h2>
+
+            <span
+              class="
+                bg-slate-900 px-2.5 py-1 rounded-full font-semibold
+                text-white text-xs
+              "
+            >
+              <%= t("issues.index.project_count", count: @project_issue_counts.fetch(project.id, 0)) %>
+            </span>
           </div>
 
           <div class="space-y-4">
             <% issues.each do |issue| %>
-              <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+              <article class="bg-white shadow-sm p-5 border border-slate-200 rounded-2xl">
+                <div class="flex flex-wrap items-center gap-2 text-slate-500 text-sm">
                   <span>#<%= issue.number %></span>
+
                   <% issue.labels.each do |label| %>
-                    <span class="rounded-full bg-slate-100 px-2 py-1 text-xs"><%= label.name %></span>
+                    <span class="bg-slate-100 px-2 py-1 rounded-full text-xs">
+                      <%= label.name %>
+                    </span>
                   <% end %>
                 </div>
-                <h3 class="mt-3 text-xl font-semibold text-slate-900"><%= link_to issue.title, issue.github_url, target: "_blank", rel: "noopener" %></h3>
-                <p class="mt-2 text-sm text-slate-500"><%= t("issues.index.opened", date: l(issue.opened_at, format: :short)) %> · <%= t("issues.index.updated", date: l(issue.updated_at_from_github, format: :short)) %></p>
+
+                <h3 class="mt-3 font-semibold text-slate-900 text-xl">
+                  <%= link_to issue.title, issue.github_url, target: "_blank", rel: "noopener" %>
+                </h3>
+
+                <p class="mt-2 text-slate-500 text-sm">
+                  <%= t("issues.index.opened", date: l(issue.opened_at, format: :long)) %>
+                  ·
+                  <%= t("issues.index.updated", date: l(issue.updated_at_from_github, format: :long)) %>
+                </p>
               </article>
             <% end %>
           </div>
@@ -77,7 +120,14 @@
       <% end %>
     </div>
   <% else %>
-    <p class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-600"><%= t("issues.index.empty") %></p>
+    <p
+      class="
+        bg-white p-8 border border-slate-300 border-dashed rounded-2xl
+        text-slate-600 text-center
+      "
+    >
+      <%= t("issues.index.empty") %>
+    </p>
   <% end %>
 
   <div class="mt-8">
