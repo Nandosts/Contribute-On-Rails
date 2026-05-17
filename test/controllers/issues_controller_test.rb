@@ -1,7 +1,9 @@
 require "test_helper"
 
 class IssuesControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+  test "renders the issue index" do
+    get issues_url
+
+    assert_response :success
+  end
 end
