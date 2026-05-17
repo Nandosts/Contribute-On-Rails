@@ -22,7 +22,8 @@ module Issues
             opened_at: payload["created_at"],
             updated_at_from_github: payload["updated_at"],
             closed_at: payload["closed_at"],
-            last_synced_at: now
+            last_synced_at: now,
+            assignees: payload["assignees"] || []
           )
           sync_labels(issue, payload.fetch("labels", []))
           seen_ids << issue.github_id

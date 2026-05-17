@@ -10,6 +10,7 @@ pt-BR:
       description: "Explore issues abertas do GitHub em projetos Ruby e Rails selecionados. Por padrão, os resultados incluem good first issue e help wanted."
       opened: "Aberta em %{date}"
       updated: "Atualizada em %{date}"
+      assigned_to: "Atribuída a %{names}"
       results:
         one: "%{count} issue encontrada"
         other: "%{count} issues encontradas"
@@ -31,6 +32,10 @@ pt-BR:
       all_projects: "Todos os projetos"
       all_organizations: "Todas as organizações"
       all_categories: "Todas as categorias"
+      assignee_status: "Responsável"
+      unassigned_only: "Apenas sem responsável"
+      assigned_only: "Apenas com responsável"
+      all_assignees: "Todas as issues"
       submit: "Filtrar"
   projects:
     index:

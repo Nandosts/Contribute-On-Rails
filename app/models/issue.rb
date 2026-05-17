@@ -10,4 +10,14 @@ class Issue < ApplicationRecord
   validates :number, uniqueness: { scope: :project_id }
 
   scope :open, -> { where(state: "open") }
+  scope :unassigned, -> { where("assignees IS NULL OR assignees = '[]'::jsonb") }
+  scope :assigned, -> { where("assignees IS NOT NULL AND assignees != '[]'::jsonb") }
+
+  def assigned?
+    assignees.present?
+  end
+
+  def assignee_logins
+    Array(assignees).map { |a| a["login"] }.compact
+  end
 end

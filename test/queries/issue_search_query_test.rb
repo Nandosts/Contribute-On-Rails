@@ -57,4 +57,21 @@ class IssueSearchQueryTest < ActiveSupport::TestCase
 
     assert_equal [ issue_matching ], IssueSearchQuery.new(Issue.all, category: "Rails Applications").call
   end
+
+  test "filters by assignee status" do
+    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
+    unassigned_issue = project.issues.create!(github_id: 19, number: 19, title: "Unassigned", state: "open", github_url: "https://example.test/19", assignees: [])
+    assigned_issue = project.issues.create!(github_id: 20, number: 20, title: "Assigned", state: "open", github_url: "https://example.test/20", assignees: [ { "login" => "octocat" } ])
+
+    label = Label.create!(name: "good first issue")
+    unassigned_issue.labels << label
+    assigned_issue.labels << label
+
+    assert_equal [ unassigned_issue ], IssueSearchQuery.new(Issue.all, assignee_status: "unassigned").call
+    assert_equal [ assigned_issue ], IssueSearchQuery.new(Issue.all, assignee_status: "assigned").call
+
+    results = IssueSearchQuery.new(Issue.all, assignee_status: "").call
+    assert_includes results, unassigned_issue
+    assert_includes results, assigned_issue
+  end
 end

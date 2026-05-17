@@ -10,6 +10,7 @@ en:
       description: "Browse open GitHub issues from curated Ruby and Rails projects. By default, results include good first issue and help wanted labels."
       opened: "Opened %{date}"
       updated: "Updated %{date}"
+      assigned_to: "Assigned to %{names}"
       results:
         one: "%{count} matching issue"
         other: "%{count} matching issues"
@@ -31,6 +32,10 @@ en:
       all_projects: "All projects"
       all_organizations: "All organizations"
       all_categories: "All categories"
+      assignee_status: "Assignees"
+      unassigned_only: "Unassigned only"
+      assigned_only: "Assigned only"
+      all_assignees: "All issues"
       submit: "Filter"
   projects:
     index:

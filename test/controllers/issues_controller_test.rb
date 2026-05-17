@@ -13,7 +13,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "input[type=search][name=q]"
     assert_select "label.sr-only[for=q]", text: "Search issue titles"
-    assert_select "select[data-controller=select]", count: 4
+    assert_select "select[data-controller=select]", count: 5
     assert_select "fieldset legend.sr-only", text: "Labels"
     assert_select "section[aria-labelledby] h2", text: "rails"
     assert_select "input[type=submit][value=Filter]"
@@ -28,7 +28,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "redirects empty filters back to the canonical issues url" do
-    get issues_url, params: { q: "", project_id: "", organization: "", category: "", labels: [ "" ] }
+    get issues_url, params: { q: "", project_id: "", organization: "", category: "", assignee_status: "", labels: [ "" ] }
 
     assert_redirected_to issues_url
   end

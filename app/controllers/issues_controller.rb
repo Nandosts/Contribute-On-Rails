@@ -4,6 +4,7 @@ class IssuesController < ApplicationController
 
     active_search_params = search_params.to_h
     active_search_params["updated_since"] = "365" if active_search_params["updated_since"].nil?
+    active_search_params["assignee_status"] = "unassigned" if active_search_params["assignee_status"].nil?
 
     scoped_issues = IssueSearchQuery.new(Issue.all, active_search_params).call
     @project_issue_counts = scoped_issues.unscope(:includes, :order).group(:project_id).count
@@ -32,7 +33,7 @@ class IssuesController < ApplicationController
   private
 
   def search_params
-    params.permit(:q, :project_id, :organization, :category, :updated_since, labels: [])
+    params.permit(:q, :project_id, :organization, :category, :updated_since, :assignee_status, labels: [])
   end
 
   def normalized_search_params

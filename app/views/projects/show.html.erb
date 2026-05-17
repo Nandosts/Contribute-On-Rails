@@ -11,9 +11,16 @@
     <%= t("projects.show.last_synced", date: @project.last_synced_at ? l(@project.last_synced_at, format: :long) : t("projects.show.never")) %>
   </p>
 
-  <%= form_with url: project_path(@project), method: :get, class: "mt-6 max-w-xs" do |form| %>
-    <%= form.label :updated_since, t("issues.filters.updated_since"), class: "sr-only" %>
-    <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since] || "365"), {}, class: "select-control", data: { controller: "select" }, onchange: "this.form.requestSubmit()" %>
+  <%= form_with url: project_path(@project), method: :get, class: "mt-6 flex flex-wrap gap-4 max-w-md" do |form| %>
+    <div class="w-48">
+      <%= form.label :updated_since, t("issues.filters.updated_since"), class: "sr-only" %>
+      <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since] || "365"), {}, class: "select-control", data: { controller: "select" }, onchange: "this.form.requestSubmit()" %>
+    </div>
+
+    <div class="w-48">
+      <%= form.label :assignee_status, t("issues.filters.assignee_status"), class: "sr-only" %>
+      <%= form.select :assignee_status, options_for_select([[t("issues.filters.unassigned_only"), "unassigned"], [t("issues.filters.assigned_only"), "assigned"], [t("issues.filters.all_assignees"), ""]], params[:assignee_status] || "unassigned"), {}, class: "select-control", data: { controller: "select" }, onchange: "this.form.requestSubmit()" %>
+    </div>
   <% end %>
 
   <div class="space-y-4 mt-8">
@@ -23,6 +30,17 @@
           <% issue.labels.each do |label| %>
             <span class="bg-slate-100 px-2 py-1 rounded-full text-slate-700 text-xs">
               <%= label.name %>
+            </span>
+          <% end %>
+
+          <% if issue.assigned? %>
+            <span
+              class="
+                bg-amber-50 border border-amber-200 px-2 py-1 rounded-full
+                font-medium text-amber-800 text-xs
+              "
+            >
+              <%= t("issues.index.assigned_to", names: issue.assignee_logins.join(", ")) %>
             </span>
           <% end %>
         </div>

@@ -12,12 +12,24 @@ class IssueSearchQuery
     scoped = filter_by_category(scoped)
     scoped = filter_by_labels(scoped)
     scoped = filter_by_updated_since(scoped)
+    scoped = filter_by_assignee_status(scoped)
     scoped.order(updated_at_from_github: :desc)
   end
 
   private
 
   attr_reader :relation, :params
+
+  def filter_by_assignee_status(scoped)
+    case params[:assignee_status]
+    when "unassigned"
+      scoped.unassigned
+    when "assigned"
+      scoped.assigned
+    else
+      scoped
+    end
+  end
 
   def filter_by_query(scoped)
     return scoped if params[:q].blank?
