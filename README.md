@@ -47,10 +47,10 @@ bundle install
 bin/rails db:prepare
 ```
 
-Create a GitHub token and export it before running sync jobs:
+Create a GitHub token and export it in your terminal, or simply add it to a `.env` file in the root directory (it will be loaded automatically):
 
 ```bash
-export GITHUB_TOKEN=your_token_here
+GITHUB_TOKEN=your_token_here
 ```
 
 Start the app:
