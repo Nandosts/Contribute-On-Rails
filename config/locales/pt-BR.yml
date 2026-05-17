@@ -1,4 +1,20 @@
 pt-BR:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d de %b"
+      long: "%d de %B de %Y"
+    month_names: [~, Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro]
+    abbr_month_names: [~, Jan, Fev, Mar, Abr, Mai, Jun, Jul, Ago, Set, Out, Nov, Dez]
+    day_names: [Domingo, Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira, Sábado]
+    abbr_day_names: [Dom, Seg, Ter, Qua, Qui, Sex, Sáb]
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M:%S"
+      short: "%d/%m, %H:%M"
+      long: "%d de %B de %Y às %H:%M"
+    am: "AM"
+    pm: "PM"
   app:
     tagline: "Encontre issues acolhedoras em Ruby e Rails"
   layout:

@@ -21,6 +21,14 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_select "p", text: /Opened/
   end
 
+  test "renders pt-BR locale without missing translations" do
+    get issues_url, headers: { "HTTP_ACCEPT_LANGUAGE": "pt-BR" }
+
+    assert_response :success
+    refute_match "translation missing", response.body
+    refute_match "translation_missing", response.body
+  end
+
   test "redirects random project to a project with matching issues" do
     get random_issues_url
 
