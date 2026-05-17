@@ -9,12 +9,7 @@ class IssuesController < ApplicationController
     @pagy, @issues = pagy(scoped_issues, limit: 30, size: [ 1, 4, 4, 1 ])
     @grouped_issues = @issues.group_by { |issue| [ issue.project.github_owner, issue.project ] }
 
-    timeframe = active_search_params["updated_since"]
-    if timeframe.present?
-      active_projects = Project.active.joins(:issues).where(issues: { state: "open" }).where("issues.updated_at_from_github >= ?", timeframe.to_i.days.ago).distinct
-    else
-      active_projects = Project.active
-    end
+    active_projects = Project.active.where(id: scoped_issues.unscope(:order).select(:project_id)).distinct
 
     @projects = active_projects.order(:github_owner, :github_repo)
     @organizations = active_projects.distinct.order(:github_owner).pluck(:github_owner)
