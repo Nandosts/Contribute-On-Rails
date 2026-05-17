@@ -38,8 +38,8 @@
           <% if issue.assigned? %>
             <span
               class="
-                bg-amber-50 border border-amber-200 px-2 py-1
-                rounded-full font-medium text-amber-800 text-xs
+                bg-amber-50 border border-amber-200 px-2 py-1 rounded-full
+                font-medium text-amber-800 text-xs
               "
             >
               <%= t("issues.index.assigned_to", names: issue.assignee_logins.join(", ")) %>

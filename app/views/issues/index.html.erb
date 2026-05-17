@@ -70,7 +70,19 @@
       >
         <% if @pagy.page > 1 %>
           <%= link_to @pagy.page_url(@pagy.page - 1), class: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white font-medium text-slate-700 shadow-sm transition hover:bg-slate-50", aria: { label: t("pagy.nav.prev") } do %>
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
           <% end %>
         <% end %>
 
@@ -78,17 +90,42 @@
           <% if item.is_a?(Integer) %>
             <%= link_to item, @pagy.page_url(item), class: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white font-medium text-slate-700 shadow-sm transition hover:bg-slate-50" %>
           <% elsif item.is_a?(String) %>
-            <span class="inline-flex justify-center items-center bg-slate-900 shadow-sm rounded-lg w-9 h-9 font-medium text-white cursor-default">
+            <span
+              class="
+                inline-flex justify-center items-center bg-slate-900
+                shadow-sm rounded-lg w-9 h-9 font-medium text-white
+                cursor-default
+              "
+            >
               <%= item %>
             </span>
           <% elsif item == :gap %>
-            <span class="inline-flex justify-center items-center w-9 h-9 font-medium text-slate-400">…</span>
+            <span
+              class="
+                inline-flex justify-center items-center w-9 h-9 font-medium
+                text-slate-400
+              "
+            >
+              …
+            </span>
           <% end %>
         <% end %>
 
         <% if @pagy.page < @pagy.pages %>
           <%= link_to @pagy.page_url(@pagy.page + 1), class: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white font-medium text-slate-700 shadow-sm transition hover:bg-slate-50", aria: { label: t("pagy.nav.next") } do %>
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+              />
+            </svg>
           <% end %>
         <% end %>
       </nav>
@@ -112,7 +149,10 @@
             </h2>
 
             <span
-              class="bg-slate-900 px-2.5 py-1 rounded-full font-semibold text-white text-xs"
+              class="
+                bg-slate-900 px-2.5 py-1 rounded-full font-semibold
+                text-white text-xs
+              "
             >
               <%= t("issues.index.project_count", count: @project_issue_counts.fetch(project.id, 0)) %>
             </span>
@@ -132,7 +172,10 @@
 
                   <% if issue.assigned? %>
                     <span
-                      class="bg-amber-50 px-2 py-1 border border-amber-200 rounded-full font-medium text-amber-800 text-xs"
+                      class="
+                        bg-amber-50 px-2 py-1 border border-amber-200
+                        rounded-full font-medium text-amber-800 text-xs
+                      "
                     >
                       <%= t("issues.index.assigned_to", names: issue.assignee_logins.join(", ")) %>
                     </span>
@@ -156,7 +199,10 @@
     </div>
   <% else %>
     <p
-      class="bg-white p-8 border border-slate-300 border-dashed rounded-2xl text-slate-600 text-center"
+      class="
+        bg-white p-8 border border-slate-300 border-dashed rounded-2xl
+        text-slate-600 text-center
+      "
     >
       <%= t("issues.index.empty") %>
     </p>
