@@ -27,10 +27,10 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to project_url(@project, from_random: true)
   end
 
-  test "redirects empty filters back to the canonical issues url" do
+  test "does not redirect empty filters and responds successfully" do
     get issues_url, params: { q: "", project_id: "", organization: "", category: "", assignee_status: "", labels: [ "" ] }
 
-    assert_redirected_to issues_url
+    assert_response :success
   end
 
   test "renders an empty state when filters match nothing" do
