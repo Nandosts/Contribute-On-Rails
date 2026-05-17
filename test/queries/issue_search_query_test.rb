@@ -1,14 +1,17 @@
 require "test_helper"
 
 class IssueSearchQueryTest < ActiveSupport::TestCase
-  test "uses default labels when none are selected" do
+  test "does not use default labels when none are selected" do
     project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
-    matching = project.issues.create!(github_id: 10, number: 10, title: "Starter", state: "open", github_url: "https://example.test/10")
-    other = project.issues.create!(github_id: 11, number: 11, title: "Advanced", state: "open", github_url: "https://example.test/11")
-    matching.labels << Label.create!(name: "good first issue")
-    other.labels << Label.create!(name: "bug")
+    starter = project.issues.create!(github_id: 10, number: 10, title: "Starter", state: "open", github_url: "https://example.test/10")
+    advanced = project.issues.create!(github_id: 11, number: 11, title: "Advanced", state: "open", github_url: "https://example.test/11")
+    starter.labels << Label.create!(name: "good first issue")
+    advanced.labels << Label.create!(name: "bug")
 
-    assert_equal [ matching ], IssueSearchQuery.new.call
+    results = IssueSearchQuery.new(Issue.all, labels: []).call
+
+    assert_includes results, starter
+    assert_includes results, advanced
   end
 
   test "filters by title, label, and project" do

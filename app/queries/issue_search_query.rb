@@ -67,7 +67,8 @@ class IssueSearchQuery
 
   def filter_by_labels(scoped)
     names = Array(params[:labels]).reject(&:blank?)
-    names = Issue::DEFAULT_LABELS if names.empty?
+    return scoped.preload(:labels) if names.empty?
+
     scoped.joins(:labels).where(labels: { name: names }).distinct.preload(:labels)
   end
 end

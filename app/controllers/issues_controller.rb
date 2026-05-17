@@ -2,7 +2,7 @@ class IssuesController < ApplicationController
   def index
     return redirect_to issues_path if request.query_parameters.except("page").present? && normalized_search_params.values.all?(&:blank?)
 
-    active_search_params = search_params.to_h
+    active_search_params = normalized_search_params
 
     scoped_issues = IssueSearchQuery.new(Issue.all, active_search_params).call
     @project_issue_counts = scoped_issues.unscope(:includes, :order).group(:project_id).count
@@ -31,7 +31,11 @@ class IssuesController < ApplicationController
 
   def normalized_search_params
     search_params.to_h.tap do |filters|
-      filters["labels"] = Array(filters["labels"]).reject(&:blank?)
+      if request.query_parameters.except("page").empty?
+        filters["labels"] = Issue::DEFAULT_LABELS
+      else
+        filters["labels"] = Array(filters["labels"]).reject(&:blank?)
+      end
     end
   end
 end
