@@ -22,10 +22,10 @@ class IssuesController < ApplicationController
   end
 
   def random
-    project_ids = IssueSearchQuery.new.call.unscope(:order).pluck(:project_id).uniq
+    project_ids = IssueSearchQuery.new(Issue.all, search_params.to_h).call.unscope(:order).pluck(:project_id).uniq
     project = Project.active.where(id: project_ids).order(Arel.sql("RANDOM()")).first
 
-    redirect_to(project ? project_path(project, from_random: true) : projects_path)
+    redirect_to(project ? project_path(project, request.query_parameters.merge(from_random: true)) : projects_path)
   end
 
   private
