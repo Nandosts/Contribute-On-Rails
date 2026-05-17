@@ -8,6 +8,7 @@ export default class extends Controller {
       allowEmptyOption: true,
       plugins: ["clear_button"],
     })
+    this.element.dataset.enhanced = "true"
   }
 
   disconnect() {
