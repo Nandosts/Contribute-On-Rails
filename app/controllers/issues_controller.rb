@@ -2,13 +2,24 @@ class IssuesController < ApplicationController
   def index
     return redirect_to issues_path if request.query_parameters.present? && normalized_search_params.values.all?(&:blank?)
 
-    scoped_issues = IssueSearchQuery.new(Issue.all, search_params).call
+    active_search_params = search_params.to_h
+    active_search_params["updated_since"] = "365" if active_search_params["updated_since"].nil?
+
+    scoped_issues = IssueSearchQuery.new(Issue.all, active_search_params).call
     @project_issue_counts = scoped_issues.unscope(:includes, :order).group(:project_id).count
     @pagy, @issues = pagy(scoped_issues, limit: 30)
     @grouped_issues = @issues.group_by { |issue| [ issue.project.github_owner, issue.project ] }
-    @projects = Project.active.order(:github_owner, :github_repo)
-    @organizations = Project.active.distinct.order(:github_owner).pluck(:github_owner)
-    @categories = Project.active.where.not(source_category: nil).distinct.order(:source_category).pluck(:source_category)
+
+    timeframe = active_search_params["updated_since"]
+    if timeframe.present?
+      active_projects = Project.active.joins(:issues).where(issues: { state: "open" }).where("issues.updated_at_from_github >= ?", timeframe.to_i.days.ago).distinct
+    else
+      active_projects = Project.active
+    end
+
+    @projects = active_projects.order(:github_owner, :github_repo)
+    @organizations = active_projects.distinct.order(:github_owner).pluck(:github_owner)
+    @categories = active_projects.where.not(source_category: nil).distinct.order(:source_category).pluck(:source_category)
   end
 
   def random

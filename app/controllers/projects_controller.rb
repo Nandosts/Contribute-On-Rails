@@ -1,14 +1,18 @@
 class ProjectsController < ApplicationController
   def index
     @projects = Project.active
-      .left_joins(:issues)
-      .select("projects.*, COUNT(CASE WHEN issues.state = 'open' THEN 1 END) AS open_issues_count")
+      .joins(:issues)
+      .where(issues: { state: "open" })
+      .where("issues.updated_at_from_github >= ?", 1.year.ago)
+      .select("projects.*, COUNT(issues.id) AS open_issues_count")
       .group("projects.id")
       .order(:name)
   end
 
   def show
     @project = Project.find(params[:id])
-    @issues = IssueSearchQuery.new(@project.issues, labels: params[:labels], updated_since: params[:updated_since]).call
+    updated_since = params[:updated_since]
+    updated_since = "365" if updated_since.nil?
+    @issues = IssueSearchQuery.new(@project.issues, labels: params[:labels], updated_since: updated_since).call
   end
 end
