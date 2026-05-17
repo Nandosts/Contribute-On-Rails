@@ -45,7 +45,12 @@ module Github
 
     def request(owner:, repo:, label:, page:)
       uri = URI("https://api.github.com/repos/#{owner}/#{repo}/issues")
-      params = { state: "open", per_page: 100, page: }
+      params = {
+        state: "open",
+        per_page: 100,
+        page: page,
+        since: 365.days.ago.utc.iso8601
+      }
       params[:labels] = label if label.present?
       uri.query = URI.encode_www_form(params)
       get(uri)
