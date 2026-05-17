@@ -19,32 +19,32 @@
 
   <%= form_with url: issues_path, method: :get, class: "mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-4" do |form| %>
     <div class="floating-label-group md:col-span-2">
-      <%= form.search_field :q, value: params[:q], placeholder: " ", id: "input_q", class: "h-11 w-full rounded-xl border border-slate-300 px-4 pt-3 text-slate-900 shadow-sm outline-none ring-0 focus:border-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900" %>
+      <%= form.search_field :q, value: @active_search_params["q"], placeholder: " ", id: "input_q", class: "h-11 w-full rounded-xl border border-slate-300 px-4 pt-3 text-slate-900 shadow-sm outline-none ring-0 focus:border-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900" %>
       <%= form.label :q, t("issues.filters.search"), for: "input_q" %>
     </div>
 
     <div class="floating-label-group">
-      <%= form.select :project_id, options_from_collection_for_select(@projects, :id, ->(project) { "#{project.github_owner}/#{project.github_repo}" }, params[:project_id]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_project" %>
+      <%= form.select :project_id, options_from_collection_for_select(@projects, :id, ->(project) { "#{project.github_owner}/#{project.github_repo}" }, @active_search_params["project_id"]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_project" %>
       <%= form.label :project_id, t("issues.filters.project"), for: "select_project" %>
     </div>
 
     <div class="floating-label-group">
-      <%= form.select :organization, options_for_select(@organizations, params[:organization]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_organization" %>
+      <%= form.select :organization, options_for_select(@organizations, @active_search_params["organization"]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_organization" %>
       <%= form.label :organization, t("issues.filters.organization"), for: "select_organization" %>
     </div>
 
     <div class="floating-label-group">
-      <%= form.select :category, options_for_select(@categories, params[:category]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_category" %>
+      <%= form.select :category, options_for_select(@categories, @active_search_params["category"]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_category" %>
       <%= form.label :category, t("issues.filters.category"), for: "select_category" %>
     </div>
 
     <div class="floating-label-group">
-      <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since]), {}, class: "select-control", data: { controller: "select" }, id: "select_updated_since" %>
+      <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), "all"], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], @active_search_params["updated_since"]), {}, class: "select-control", data: { controller: "select" }, id: "select_updated_since" %>
       <%= form.label :updated_since, t("issues.filters.updated_since"), for: "select_updated_since" %>
     </div>
 
     <div class="floating-label-group">
-      <%= form.select :assignee_status, options_for_select([[t("issues.filters.unassigned_only"), "unassigned"], [t("issues.filters.assigned_only"), "assigned"], [t("issues.filters.all_assignees"), ""]], params[:assignee_status]), {}, class: "select-control", data: { controller: "select" }, id: "select_assignee_status" %>
+      <%= form.select :assignee_status, options_for_select([[t("issues.filters.unassigned_only"), "unassigned"], [t("issues.filters.assigned_only"), "assigned"], [t("issues.filters.all_assignees"), "all"]], @active_search_params["assignee_status"]), {}, class: "select-control", data: { controller: "select" }, id: "select_assignee_status" %>
       <%= form.label :assignee_status, t("issues.filters.assignee_status"), for: "select_assignee_status" %>
     </div>
 
@@ -52,16 +52,10 @@
       <%= form.submit t("issues.filters.submit"), class: "h-11 w-full cursor-pointer rounded-xl bg-slate-900 px-4 font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900" %>
     </div>
 
-    <fieldset class="flex flex-wrap items-center gap-4 md:col-span-4">
-      <legend class="sr-only"><%= t("issues.filters.labels") %></legend>
-
-      <% Issue::DEFAULT_LABELS.each do |label| %>
-        <label class="flex items-center gap-2 text-slate-700 text-sm">
-          <%= check_box_tag "labels[]", label, Array(params[:labels]).include?(label), class: "rounded border-slate-300" %>
-          <span><%= label %></span>
-        </label>
-      <% end %>
-    </fieldset>
+    <div class="floating-label-group md:col-span-4">
+      <%= select_tag "labels[]", options_for_select(@all_labels, @active_search_params["labels"]), multiple: true, class: "select-control", data: { controller: "select" }, id: "select_labels" %>
+      <label for="select_labels"><%= t("issues.filters.labels") %></label>
+    </div>
   <% end %>
 
   <div class="flex justify-between items-center gap-4 mb-6 text-slate-500 text-sm">
@@ -76,7 +70,7 @@
       >
         <% if @pagy.page > 1 %>
           <%= link_to @pagy.page_url(@pagy.page - 1), class: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white font-medium text-slate-700 shadow-sm transition hover:bg-slate-50", aria: { label: t("pagy.nav.prev") } do %>
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
           <% end %>
         <% end %>
 
@@ -84,17 +78,17 @@
           <% if item.is_a?(Integer) %>
             <%= link_to item, @pagy.page_url(item), class: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white font-medium text-slate-700 shadow-sm transition hover:bg-slate-50" %>
           <% elsif item.is_a?(String) %>
-            <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 font-medium text-white shadow-sm cursor-default">
+            <span class="inline-flex justify-center items-center bg-slate-900 shadow-sm rounded-lg w-9 h-9 font-medium text-white cursor-default">
               <%= item %>
             </span>
           <% elsif item == :gap %>
-            <span class="inline-flex h-9 w-9 items-center justify-center font-medium text-slate-400">…</span>
+            <span class="inline-flex justify-center items-center w-9 h-9 font-medium text-slate-400">…</span>
           <% end %>
         <% end %>
 
         <% if @pagy.page < @pagy.pages %>
           <%= link_to @pagy.page_url(@pagy.page + 1), class: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white font-medium text-slate-700 shadow-sm transition hover:bg-slate-50", aria: { label: t("pagy.nav.next") } do %>
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
           <% end %>
         <% end %>
       </nav>
@@ -118,10 +112,7 @@
             </h2>
 
             <span
-              class="
-                bg-slate-900 px-2.5 py-1 rounded-full font-semibold
-                text-white text-xs
-              "
+              class="bg-slate-900 px-2.5 py-1 rounded-full font-semibold text-white text-xs"
             >
               <%= t("issues.index.project_count", count: @project_issue_counts.fetch(project.id, 0)) %>
             </span>
@@ -141,10 +132,7 @@
 
                   <% if issue.assigned? %>
                     <span
-                      class="
-                        bg-amber-50 border border-amber-200 px-2 py-1
-                        rounded-full font-medium text-amber-800 text-xs
-                      "
+                      class="bg-amber-50 px-2 py-1 border border-amber-200 rounded-full font-medium text-amber-800 text-xs"
                     >
                       <%= t("issues.index.assigned_to", names: issue.assignee_logins.join(", ")) %>
                     </span>
@@ -168,10 +156,7 @@
     </div>
   <% else %>
     <p
-      class="
-        bg-white p-8 border border-slate-300 border-dashed rounded-2xl
-        text-slate-600 text-center
-      "
+      class="bg-white p-8 border border-slate-300 border-dashed rounded-2xl text-slate-600 text-center"
     >
       <%= t("issues.index.empty") %>
     </p>

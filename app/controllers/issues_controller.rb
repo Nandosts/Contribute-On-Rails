@@ -2,9 +2,9 @@ class IssuesController < ApplicationController
   def index
     return redirect_to issues_path if request.query_parameters.except("page").present? && normalized_search_params.values.all?(&:blank?)
 
-    active_search_params = normalized_search_params
+    @active_search_params = normalized_search_params
 
-    scoped_issues = IssueSearchQuery.new(Issue.all, active_search_params).call
+    scoped_issues = IssueSearchQuery.new(Issue.all, @active_search_params).call
     @project_issue_counts = scoped_issues.unscope(:includes, :order).group(:project_id).count
     @pagy, @issues = pagy(scoped_issues, limit: 30, size: [ 1, 4, 4, 1 ])
     @grouped_issues = @issues.group_by { |issue| [ issue.project.github_owner, issue.project ] }
@@ -14,6 +14,7 @@ class IssuesController < ApplicationController
     @projects = active_projects.order(:github_owner, :github_repo)
     @organizations = active_projects.distinct.order(:github_owner).pluck(:github_owner)
     @categories = active_projects.where.not(source_category: nil).distinct.order(:source_category).pluck(:source_category)
+    @all_labels = Label.joins(:issues).distinct.order(:name).pluck(:name)
   end
 
   def random
@@ -33,6 +34,8 @@ class IssuesController < ApplicationController
     search_params.to_h.tap do |filters|
       if request.query_parameters.except("page").empty?
         filters["labels"] = Issue::DEFAULT_LABELS
+        filters["updated_since"] = "365"
+        filters["assignee_status"] = "unassigned"
       else
         filters["labels"] = Array(filters["labels"]).reject(&:blank?)
       end

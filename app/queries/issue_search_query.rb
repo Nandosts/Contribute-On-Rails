@@ -56,7 +56,7 @@ class IssueSearchQuery
   end
 
   def filter_by_updated_since(scoped)
-    return scoped if params[:updated_since].blank?
+    return scoped if params[:updated_since].blank? || params[:updated_since] == "all"
 
     scoped.where("issues.updated_at_from_github >= ?", updated_since_date)
   end
