@@ -6,17 +6,21 @@ module Issues
       projects = Project.active
       total = projects.count
       progress = 0
+      synced_names = []
 
       projects.find_each do |project|
         progress += 1
         print "\rSyncing Issues: #{progress}/#{total} (#{project.github_owner}/#{project.github_repo})".ljust(80) if $stdout.tty?
 
         SyncService.new.call(project, force_fetch: fetch_all)
+        synced_names << "#{project.github_owner}/#{project.github_repo}"
       rescue StandardError => error
         Rails.logger.warn("Issue sync failed for #{project.github_owner}/#{project.github_repo}: #{error.message}")
       end
 
-      puts "\nCompleted!" if $stdout.tty?
+      if $stdout.tty?
+        puts "\nCompleted! Synced projects: #{synced_names.join(', ')}"
+      end
     end
   end
 end
