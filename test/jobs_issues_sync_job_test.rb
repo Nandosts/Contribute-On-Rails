@@ -11,8 +11,12 @@ class IssuesSyncJobTest < ActiveJob::TestCase
       raise "not found" if project == first
     end
 
-    Issues::SyncService.stub(:new, service) { Issues::SyncJob.perform_now }
+    original_new = Issues::SyncService.method(:new)
+    Issues::SyncService.define_singleton_method(:new) { service }
+    Issues::SyncJob.perform_now
 
     assert_equal [ first, second ], calls
+  ensure
+    Issues::SyncService.define_singleton_method(:new, original_new)
   end
 end
