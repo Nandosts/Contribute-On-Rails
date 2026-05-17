@@ -82,14 +82,12 @@
 
         <% @pagy.send(:series, size: [1, 2, 2, 1]).each do |item| %>
           <% if item.is_a?(Integer) %>
-            <% if item == @pagy.page %>
-              <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 font-medium text-white shadow-sm cursor-default">
-                <%= item %>
-              </span>
-            <% else %>
-              <%= link_to item, @pagy.page_url(item), class: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white font-medium text-slate-700 shadow-sm transition hover:bg-slate-50" %>
-            <% end %>
-          <% else %>
+            <%= link_to item, @pagy.page_url(item), class: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white font-medium text-slate-700 shadow-sm transition hover:bg-slate-50" %>
+          <% elsif item.is_a?(String) %>
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 font-medium text-white shadow-sm cursor-default">
+              <%= item %>
+            </span>
+          <% elsif item == :gap %>
             <span class="inline-flex h-9 w-9 items-center justify-center font-medium text-slate-400">…</span>
           <% end %>
         <% end %>
