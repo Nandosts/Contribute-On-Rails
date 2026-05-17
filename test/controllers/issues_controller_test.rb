@@ -72,4 +72,15 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     # The stale project should NOT be in the select option
     assert_select "select[name=project_id] option", text: "stale_org/stale_repo", count: 0
   end
+
+  test "does not redirect pagination when no other filters are active" do
+    label = Label.find_or_create_by!(name: "good first issue")
+    31.times do |i|
+      issue = @project.issues.create!(github_id: 200 + i, number: 200 + i, title: "Issue #{i}", state: "open", github_url: "https://example.test/200#{i}", opened_at: 2.days.ago, updated_at_from_github: Time.current)
+      issue.labels << label
+    end
+
+    get issues_url, params: { page: 2 }
+    assert_response :success
+  end
 end
