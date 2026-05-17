@@ -5,7 +5,7 @@ module Projects
     end
 
     def call
-      entries = Github::ProjectCatalogImporter.new(readme_client.call).call + CuratedCatalog.new.call
+      entries = catalog_entries
       Project.transaction do
         entries.each do |entry|
           project = Project.find_or_initialize_by(github_owner: entry.owner, github_repo: entry.repo)
@@ -20,5 +20,11 @@ module Projects
     private
 
     attr_reader :readme_client
+
+    def catalog_entries
+      upstream_entries = Github::ProjectCatalogImporter.new(readme_client.call).call
+      curated_entries = CuratedCatalog.new.call
+      (upstream_entries + curated_entries).index_by { |entry| [ entry.owner.downcase, entry.repo.downcase ] }.values
+    end
   end
 end

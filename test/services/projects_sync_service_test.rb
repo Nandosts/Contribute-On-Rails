@@ -14,4 +14,14 @@ class ProjectsSyncServiceTest < ActiveSupport::TestCase
     assert Project.find_by!(github_owner: "discourse", github_repo: "discourse").active?
     assert_not existing.reload.active?
   end
+
+  test "deduplicates catalog entries and lets curated metadata win" do
+    markdown = "## Apps\n- [Discourse](https://github.com/discourse/discourse)\n"
+
+    Projects::SyncService.new(readme_client: FakeReadmeClient.new(markdown)).call
+
+    project = Project.find_by!(github_owner: "discourse", github_repo: "discourse")
+    assert_equal "Rails Applications", project.source_category
+    assert_equal 1, Project.where(github_owner: "discourse", github_repo: "discourse").count
+  end
 end
