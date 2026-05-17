@@ -1,6 +1,10 @@
 en:
   app:
     tagline: "Find welcoming Ruby and Rails issues"
+  layout:
+    nav:
+      issues: "Issues"
+      projects: "Projects"
   issues:
     random_project: "Choose a random project"
     pagination: "Issue pages"

@@ -1,6 +1,10 @@
 pt-BR:
   app:
     tagline: "Encontre issues acolhedoras em Ruby e Rails"
+  layout:
+    nav:
+      issues: "Issues"
+      projects: "Projetos"
   issues:
     random_project: "Escolher projeto aleatório"
     pagination: "Páginas de issues"

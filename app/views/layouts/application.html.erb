@@ -29,7 +29,55 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-slate-50 text-slate-900">
-    <%= yield %>
+  <body class="bg-slate-50 text-slate-900 antialiased">
+    <header
+      class="
+        sticky top-0 z-50 border-b border-slate-200/80 bg-white/80
+        backdrop-blur-md
+      "
+    >
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <div class="flex items-center gap-8">
+          <%= link_to root_path, class: "flex items-center gap-2 font-bold text-slate-900 tracking-tight text-lg transition hover:opacity-90" do %>
+            <svg
+              class="h-6 w-6 text-slate-900"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"
+              />
+            </svg>
+
+            <span>Contribute on Rails</span>
+          <% end %>
+
+          <nav class="flex items-center gap-6" aria-label="Navigation">
+            <%= link_to t("layout.nav.issues"), root_path, class: "text-sm font-semibold transition #{controller_name == 'issues' ? 'text-slate-900' : 'text-slate-500 hover:text-slate-800'}" %>
+            <%= link_to t("layout.nav.projects"), projects_path, class: "text-sm font-semibold transition #{controller_name == 'projects' ? 'text-slate-900' : 'text-slate-500 hover:text-slate-800'}" %>
+          </nav>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div
+            class="
+              flex items-center gap-1 rounded-full bg-slate-100 p-0.5 border
+              border-slate-200/80
+            "
+          >
+            <%= link_to "EN", url_for(params.to_unsafe_h.merge(locale: "en")), class: "rounded-full px-2.5 py-1 text-xs font-bold transition #{I18n.locale == :en ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}" %>
+            <%= link_to "PT", url_for(params.to_unsafe_h.merge(locale: "pt-BR")), class: "rounded-full px-2.5 py-1 text-xs font-bold transition #{I18n.locale == :"pt-BR" ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}" %>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <%= yield %>
+    </main>
   </body>
 </html>
