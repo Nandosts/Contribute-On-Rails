@@ -5,7 +5,7 @@ module Issues
     end
 
     def call(project)
-      payloads = client.open_issues(owner: project.github_owner, repo: project.github_repo)
+      payloads = client.open_issues(owner: project.github_owner, repo: project.github_repo, fetch_all: project.fetch_all_issues)
       seen_ids = []
       now = Time.current
 

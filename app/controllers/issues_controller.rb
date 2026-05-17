@@ -3,12 +3,10 @@ class IssuesController < ApplicationController
     return redirect_to issues_path if request.query_parameters.except("page").present? && normalized_search_params.values.all?(&:blank?)
 
     active_search_params = search_params.to_h
-    active_search_params["updated_since"] = "365" if active_search_params["updated_since"].nil?
-    active_search_params["assignee_status"] = "unassigned" if active_search_params["assignee_status"].nil?
 
     scoped_issues = IssueSearchQuery.new(Issue.all, active_search_params).call
     @project_issue_counts = scoped_issues.unscope(:includes, :order).group(:project_id).count
-    @pagy, @issues = pagy(scoped_issues, limit: 30)
+    @pagy, @issues = pagy(scoped_issues, limit: 30, size: [ 1, 4, 4, 1 ])
     @grouped_issues = @issues.group_by { |issue| [ issue.project.github_owner, issue.project ] }
 
     timeframe = active_search_params["updated_since"]

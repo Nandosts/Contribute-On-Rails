@@ -9,7 +9,7 @@ module Projects
       Project.transaction do
         entries.each do |entry|
           project = Project.find_or_initialize_by(github_owner: entry.owner, github_repo: entry.repo)
-          project.update!(name: entry.name, source_category: entry.category, github_url: entry.url, active: true)
+          project.update!(name: entry.name, source_category: entry.category, github_url: entry.url, active: true, fetch_all_issues: entry.fetch_all_issues)
         end
 
         imported_ids = Project.where(github_owner: entries.map(&:owner), github_repo: entries.map(&:repo)).pluck(:id)

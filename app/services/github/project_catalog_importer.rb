@@ -1,6 +1,6 @@
 module Github
   class ProjectCatalogImporter
-    Result = Data.define(:owner, :repo, :name, :category, :url)
+    Result = Data.define(:owner, :repo, :name, :category, :url, :fetch_all_issues)
     GITHUB_REPOSITORY_PATTERN = %r{https://github\.com/([\w.-]+)/([\w.-]+)}
 
     def initialize(markdown)
@@ -26,7 +26,8 @@ module Github
           repo: repo,
           name: repo.tr("-", " ").titleize,
           category: category,
-          url: "https://github.com/#{owner}/#{repo}"
+          url: "https://github.com/#{owner}/#{repo}",
+          fetch_all_issues: false
         )
       end
     end

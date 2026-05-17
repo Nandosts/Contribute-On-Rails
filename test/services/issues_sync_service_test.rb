@@ -2,7 +2,7 @@ require "test_helper"
 
 class IssuesSyncServiceTest < ActiveSupport::TestCase
   FakeClient = Struct.new(:issues) do
-    def open_issues(owner:, repo:, labels: Issue::DEFAULT_LABELS) = issues
+    def open_issues(owner:, repo:, labels: Issue::DEFAULT_LABELS, fetch_all: false) = issues
   end
 
   test "syncs issues, labels, and closes missing open issues" do

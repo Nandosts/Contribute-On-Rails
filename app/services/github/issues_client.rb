@@ -9,12 +9,18 @@ module Github
       @token = token
     end
 
-    def open_issues(owner:, repo:, labels: Issue::DEFAULT_LABELS)
+    def open_issues(owner:, repo:, labels: Issue::DEFAULT_LABELS, fetch_all: false)
       raise "GITHUB_TOKEN is missing" if token.blank?
 
-      labels.flat_map { |label| issues_for_label(owner:, repo:, label:) }
-        .reject { |issue| issue.key?("pull_request") }
-        .uniq { |issue| issue.fetch("id") }
+      if fetch_all
+        issues_for_label(owner:, repo:, label: nil)
+          .reject { |issue| issue.key?("pull_request") }
+          .uniq { |issue| issue.fetch("id") }
+      else
+        labels.flat_map { |label| issues_for_label(owner:, repo:, label:) }
+          .reject { |issue| issue.key?("pull_request") }
+          .uniq { |issue| issue.fetch("id") }
+      end
     end
 
     private
@@ -39,7 +45,9 @@ module Github
 
     def request(owner:, repo:, label:, page:)
       uri = URI("https://api.github.com/repos/#{owner}/#{repo}/issues")
-      uri.query = URI.encode_www_form(state: "open", labels: label, per_page: 100, page:)
+      params = { state: "open", per_page: 100, page: }
+      params[:labels] = label if label.present?
+      uri.query = URI.encode_www_form(params)
       get(uri)
     end
 

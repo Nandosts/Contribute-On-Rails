@@ -65,7 +65,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     issue_stale = active_stale.issues.create!(github_id: 402, number: 402, title: "Stale issue", state: "open", github_url: "https://example.test/402", opened_at: 2.years.ago, updated_at_from_github: 2.years.ago)
     issue_stale.labels << Label.find_or_create_by!(name: "good first issue")
 
-    get issues_url
+    get issues_url(updated_since: 365)
     assert_response :success
     # The recent project should be in the select option
     assert_select "select[name=project_id] option", text: "recent_org/recent_repo"
