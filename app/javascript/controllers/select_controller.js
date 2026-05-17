@@ -14,7 +14,10 @@ export default class extends Controller {
     if (wrapper) {
       this.updateState(wrapper)
 
-      this.tomSelect.on("change", () => this.updateState(wrapper))
+      this.tomSelect.on("change", () => {
+        this.updateState(wrapper)
+        this.tomSelect.blur()
+      })
       this.tomSelect.on("focus", () => {
         wrapper.classList.add("is-focused")
       })
