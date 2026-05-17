@@ -25,6 +25,6 @@ class IssuesSyncServiceTest < ActiveSupport::TestCase
 
     assert_equal "closed", old_issue.reload.state
     issue = Issue.find_by!(github_id: 2)
-    assert_equal [ "good first issue" ], issue.labels.pluck(:name)
+    assert_equal [ "Good First Issue" ], issue.labels.pluck(:name)
   end
 end

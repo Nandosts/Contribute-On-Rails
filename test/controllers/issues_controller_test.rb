@@ -4,7 +4,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
     @issue = @project.issues.create!(github_id: 100, number: 100, title: "Improve docs", state: "open", github_url: "https://example.test/100", opened_at: 2.days.ago, updated_at_from_github: Time.current)
-    @issue.labels << Label.create!(name: "good first issue")
+    @issue.labels << Label.create!(name: "Good First Issue")
   end
 
   test "renders accessible filters and grouped issues" do
@@ -51,11 +51,11 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   test "renders all active projects when timeframe is set to empty (any time)" do
     active_recent = Project.create!(github_owner: "recent_org", github_repo: "recent_repo", name: "Recent Project", github_url: "https://github.com/recent_org/recent_repo")
     issue_recent = active_recent.issues.create!(github_id: 401, number: 401, title: "Recent issue", state: "open", github_url: "https://example.test/401", opened_at: 2.days.ago, updated_at_from_github: Time.current)
-    issue_recent.labels << Label.find_or_create_by!(name: "good first issue")
+    issue_recent.labels << Label.find_or_create_by!(name: "Good First Issue")
 
     active_stale = Project.create!(github_owner: "stale_org", github_repo: "stale_repo", name: "Stale Project", github_url: "https://github.com/stale_org/stale_repo")
     issue_stale = active_stale.issues.create!(github_id: 402, number: 402, title: "Stale issue", state: "open", github_url: "https://example.test/402", opened_at: 2.years.ago, updated_at_from_github: 2.years.ago)
-    issue_stale.labels << Label.find_or_create_by!(name: "good first issue")
+    issue_stale.labels << Label.find_or_create_by!(name: "Good First Issue")
 
     get issues_url, params: { q: "issue", updated_since: "" }
     assert_response :success
@@ -67,11 +67,11 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   test "only includes projects with recent open issues in the filters by default" do
     active_recent = Project.create!(github_owner: "recent_org", github_repo: "recent_repo", name: "Recent Project", github_url: "https://github.com/recent_org/recent_repo")
     issue_recent = active_recent.issues.create!(github_id: 401, number: 401, title: "Recent issue", state: "open", github_url: "https://example.test/401", opened_at: 2.days.ago, updated_at_from_github: Time.current)
-    issue_recent.labels << Label.find_or_create_by!(name: "good first issue")
+    issue_recent.labels << Label.find_or_create_by!(name: "Good First Issue")
 
     active_stale = Project.create!(github_owner: "stale_org", github_repo: "stale_repo", name: "Stale Project", github_url: "https://github.com/stale_org/stale_repo")
     issue_stale = active_stale.issues.create!(github_id: 402, number: 402, title: "Stale issue", state: "open", github_url: "https://example.test/402", opened_at: 2.years.ago, updated_at_from_github: 2.years.ago)
-    issue_stale.labels << Label.find_or_create_by!(name: "good first issue")
+    issue_stale.labels << Label.find_or_create_by!(name: "Good First Issue")
 
     get issues_url(updated_since: 365)
     assert_response :success
@@ -82,7 +82,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "does not redirect pagination when no other filters are active" do
-    label = Label.find_or_create_by!(name: "good first issue")
+    label = Label.find_or_create_by!(name: "Good First Issue")
     31.times do |i|
       issue = @project.issues.create!(github_id: 200 + i, number: 200 + i, title: "Issue #{i}", state: "open", github_url: "https://example.test/200#{i}", opened_at: 2.days.ago, updated_at_from_github: Time.current)
       issue.labels << label

@@ -8,7 +8,11 @@ class ApplicationController < ActionController::Base
   private
 
   def set_locale
-    I18n.locale = extract_locale_from_accept_language_header || I18n.default_locale
+    if params[:locale].present? && I18n.available_locales.map(&:to_s).include?(params[:locale])
+      session[:locale] = params[:locale]
+    end
+
+    I18n.locale = session[:locale] || extract_locale_from_accept_language_header || I18n.default_locale
   end
 
   def extract_locale_from_accept_language_header

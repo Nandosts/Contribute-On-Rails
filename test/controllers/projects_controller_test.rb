@@ -37,8 +37,8 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     get project_url(project)
 
     assert_response :success
-    assert_select "span", text: "good first issue"
-    assert_select "span", text: "documentation"
+    assert_select "span", text: "Good First Issue"
+    assert_select "span", text: "Documentation"
     assert_select "select[name=updated_since]"
     assert_select "p", text: /Opened/
   end

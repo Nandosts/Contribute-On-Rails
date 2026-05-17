@@ -85,50 +85,105 @@ select[data-controller="select"][data-enhanced="true"] {
   padding-top: 4px !important;
 }
 
-/* Dark mode styles */
+/* Dark mode premium styles */
 .dark {
+  body {
+    background-image: radial-gradient(circle at top left, #0e1124, #05070f 60%, #030408 100%) !important;
+    background-attachment: fixed;
+    color: #f1f5f9;
+  }
+
+  header {
+    background-color: rgba(7, 9, 19, 0.75) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15) !important;
+  }
+
+  /* Card Glassmorphism and Hover Glows */
+  article {
+    background: linear-gradient(135deg, rgba(13, 17, 34, 0.7), rgba(8, 10, 21, 0.9)) !important;
+    border-color: rgba(99, 102, 241, 0.12) !important;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  article:hover {
+    border-color: rgba(99, 102, 241, 0.55) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.35) !important;
+  }
+
+  /* Tags / Labels styling */
+  span.bg-slate-100 {
+    background-color: rgba(99, 102, 241, 0.08) !important;
+    color: #a5b4fc !important; /* text-indigo-300 */
+    border: 1px solid rgba(99, 102, 241, 0.2) !important;
+  }
+
+  /* TomSelect controls */
   .ts-wrapper.single .ts-control,
   .ts-wrapper.multi .ts-control {
-    @apply border-slate-800 bg-slate-950 text-white shadow-none;
+    border-color: rgba(99, 102, 241, 0.2) !important;
+    background-color: #090b16 !important;
+    color: white !important;
+    box-shadow: none;
   }
 
   .ts-dropdown {
-    @apply border-slate-800 bg-slate-950 shadow-2xl;
+    border-color: rgba(99, 102, 241, 0.2) !important;
+    background-color: #090b16 !important;
+    shadow-2xl: !important;
   }
 
   .ts-dropdown .active {
-    @apply bg-slate-900 text-white;
+    background-color: rgba(99, 102, 241, 0.25) !important;
+    color: white !important;
   }
 
   .ts-dropdown .option,
   .ts-dropdown .create,
   .ts-dropdown .no-results {
-    @apply text-slate-300;
+    color: #cbd5e1 !important; /* slate-300 */
   }
 
-  /* Selected items in multi-select */
   .ts-wrapper.multi .ts-control > div {
-    @apply bg-slate-900 text-slate-200 border-slate-800;
+    background-color: rgba(99, 102, 241, 0.15) !important;
+    color: #c7d2fe !important; /* indigo-200 */
+    border-color: rgba(99, 102, 241, 0.3) !important;
   }
 
+  /* Pagy Nav */
   .pagy.series-nav a {
-    @apply border-slate-800 bg-slate-900 text-slate-300 shadow-none hover:bg-slate-800;
+    border-color: rgba(99, 102, 241, 0.15) !important;
+    background-color: rgba(13, 17, 34, 0.6) !important;
+    color: #cbd5e1 !important;
+    shadow-none: !important;
+  }
+
+  .pagy.series-nav a:hover {
+    background-color: rgba(99, 102, 241, 0.2) !important;
+    border-color: rgba(99, 102, 241, 0.4) !important;
+    color: white !important;
   }
 
   .pagy.series-nav [aria-current="page"] {
-    @apply border-slate-100 bg-slate-100 text-slate-950;
+    border-color: #a5b4fc !important;
+    background-color: #a5b4fc !important;
+    color: #090b16 !important;
   }
 
+  /* Floating labels adjustments */
   .floating-label-group label {
-    background-color: var(--color-slate-950, #020617);
-    color: #475569; /* text-slate-600 */
+    background-color: #070913 !important;
+    color: #6366f1 !important; /* text-indigo-500 */
   }
 
   .floating-label-group.is-focused label,
   .floating-label-group.has-value label,
   .floating-label-group input:focus ~ label,
   .floating-label-group input:not(:placeholder-shown) ~ label {
-    color: #94a3b8; /* text-slate-400 */
+    color: #a5b4fc !important; /* text-indigo-300 */
   }
 }
 

@@ -1,6 +1,6 @@
 class IssuesController < ApplicationController
   def index
-    return redirect_to issues_path if request.query_parameters.except("page").present? && normalized_search_params.values.all?(&:blank?)
+    return redirect_to issues_path if request.query_parameters.except("page", "locale").present? && normalized_search_params.values.all?(&:blank?)
 
     @active_search_params = normalized_search_params
 
