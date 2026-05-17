@@ -6,7 +6,7 @@ class IssuesSyncJobTest < ActiveJob::TestCase
     second = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
     calls = []
     service = Object.new
-    service.define_singleton_method(:call) do |project|
+    service.define_singleton_method(:call) do |project, **_kwargs|
       calls << project
       raise "not found" if project == first
     end

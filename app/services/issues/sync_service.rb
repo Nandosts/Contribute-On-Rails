@@ -4,8 +4,9 @@ module Issues
       @client = client
     end
 
-    def call(project)
-      payloads = client.open_issues(owner: project.github_owner, repo: project.github_repo, fetch_all: project.fetch_all_issues)
+    def call(project, force_fetch: false)
+      should_fetch_all = force_fetch || project.fetch_all_issues
+      payloads = client.open_issues(owner: project.github_owner, repo: project.github_repo, fetch_all: should_fetch_all)
       seen_ids = []
       now = Time.current
 
