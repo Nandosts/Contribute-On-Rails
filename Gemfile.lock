@@ -383,6 +383,7 @@ DEPENDENCIES
   bullet
   bundler-audit
   debug
+  dotenv
   herb
   importmap-rails
   kamal
