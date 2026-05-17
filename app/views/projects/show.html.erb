@@ -26,9 +26,11 @@
   <div class="space-y-4 mt-8">
     <% @issues.each do |issue| %>
       <article class="bg-white shadow-sm p-5 border border-slate-200 rounded-2xl">
-        <div class="flex flex-wrap gap-2 mb-3">
+        <div class="flex flex-wrap items-center gap-2 text-slate-500 text-sm">
+          <span>#<%= issue.number %></span>
+
           <% issue.labels.each do |label| %>
-            <span class="bg-slate-100 px-2 py-1 rounded-full text-slate-700 text-xs">
+            <span class="bg-slate-100 px-2 py-1 rounded-full text-xs">
               <%= label.name %>
             </span>
           <% end %>
@@ -36,8 +38,8 @@
           <% if issue.assigned? %>
             <span
               class="
-                bg-amber-50 border border-amber-200 px-2 py-1 rounded-full
-                font-medium text-amber-800 text-xs
+                bg-amber-50 border border-amber-200 px-2 py-1
+                rounded-full font-medium text-amber-800 text-xs
               "
             >
               <%= t("issues.index.assigned_to", names: issue.assignee_logins.join(", ")) %>
@@ -45,9 +47,9 @@
           <% end %>
         </div>
 
-        <h2 class="font-semibold text-slate-900 text-xl">
+        <h3 class="mt-3 font-semibold text-slate-900 text-xl">
           <%= link_to issue.title, issue.github_url, target: "_blank", rel: "noopener" %>
-        </h2>
+        </h3>
 
         <p class="mt-2 text-slate-500 text-sm">
           <%= t("issues.index.opened", date: l(issue.opened_at, format: :long)) %>
