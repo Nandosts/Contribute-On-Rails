@@ -11,12 +11,6 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find(params[:id])
-    updated_since = params[:updated_since]
-    updated_since = "365" if updated_since.nil?
-
-    assignee_status = params[:assignee_status]
-    assignee_status = "unassigned" if assignee_status.nil?
-
-    @issues = IssueSearchQuery.new(@project.issues, labels: params[:labels], updated_since: updated_since, assignee_status: assignee_status).call
+    @issues = IssueSearchQuery.new(@project.issues, labels: params[:labels], updated_since: params[:updated_since], assignee_status: params[:assignee_status]).call
   end
 end
