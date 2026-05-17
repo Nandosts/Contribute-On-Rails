@@ -1,6 +1,6 @@
 class IssuesController < ApplicationController
   def index
-    return redirect_to issues_path if request.query_parameters.present? && search_params.to_h.values.all?(&:blank?)
+    return redirect_to issues_path if request.query_parameters.present? && normalized_search_params.values.all?(&:blank?)
 
     scoped_issues = IssueSearchQuery.new(Issue.all, search_params).call
     @project_issue_counts = scoped_issues.unscope(:includes, :order).group(:project_id).count
@@ -22,5 +22,11 @@ class IssuesController < ApplicationController
 
   def search_params
     params.permit(:q, :project_id, :organization, :category, labels: [])
+  end
+
+  def normalized_search_params
+    search_params.to_h.tap do |filters|
+      filters["labels"] = Array(filters["labels"]).reject(&:blank?)
+    end
   end
 end
