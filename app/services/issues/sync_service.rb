@@ -30,7 +30,7 @@ module Issues
           seen_ids << issue.github_id
         end
 
-        project.issues.open.where.not(github_id: seen_ids).update_all(state: "closed", closed_at: now, updated_at: now)
+        project.issues.where.not(github_id: seen_ids).destroy_all
         project.update!(last_synced_at: now)
       end
     end

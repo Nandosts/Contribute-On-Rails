@@ -13,11 +13,28 @@ class Issue < ApplicationRecord
   scope :unassigned, -> { where("assignees IS NULL OR jsonb_array_length(assignees) = 0") }
   scope :assigned, -> { where("jsonb_array_length(assignees) > 0") }
 
+  before_destroy :remember_labels, prepend: true
+  after_destroy :cleanup_orphaned_labels
+
   def assigned?
     assignees.present?
   end
 
   def assignee_logins
     Array(assignees).map { |a| a["login"] }.compact
+  end
+
+  private
+
+  def remember_labels
+    @associated_labels = labels.to_a
+  end
+
+  def cleanup_orphaned_labels
+    Array(@associated_labels).each do |label|
+      unless IssueLabel.where(label_id: label.id).where.not(issue_id: id).exists?
+        label.destroy
+      end
+    end
   end
 end
