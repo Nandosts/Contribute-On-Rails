@@ -13,7 +13,7 @@
 
   <%= form_with url: project_path(@project), method: :get, class: "mt-6 max-w-xs" do |form| %>
     <%= form.label :updated_since, t("issues.filters.updated_since"), class: "sr-only" %>
-    <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since]), {}, class: "select-control", data: { controller: "select" }, onchange: "this.form.requestSubmit()" %>
+    <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since] || "365"), {}, class: "select-control", data: { controller: "select" }, onchange: "this.form.requestSubmit()" %>
   <% end %>
 
   <div class="space-y-4 mt-8">

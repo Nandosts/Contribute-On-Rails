@@ -43,4 +43,18 @@ class IssueSearchQueryTest < ActiveSupport::TestCase
 
     assert_equal [ recent ], IssueSearchQuery.new(Issue.all, updated_since: 90).call
   end
+
+  test "filters by category" do
+    project_matching = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails", source_category: "Rails Applications")
+    project_other = Project.create!(github_owner: "rubocop", github_repo: "rubocop", name: "RuboCop", github_url: "https://github.com/rubocop/rubocop", source_category: "Ruby Gems")
+
+    issue_matching = project_matching.issues.create!(github_id: 17, number: 17, title: "Matching", state: "open", github_url: "https://example.test/17")
+    issue_other = project_other.issues.create!(github_id: 18, number: 18, title: "Other", state: "open", github_url: "https://example.test/18")
+
+    label = Label.create!(name: "good first issue")
+    issue_matching.labels << label
+    issue_other.labels << label
+
+    assert_equal [ issue_matching ], IssueSearchQuery.new(Issue.all, category: "Rails Applications").call
+  end
 end

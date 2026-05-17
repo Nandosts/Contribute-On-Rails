@@ -40,7 +40,7 @@
 
     <div>
       <%= form.label :updated_since, t("issues.filters.updated_since"), class: "sr-only" %>
-      <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since]), {}, class: "select-control", data: { controller: "select" } %>
+      <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since] || "365"), {}, class: "select-control", data: { controller: "select" } %>
     </div>
 
     <fieldset class="flex flex-wrap items-center gap-4 md:col-span-5">
