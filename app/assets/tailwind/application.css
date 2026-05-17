@@ -17,6 +17,7 @@ select[data-controller="select"][data-enhanced="true"] {
 
 .ts-dropdown {
   @apply overflow-hidden rounded-xl border border-slate-200 shadow-xl;
+  z-index: 50 !important;
 }
 
 .ts-dropdown .active {
@@ -35,3 +36,50 @@ select[data-controller="select"][data-enhanced="true"] {
 .pagy.series-nav [aria-current="page"] {
   @apply border-slate-900 bg-slate-900 text-white;
 }
+
+/* Floating Labels System */
+.floating-label-group {
+  position: relative;
+}
+
+.floating-label-group label {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  background-color: white;
+  padding: 0 4px;
+  color: #94a3b8; /* text-slate-400 */
+  font-size: 0.875rem; /* text-sm */
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+/* Float rules for inputs */
+.floating-label-group input:focus ~ label,
+.floating-label-group input:not(:placeholder-shown) ~ label {
+  transform: translateY(-26px) scale(0.8);
+  color: #64748b; /* text-slate-500 */
+  font-size: 0.75rem;
+}
+
+/* Float rules for TomSelect via Stimulus wrapper state */
+.floating-label-group.is-focused label,
+.floating-label-group.has-value label {
+  transform: translateY(-28px) scale(0.8);
+  color: #64748b; /* text-slate-500 */
+  font-size: 0.75rem;
+}
+
+/* Hide selected value in TomSelect control when typing/focused */
+.ts-wrapper.focus .ts-control .item {
+  display: none !important;
+}
+
+/* Ensure padding-top on focused/has-items TomSelect control so typed text fits beautifully */
+.ts-wrapper.focus .ts-control input,
+.ts-wrapper.has-items .ts-control input {
+  padding-top: 4px !important;
+}
+

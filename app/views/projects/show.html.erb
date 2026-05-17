@@ -12,14 +12,14 @@
   </p>
 
   <%= form_with url: project_path(@project), method: :get, class: "mt-6 flex flex-wrap gap-4 max-w-md" do |form| %>
-    <div class="w-48">
-      <%= form.label :updated_since, t("issues.filters.updated_since"), class: "sr-only" %>
-      <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since] || "365"), {}, class: "select-control", data: { controller: "select" }, onchange: "this.form.requestSubmit()" %>
+    <div class="floating-label-group w-48">
+      <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since] || "365"), {}, class: "select-control", data: { controller: "select" }, id: "select_updated_since", onchange: "this.form.requestSubmit()" %>
+      <%= form.label :updated_since, t("issues.filters.updated_since"), for: "select_updated_since" %>
     </div>
 
-    <div class="w-48">
-      <%= form.label :assignee_status, t("issues.filters.assignee_status"), class: "sr-only" %>
-      <%= form.select :assignee_status, options_for_select([[t("issues.filters.unassigned_only"), "unassigned"], [t("issues.filters.assigned_only"), "assigned"], [t("issues.filters.all_assignees"), ""]], params[:assignee_status] || "unassigned"), {}, class: "select-control", data: { controller: "select" }, onchange: "this.form.requestSubmit()" %>
+    <div class="floating-label-group w-48">
+      <%= form.select :assignee_status, options_for_select([[t("issues.filters.unassigned_only"), "unassigned"], [t("issues.filters.assigned_only"), "assigned"], [t("issues.filters.all_assignees"), ""]], params[:assignee_status] || "unassigned"), {}, class: "select-control", data: { controller: "select" }, id: "select_assignee_status", onchange: "this.form.requestSubmit()" %>
+      <%= form.label :assignee_status, t("issues.filters.assignee_status"), for: "select_assignee_status" %>
     </div>
   <% end %>
 

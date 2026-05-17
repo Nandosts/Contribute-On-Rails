@@ -18,34 +18,34 @@
   </header>
 
   <%= form_with url: issues_path, method: :get, class: "mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-4" do |form| %>
-    <div class="md:col-span-2">
-      <%= form.label :q, t("issues.filters.search"), class: "sr-only" %>
-      <%= form.search_field :q, value: params[:q], placeholder: t("issues.filters.search"), class: "h-11 w-full rounded-xl border border-slate-300 px-4 shadow-sm outline-none ring-0 placeholder:text-slate-400 focus:border-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900" %>
+    <div class="floating-label-group md:col-span-2">
+      <%= form.search_field :q, value: params[:q], placeholder: " ", id: "input_q", class: "h-11 w-full rounded-xl border border-slate-300 px-4 pt-3 text-slate-900 shadow-sm outline-none ring-0 focus:border-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900" %>
+      <%= form.label :q, t("issues.filters.search"), for: "input_q" %>
     </div>
 
-    <div>
-      <%= form.label :project_id, t("issues.filters.project"), class: "sr-only" %>
-      <%= form.select :project_id, options_from_collection_for_select(@projects, :id, ->(project) { "#{project.github_owner}/#{project.github_repo}" }, params[:project_id]), { include_blank: t("issues.filters.all_projects") }, class: "select-control", data: { controller: "select" } %>
+    <div class="floating-label-group">
+      <%= form.select :project_id, options_from_collection_for_select(@projects, :id, ->(project) { "#{project.github_owner}/#{project.github_repo}" }, params[:project_id]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_project" %>
+      <%= form.label :project_id, t("issues.filters.project"), for: "select_project" %>
     </div>
 
-    <div>
-      <%= form.label :organization, t("issues.filters.organization"), class: "sr-only" %>
-      <%= form.select :organization, options_for_select(@organizations, params[:organization]), { include_blank: t("issues.filters.all_organizations") }, class: "select-control", data: { controller: "select" } %>
+    <div class="floating-label-group">
+      <%= form.select :organization, options_for_select(@organizations, params[:organization]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_organization" %>
+      <%= form.label :organization, t("issues.filters.organization"), for: "select_organization" %>
     </div>
 
-    <div>
-      <%= form.label :category, t("issues.filters.category"), class: "sr-only" %>
-      <%= form.select :category, options_for_select(@categories, params[:category]), { include_blank: t("issues.filters.all_categories") }, class: "select-control", data: { controller: "select" } %>
+    <div class="floating-label-group">
+      <%= form.select :category, options_for_select(@categories, params[:category]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_category" %>
+      <%= form.label :category, t("issues.filters.category"), for: "select_category" %>
     </div>
 
-    <div>
-      <%= form.label :updated_since, t("issues.filters.updated_since"), class: "sr-only" %>
-      <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since] || "365"), {}, class: "select-control", data: { controller: "select" } %>
+    <div class="floating-label-group">
+      <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), ""], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since] || "365"), {}, class: "select-control", data: { controller: "select" }, id: "select_updated_since" %>
+      <%= form.label :updated_since, t("issues.filters.updated_since"), for: "select_updated_since" %>
     </div>
 
-    <div>
-      <%= form.label :assignee_status, t("issues.filters.assignee_status"), class: "sr-only" %>
-      <%= form.select :assignee_status, options_for_select([[t("issues.filters.unassigned_only"), "unassigned"], [t("issues.filters.assigned_only"), "assigned"], [t("issues.filters.all_assignees"), ""]], params[:assignee_status] || "unassigned"), {}, class: "select-control", data: { controller: "select" } %>
+    <div class="floating-label-group">
+      <%= form.select :assignee_status, options_for_select([[t("issues.filters.unassigned_only"), "unassigned"], [t("issues.filters.assigned_only"), "assigned"], [t("issues.filters.all_assignees"), ""]], params[:assignee_status] || "unassigned"), {}, class: "select-control", data: { controller: "select" }, id: "select_assignee_status" %>
+      <%= form.label :assignee_status, t("issues.filters.assignee_status"), for: "select_assignee_status" %>
     </div>
 
     <div>
