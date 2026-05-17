@@ -1,17 +1,22 @@
 <% content_for :title, t("issues.index.title") %>
 
-<section class="mx-auto max-w-6xl px-6 py-10">
-  <header class="mb-8">
-    <p class="text-sm font-medium text-slate-500"><%= t("app.tagline") %></p>
-    <h1 class="mt-2 text-4xl font-bold tracking-tight text-slate-900"><%= t("issues.index.heading") %></h1>
-    <p class="mt-3 max-w-2xl text-slate-600"><%= t("issues.index.description") %></p>
+<section class="mx-auto max-w-7xl px-6 py-10">
+  <header class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div>
+      <p class="text-sm font-medium text-slate-500"><%= t("app.tagline") %></p>
+      <h1 class="mt-2 text-4xl font-bold tracking-tight text-slate-900"><%= t("issues.index.heading") %></h1>
+      <p class="mt-3 max-w-2xl text-slate-600"><%= t("issues.index.description") %></p>
+    </div>
+    <%= link_to t("issues.random_project"), random_issues_path, class: "inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 font-medium text-slate-900 shadow-sm transition hover:border-slate-400 hover:bg-slate-50" %>
   </header>
 
-  <%= form_with url: issues_path, method: :get, class: "mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-4" do |form| %>
-    <%= form.search_field :q, value: params[:q], placeholder: t("issues.filters.search"), class: "rounded-xl border-slate-300 md:col-span-2" %>
-    <%= form.collection_select :project_id, @projects, :id, :name, { include_blank: t("issues.filters.all_projects"), selected: params[:project_id] }, class: "rounded-xl border-slate-300" %>
-    <%= form.select :category, options_for_select(@categories, params[:category]), { include_blank: t("issues.filters.all_categories") }, class: "rounded-xl border-slate-300" %>
-    <div class="flex flex-wrap gap-4 md:col-span-3">
+  <%= form_with url: issues_path, method: :get, class: "mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-5" do |form| %>
+    <%= form.search_field :q, value: params[:q], placeholder: t("issues.filters.search"), class: "h-11 rounded-xl border border-slate-300 px-4 shadow-sm outline-none ring-0 placeholder:text-slate-400 focus:border-slate-500 md:col-span-2" %>
+    <%= form.select :project_id, options_from_collection_for_select(@projects, :id, ->(project) { "#{project.github_owner}/#{project.github_repo}" }, params[:project_id]), { include_blank: t("issues.filters.all_projects") }, class: "select-control", data: { controller: "select" } %>
+    <%= form.select :organization, options_for_select(@organizations, params[:organization]), { include_blank: t("issues.filters.all_organizations") }, class: "select-control", data: { controller: "select" } %>
+    <%= form.select :category, options_for_select(@categories, params[:category]), { include_blank: t("issues.filters.all_categories") }, class: "select-control", data: { controller: "select" } %>
+
+    <div class="flex flex-wrap items-center gap-4 md:col-span-4">
       <% Issue::DEFAULT_LABELS.each do |label| %>
         <label class="flex items-center gap-2 text-sm text-slate-700">
           <%= check_box_tag "labels[]", label, Array(params[:labels]).include?(label), class: "rounded border-slate-300" %>
@@ -19,22 +24,42 @@
         </label>
       <% end %>
     </div>
-    <%= form.submit t("issues.filters.submit"), class: "rounded-xl bg-slate-900 px-4 py-2 font-medium text-white" %>
+    <%= form.submit t("issues.filters.submit"), class: "h-11 rounded-xl bg-slate-900 px-4 font-medium text-white shadow-sm transition hover:bg-slate-800" %>
   <% end %>
 
-  <div class="space-y-4">
-    <% @issues.each do |issue| %>
-      <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
-          <%= link_to issue.project.name, project_path(issue.project), class: "font-medium text-slate-700" %>
-          <span>#<%= issue.number %></span>
-          <% issue.labels.each do |label| %>
-            <span class="rounded-full bg-slate-100 px-2 py-1 text-xs"><%= label.name %></span>
+  <div class="mb-6 flex items-center justify-between text-sm text-slate-500">
+    <p><%= t("issues.index.results", count: @pagy.count) %></p>
+    <%== @pagy.series_nav if @pagy.pages > 1 %>
+  </div>
+
+  <div class="space-y-8">
+    <% @grouped_issues.each do |(organization, project), issues| %>
+      <section>
+        <div class="mb-3 flex items-center gap-3">
+          <p class="text-sm font-medium uppercase tracking-wide text-slate-500"><%= organization %></p>
+          <h2 class="text-xl font-semibold text-slate-900"><%= link_to project.github_repo, project_path(project) %></h2>
+          <span class="rounded-full bg-slate-900 px-2.5 py-1 text-xs font-semibold text-white"><%= t("issues.index.project_count", count: @project_issue_counts.fetch(project.id, 0)) %></span>
+        </div>
+
+        <div class="space-y-4">
+          <% issues.each do |issue| %>
+            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                <span>#<%= issue.number %></span>
+                <% issue.labels.each do |label| %>
+                  <span class="rounded-full bg-slate-100 px-2 py-1 text-xs"><%= label.name %></span>
+                <% end %>
+              </div>
+              <h3 class="mt-3 text-xl font-semibold text-slate-900"><%= link_to issue.title, issue.github_url, target: "_blank", rel: "noopener" %></h3>
+              <p class="mt-2 text-sm text-slate-500"><%= t("issues.index.updated", date: l(issue.updated_at_from_github, format: :short)) %></p>
+            </article>
           <% end %>
         </div>
-        <h2 class="mt-3 text-xl font-semibold text-slate-900"><%= link_to issue.title, issue.github_url, target: "_blank", rel: "noopener" %></h2>
-        <p class="mt-2 text-sm text-slate-500"><%= t("issues.index.updated", date: l(issue.updated_at_from_github, format: :short)) %></p>
-      </article>
+      </section>
     <% end %>
+  </div>
+
+  <div class="mt-8">
+    <%== @pagy.series_nav if @pagy.pages > 1 %>
   </div>
 </section>

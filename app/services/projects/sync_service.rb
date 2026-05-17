@@ -5,7 +5,7 @@ module Projects
     end
 
     def call
-      entries = Github::ProjectCatalogImporter.new(readme_client.call).call
+      entries = Github::ProjectCatalogImporter.new(readme_client.call).call + CuratedCatalog.new.call
       Project.transaction do
         entries.each do |entry|
           project = Project.find_or_initialize_by(github_owner: entry.owner, github_repo: entry.repo)

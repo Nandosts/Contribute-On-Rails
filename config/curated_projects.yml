@@ -1,0 +1,6 @@
+- owner: rails
+  repo: rails
+  category: Core Ruby and Rails
+- owner: rubocop
+  repo: rubocop
+  category: Developer Tooling

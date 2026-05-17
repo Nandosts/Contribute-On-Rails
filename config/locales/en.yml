@@ -2,14 +2,22 @@ en:
   app:
     tagline: "Find welcoming Ruby and Rails issues"
   issues:
+    random_project: "Choose a random project"
     index:
       title: "Open issues"
       heading: "Open issues worth contributing to"
       description: "Browse open GitHub issues from curated Ruby and Rails projects. By default, results include good first issue and help wanted labels."
       updated: "Updated %{date}"
+      results:
+        one: "%{count} matching issue"
+        other: "%{count} matching issues"
+      project_count:
+        one: "%{count} issue"
+        other: "%{count} issues"
     filters:
       search: "Search issue titles"
       all_projects: "All projects"
+      all_organizations: "All organizations"
       all_categories: "All categories"
       submit: "Filter"
   projects:

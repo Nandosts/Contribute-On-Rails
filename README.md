@@ -18,7 +18,10 @@ It imports repositories from [`asyraffff/Open-Source-Ruby-and-Rails-Apps`](https
 - Daily project catalog sync from the upstream README
 - Daily GitHub issue sync per active project
 - Default contribution-friendly issue filter
-- Search by title, label, project, and source category
+- Search by title, label, organization, project, and source category
+- Grouped issue results by organization and repository
+- Searchable project filters, pagination, and random project discovery
+- Curated additions for important projects missing from the upstream list
 - English UI with Portuguese (`pt-BR`) translations ready
 - Security and quality tooling for open-source maintenance
 
