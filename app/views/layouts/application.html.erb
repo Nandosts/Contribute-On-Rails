@@ -27,50 +27,56 @@
     >
 
     <%= javascript_importmap_tags %>
+
+    <script>
+      (function() {
+        const theme = localStorage.getItem('theme') || 'system';
+        const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
   </head>
 
-  <body class="bg-slate-50 text-slate-900 antialiased">
-    <header
-      class="
-        sticky top-0 z-50 border-b border-slate-200/80 bg-white/80
-        backdrop-blur-md
-      "
-    >
+  <body class="bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-50">
+    <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-950/80">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <div class="flex items-center gap-8">
-          <%= link_to root_path, class: "flex items-center gap-2 font-bold text-slate-900 tracking-tight text-lg transition hover:opacity-90" do %>
-            <svg
-              class="h-6 w-6 text-slate-900"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"
-              />
+          <%= link_to root_path, class: "flex items-center gap-2 font-bold text-slate-900 tracking-tight text-lg transition hover:opacity-90 dark:text-white" do %>
+            <svg class="h-6 w-6 text-slate-900 dark:text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
             </svg>
-
             <span>Contribute on Rails</span>
           <% end %>
 
           <nav class="flex items-center gap-6" aria-label="Navigation">
-            <%= link_to t("layout.nav.issues"), root_path, class: "text-sm font-semibold transition #{controller_name == 'issues' ? 'text-slate-900' : 'text-slate-500 hover:text-slate-800'}" %>
-            <%= link_to t("layout.nav.projects"), projects_path, class: "text-sm font-semibold transition #{controller_name == 'projects' ? 'text-slate-900' : 'text-slate-500 hover:text-slate-800'}" %>
+            <%= link_to t("layout.nav.issues"), root_path, class: "text-sm font-semibold transition #{controller_name == 'issues' ? 'text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'}" %>
+            <%= link_to t("layout.nav.projects"), projects_path, class: "text-sm font-semibold transition #{controller_name == 'projects' ? 'text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'}" %>
           </nav>
         </div>
 
         <div class="flex items-center gap-4">
-          <div
-            class="
-              flex items-center gap-1 rounded-full bg-slate-100 p-0.5 border
-              border-slate-200/80
-            "
+          <button
+            type="button"
+            data-controller="theme"
+            data-action="click->theme#toggle"
+            class="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            aria-label="Toggle theme"
           >
-            <%= link_to "EN", url_for(params.to_unsafe_h.merge(locale: "en")), class: "rounded-full px-2.5 py-1 text-xs font-bold transition #{I18n.locale == :en ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}" %>
-            <%= link_to "PT", url_for(params.to_unsafe_h.merge(locale: "pt-BR")), class: "rounded-full px-2.5 py-1 text-xs font-bold transition #{I18n.locale == :"pt-BR" ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}" %>
+            <svg data-theme-target="lightIcon" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+            </svg>
+            <svg data-theme-target="darkIcon" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+            </svg>
+          </button>
+
+          <div class="flex items-center gap-1 rounded-full bg-slate-100 p-0.5 border border-slate-200/80 dark:bg-slate-800 dark:border-slate-700">
+            <%= link_to "EN", url_for(params.to_unsafe_h.merge(locale: "en")), class: "rounded-full px-2.5 py-1 text-xs font-bold transition #{I18n.locale == :en ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'}" %>
+            <%= link_to "PT", url_for(params.to_unsafe_h.merge(locale: "pt-BR")), class: "rounded-full px-2.5 py-1 text-xs font-bold transition #{I18n.locale == :"pt-BR" ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'}" %>
           </div>
         </div>
       </div>

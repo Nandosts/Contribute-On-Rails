@@ -2,6 +2,8 @@
 
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 select[data-controller="select"] {
   visibility: hidden;
 }
@@ -81,5 +83,52 @@ select[data-controller="select"][data-enhanced="true"] {
 .ts-wrapper.focus .ts-control input,
 .ts-wrapper.has-items .ts-control input {
   padding-top: 4px !important;
+}
+
+/* Dark mode styles */
+.dark {
+  .ts-wrapper.single .ts-control,
+  .ts-wrapper.multi .ts-control {
+    @apply border-slate-800 bg-slate-950 text-white shadow-none;
+  }
+
+  .ts-dropdown {
+    @apply border-slate-800 bg-slate-950 shadow-2xl;
+  }
+
+  .ts-dropdown .active {
+    @apply bg-slate-900 text-white;
+  }
+
+  .ts-dropdown .option,
+  .ts-dropdown .create,
+  .ts-dropdown .no-results {
+    @apply text-slate-300;
+  }
+
+  /* Selected items in multi-select */
+  .ts-wrapper.multi .ts-control > div {
+    @apply bg-slate-900 text-slate-200 border-slate-800;
+  }
+
+  .pagy.series-nav a {
+    @apply border-slate-800 bg-slate-900 text-slate-300 shadow-none hover:bg-slate-800;
+  }
+
+  .pagy.series-nav [aria-current="page"] {
+    @apply border-slate-100 bg-slate-100 text-slate-950;
+  }
+
+  .floating-label-group label {
+    background-color: var(--color-slate-950, #020617);
+    color: #475569; /* text-slate-600 */
+  }
+
+  .floating-label-group.is-focused label,
+  .floating-label-group.has-value label,
+  .floating-label-group input:focus ~ label,
+  .floating-label-group input:not(:placeholder-shown) ~ label {
+    color: #94a3b8; /* text-slate-400 */
+  }
 }
 
