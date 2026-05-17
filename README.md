@@ -29,6 +29,16 @@ It imports repositories from [`asyraffff/Open-Source-Ruby-and-Rails-Apps`](https
 
 The catalog combines the upstream application list with a small, hand-curated set of canonical Ruby and Rails repositories in `config/curated_projects.yml`. The curated file is intentionally selective: it is meant for projects that are important references for the ecosystem, not for bulk-importing every repository from large organizations.
 
+### Fetching All Issues
+By default, the application only syncs issues with the labels `good first issue` or `help wanted` to maintain a curated experience for beginners. 
+However, you can override this behavior per project by setting the `fetch_all_issues: true` flag in the `config/curated_projects.yml` file:
+```yaml
+- owner: rails
+  repo: rails
+  category: Core Ruby and Rails
+  fetch_all_issues: true
+```
+
 ## Setup
 
 ```bash
@@ -51,9 +61,20 @@ bin/dev
 
 ## Syncing data
 
+To import or update projects from the curated and upstream catalogs:
 ```bash
 bin/rails runner 'Projects::SyncJob.perform_now'
+```
+
+To fetch GitHub issues for all active projects (respecting the `fetch_all_issues` project configurations):
+```bash
 bin/rails runner 'Issues::SyncJob.perform_now'
+```
+
+**Global Fetch Override:**
+If you want to bypass the database configurations and force the system to download **all** open issues for **all** active projects, you can pass the global `fetch_all` parameter to the job:
+```bash
+bin/rails runner 'Issues::SyncJob.perform_now(fetch_all: true)'
 ```
 
 Recurring production jobs are defined in `config/recurring.yml`.
