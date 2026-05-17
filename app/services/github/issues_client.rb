@@ -9,18 +9,27 @@ module Github
       @token = token
     end
 
-    def open_issues(owner:, repo:)
+    def open_issues(owner:, repo:, labels: Issue::DEFAULT_LABELS)
       raise "GITHUB_TOKEN is missing" if token.blank?
 
+      labels.flat_map { |label| issues_for_label(owner:, repo:, label:) }
+        .reject { |issue| issue.key?("pull_request") }
+        .uniq { |issue| issue.fetch("id") }
+    end
+
+    private
+
+    attr_reader :token
+
+    def issues_for_label(owner:, repo:, label:)
       page = 1
       issues = []
       loop do
-        response = request(owner:, repo:, page:)
+        response = request(owner:, repo:, label:, page:)
         payload = JSON.parse(response.body)
         raise "GitHub issues request failed: #{response.code}" unless response.is_a?(Net::HTTPSuccess)
 
-        batch = payload.reject { |issue| issue.key?("pull_request") }
-        issues.concat(batch)
+        issues.concat(payload)
         break if payload.length < 100
 
         page += 1
@@ -28,13 +37,9 @@ module Github
       issues
     end
 
-    private
-
-    attr_reader :token
-
-    def request(owner:, repo:, page:)
+    def request(owner:, repo:, label:, page:)
       uri = URI("https://api.github.com/repos/#{owner}/#{repo}/issues")
-      uri.query = URI.encode_www_form(state: "open", per_page: 100, page:)
+      uri.query = URI.encode_www_form(state: "open", labels: label, per_page: 100, page:)
       get(uri)
     end
 
