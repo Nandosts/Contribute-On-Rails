@@ -1,0 +1,23 @@
+pt-BR:
+  app:
+    tagline: "Encontre issues acolhedoras em Ruby e Rails"
+  issues:
+    index:
+      title: "Issues abertas"
+      heading: "Issues abertas para contribuir"
+      description: "Explore issues abertas do GitHub em projetos Ruby e Rails selecionados. Por padrão, os resultados incluem good first issue e help wanted."
+      updated: "Atualizada em %{date}"
+    filters:
+      search: "Buscar nos títulos"
+      all_projects: "Todos os projetos"
+      all_categories: "Todas as categorias"
+      submit: "Filtrar"
+  projects:
+    index:
+      heading: "Projetos"
+      open_issues:
+        one: "%{count} issue aberta"
+        other: "%{count} issues abertas"
+    show:
+      last_synced: "Última sincronização: %{date}"
+      never: "nunca"

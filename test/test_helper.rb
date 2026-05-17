@@ -1,0 +1,12 @@
+ENV["RAILS_ENV"] ||= "test"
+require "simplecov"
+SimpleCov.start "rails"
+
+require_relative "../config/environment"
+require "rails/test_help"
+
+module ActiveSupport
+  class TestCase
+    parallelize(workers: :number_of_processors)
+  end
+end

@@ -1,0 +1,23 @@
+en:
+  app:
+    tagline: "Find welcoming Ruby and Rails issues"
+  issues:
+    index:
+      title: "Open issues"
+      heading: "Open issues worth contributing to"
+      description: "Browse open GitHub issues from curated Ruby and Rails projects. By default, results include good first issue and help wanted labels."
+      updated: "Updated %{date}"
+    filters:
+      search: "Search issue titles"
+      all_projects: "All projects"
+      all_categories: "All categories"
+      submit: "Filter"
+  projects:
+    index:
+      heading: "Projects"
+      open_issues:
+        one: "%{count} open issue"
+        other: "%{count} open issues"
+    show:
+      last_synced: "Last synced: %{date}"
+      never: "never"
