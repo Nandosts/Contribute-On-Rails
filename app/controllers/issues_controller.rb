@@ -27,7 +27,7 @@ class IssuesController < ApplicationController
   private
 
   def search_params
-    params.permit(:q, :project_id, :organization, :category, :updated_since, :assignee_status, labels: [])
+    params.permit(:q, :project_id, :organization, :category, :updated_since, :assignee_status, :sort, labels: [])
   end
 
   def normalized_search_params
@@ -36,6 +36,7 @@ class IssuesController < ApplicationController
         filters["labels"] = Issue::DEFAULT_LABELS
         filters["updated_since"] = "365"
         filters["assignee_status"] = "unassigned"
+        filters["sort"] = "atualizada_recentemente"
       else
         filters["labels"] = Array(filters["labels"]).reject(&:blank?)
       end

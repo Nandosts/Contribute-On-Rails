@@ -13,7 +13,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "input[type=search][name=q]"
     assert_select "label[for=input_q]", text: "Search issue titles"
-    assert_select "select[data-controller=select]", count: 6
+    assert_select "select[data-controller=select]", count: 7
     assert_select "select[name='labels[]']"
     assert_select "section[aria-labelledby] h2", text: "rails"
     assert_select "input[type=submit][value=Filter]"
@@ -27,6 +27,23 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     refute_match "translation missing", response.body
     refute_match "translation_missing", response.body
+  end
+
+  test "sets session locale from params and persists it" do
+    get issues_url, params: { locale: "pt-BR" }
+    assert_response :success
+    assert_equal "pt-BR", session[:locale]
+
+    # Proxima chamada sem parametros deve carregar da sessao
+    get issues_url
+    assert_response :success
+    assert_equal "pt-BR", I18n.locale.to_s
+  end
+
+  test "extracts locale from accept language header fallback" do
+    get issues_url, headers: { "HTTP_ACCEPT_LANGUAGE": "pt-PT" }
+    assert_response :success
+    assert_equal "pt-BR", I18n.locale.to_s
   end
 
   test "redirects random project to a project with matching issues" do
@@ -90,5 +107,58 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
     get issues_url, params: { page: 2 }
     assert_response :success
+  end
+
+  test "sorts issues correctly by oldest, newest, least_recently_updated, and recently_updated" do
+    Issue.destroy_all
+    Project.destroy_all
+
+    projeto = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
+
+    issue_a = projeto.issues.create!(
+      github_id: 1, number: 1, title: "Issue A", state: "open",
+      github_url: "https://example.test/1",
+      opened_at: 3.days.ago, updated_at_from_github: 1.day.ago
+    )
+    issue_a.labels << Label.find_or_create_by!(name: "Good First Issue")
+
+    issue_b = projeto.issues.create!(
+      github_id: 2, number: 2, title: "Issue B", state: "open",
+      github_url: "https://example.test/2",
+      opened_at: 1.day.ago, updated_at_from_github: 3.days.ago
+    )
+    issue_b.labels << Label.find_or_create_by!(name: "Good First Issue")
+
+    # 1. Mais antiga (opened_at asc) -> Issue A depois Issue B
+    get issues_url, params: { sort: "mais_antiga" }
+    assert_response :success
+    titulos = css_select("h3 a").map(&:text).map(&:strip)
+    assert_equal [ "Issue A", "Issue B" ], titulos
+
+    # 2. Mais nova (opened_at desc) -> Issue B depois Issue A
+    get issues_url, params: { sort: "mais_nova" }
+    assert_response :success
+    titulos = css_select("h3 a").map(&:text).map(&:strip)
+    assert_equal [ "Issue B", "Issue A" ], titulos
+
+    # 3. Atualizada há mais tempo (updated_at_from_github asc) -> Issue B depois Issue A
+    get issues_url, params: { sort: "atualizada_ha_mais_tempo" }
+    assert_response :success
+    titulos = css_select("h3 a").map(&:text).map(&:strip)
+    assert_equal [ "Issue B", "Issue A" ], titulos
+
+    # 4. Atualizada recentemente (updated_at_from_github desc) -> Issue A depois Issue B
+    get issues_url, params: { sort: "atualizada_recentemente" }
+    assert_response :success
+    titulos = css_select("h3 a").map(&:text).map(&:strip)
+    assert_equal [ "Issue A", "Issue B" ], titulos
+  end
+
+  test "extracts locale from params directly in extract_locale_from_accept_language_header" do
+    controlador = IssuesController.new
+    params_mock = ActionController::Parameters.new(locale: "pt-BR")
+    controlador.define_singleton_method(:params) { params_mock }
+
+    assert_equal "pt-BR", controlador.send(:extract_locale_from_accept_language_header)
   end
 end

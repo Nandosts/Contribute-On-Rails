@@ -84,6 +84,73 @@ class GithubClientsTest < ActiveSupport::TestCase
     end
   end
 
+  test "IssuesClient returns issues with fetch_all true" do
+    mock_response = ::Net::HTTPSuccess.new("1.1", "200", "OK")
+    payload = [ { "id" => 1, "number" => 1, "title" => "Test Issue", "html_url" => "https://example.com/1", "state" => "open" } ]
+    mock_response.define_singleton_method(:body) { payload.to_json }
+
+    class << ::Net::HTTP
+      alias_method :original_start, :start
+      define_method(:start) do |hostname, port, options = {}, &block|
+        connection = Object.new
+        mock_response_captured = @mock_response
+        connection.define_singleton_method(:request) { |req| mock_response_captured }
+        block.call(connection)
+      end
+    end
+    ::Net::HTTP.instance_variable_set(:@mock_response, mock_response)
+
+    client = Github::IssuesClient.new(token: "fake_token")
+    results = client.open_issues(owner: "rails", repo: "rails", fetch_all: true)
+
+    assert_equal 1, results.length
+    assert_equal "Test Issue", results.first["title"]
+  ensure
+    class << ::Net::HTTP
+      if method_defined?(:original_start)
+        alias_method :start, :original_start
+        remove_method :original_start
+      end
+    end
+  end
+
+  test "IssuesClient paginates issues when there are 100 or more" do
+    mock_response_page_1 = ::Net::HTTPSuccess.new("1.1", "200", "OK")
+    payload_1 = Array.new(100) { |i| { "id" => i, "number" => i, "title" => "Issue #{i}", "html_url" => "https://example.com/#{i}", "state" => "open" } }
+    mock_response_page_1.define_singleton_method(:body) { payload_1.to_json }
+
+    mock_response_page_2 = ::Net::HTTPSuccess.new("1.1", "200", "OK")
+    payload_2 = [ { "id" => 101, "number" => 101, "title" => "Issue 101", "html_url" => "https://example.com/101", "state" => "open" } ]
+    mock_response_page_2.define_singleton_method(:body) { payload_2.to_json }
+
+    responses = [ mock_response_page_1, mock_response_page_2 ]
+
+    class << ::Net::HTTP
+      alias_method :original_start, :start
+      define_method(:start) do |hostname, port, options = {}, &block|
+        connection = Object.new
+        responses_captured = @mock_responses
+        connection.define_singleton_method(:request) do |req|
+          responses_captured.shift
+        end
+        block.call(connection)
+      end
+    end
+    ::Net::HTTP.instance_variable_set(:@mock_responses, responses)
+
+    client = Github::IssuesClient.new(token: "fake_token")
+    results = client.open_issues(owner: "rails", repo: "rails", labels: [ "good first issue" ])
+
+    assert_equal 101, results.length
+  ensure
+    class << ::Net::HTTP
+      if method_defined?(:original_start)
+        alias_method :start, :original_start
+        remove_method :original_start
+      end
+    end
+  end
+
   test "IssuesClient raises error on HTTP failure" do
     mock_response = ::Net::HTTPBadRequest.new("1.1", "400", "Bad Request")
     mock_response.define_singleton_method(:body) { "[]" }

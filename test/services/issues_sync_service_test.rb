@@ -7,7 +7,7 @@ class IssuesSyncServiceTest < ActiveSupport::TestCase
 
   test "syncs issues, labels, and destroys missing open issues and orphaned labels" do
     project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
-    
+
     # Create an old issue with a unique label "Stale Label"
     old_issue = project.issues.create!(github_id: 1, number: 1, title: "Old", state: "open", github_url: "https://github.com/rails/rails/issues/1")
     stale_label = Label.create!(name: "Stale Label")
@@ -30,7 +30,10 @@ class IssuesSyncServiceTest < ActiveSupport::TestCase
       "created_at" => Time.current.iso8601,
       "updated_at" => Time.current.iso8601,
       "closed_at" => nil,
-      "labels" => [ { "name" => "Good First Issue", "color" => "ffffff" } ]
+      "labels" => [
+        { "name" => "Good First Issue", "color" => "ffffff" },
+        { "name" => "New Label", "color" => "000000" }
+      ]
     } ]
 
     Issues::SyncService.new(client: FakeClient.new(payload)).call(project)
@@ -40,6 +43,6 @@ class IssuesSyncServiceTest < ActiveSupport::TestCase
     assert Label.exists?(shared_label.id) # Shared label should persist!
 
     issue = Issue.find_by!(github_id: 2)
-    assert_equal [ "Good First Issue" ], issue.labels.pluck(:name)
+    assert_equal [ "Good First Issue", "New Label" ], issue.labels.pluck(:name).sort
   end
 end

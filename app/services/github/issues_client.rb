@@ -13,13 +13,13 @@ module Github
       raise "GITHUB_TOKEN is missing" if token.blank?
 
       if fetch_all
-        issues_for_label(owner:, repo:, label: nil)
-          .reject { |issue| issue.key?("pull_request") }
-          .uniq { |issue| issue.fetch("id") }
+        issues_filtradas = issues_for_label(owner:, repo:, label: nil)
+        issues_sem_pr = issues_filtradas.reject { |issue| issue.key?("pull_request") }
+        issues_sem_pr.uniq { |issue| issue.fetch("id") }
       else
-        labels.flat_map { |label| issues_for_label(owner:, repo:, label:) }
-          .reject { |issue| issue.key?("pull_request") }
-          .uniq { |issue| issue.fetch("id") }
+        issues_flat = labels.flat_map { |label| issues_for_label(owner:, repo:, label:) }
+        issues_sem_pr = issues_flat.reject { |issue| issue.key?("pull_request") }
+        issues_sem_pr.uniq { |issue| issue.fetch("id") }
       end
     end
 

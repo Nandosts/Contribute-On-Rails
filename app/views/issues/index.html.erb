@@ -55,13 +55,18 @@
       <%= form.label :assignee_status, t("issues.filters.assignee_status"), for: "select_assignee_status" %>
     </div>
 
-    <div>
-      <%= form.submit t("issues.filters.submit"), class: "h-11 w-full cursor-pointer rounded-xl bg-slate-900 px-4 font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200" %>
+    <div class="floating-label-group">
+      <%= form.select :sort, options_for_select([[t("issues.filters.sort_options.atualizada_recentemente"), "atualizada_recentemente"], [t("issues.filters.sort_options.mais_nova"), "mais_nova"], [t("issues.filters.sort_options.mais_antiga"), "mais_antiga"], [t("issues.filters.sort_options.atualizada_ha_mais_tempo"), "atualizada_ha_mais_tempo"]], @active_search_params["sort"]), {}, class: "select-control", data: { controller: "select" }, id: "select_sort" %>
+      <%= form.label :sort, t("issues.filters.sort"), for: "select_sort" %>
     </div>
 
-    <div class="floating-label-group md:col-span-4">
+    <div class="floating-label-group md:col-span-3">
       <%= select_tag "labels[]", options_for_select(@all_labels, @active_search_params["labels"]), multiple: true, class: "select-control", data: { controller: "select" }, id: "select_labels" %>
       <label for="select_labels"><%= t("issues.filters.labels") %></label>
+    </div>
+
+    <div>
+      <%= form.submit t("issues.filters.submit"), class: "h-11 w-full cursor-pointer rounded-xl bg-slate-900 px-4 font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200" %>
     </div>
   <% end %>
 

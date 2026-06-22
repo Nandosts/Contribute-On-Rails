@@ -40,6 +40,12 @@ en:
       unassigned_only: "Unassigned only"
       assigned_only: "Assigned only"
       all_assignees: "All issues"
+      sort: "Sort by"
+      sort_options:
+        atualizada_recentemente: "Recently updated"
+        mais_nova: "Newest (recently opened)"
+        mais_antiga: "Oldest (opened longest ago)"
+        atualizada_ha_mais_tempo: "Least recently updated"
       submit: "Filter"
   projects:
     index:

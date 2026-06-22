@@ -56,6 +56,12 @@ pt-BR:
       unassigned_only: "Apenas sem responsável"
       assigned_only: "Apenas com responsável"
       all_assignees: "Todas as issues"
+      sort: "Ordenar por"
+      sort_options:
+        atualizada_recentemente: "Atualizada recentemente"
+        mais_nova: "Mais nova (aberta recentemente)"
+        mais_antiga: "Mais antiga (aberta há mais tempo)"
+        atualizada_ha_mais_tempo: "Atualizada há mais tempo"
       submit: "Filtrar"
   projects:
     index:

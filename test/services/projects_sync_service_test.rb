@@ -9,7 +9,19 @@ class ProjectsSyncServiceTest < ActiveSupport::TestCase
     existing = Project.create!(github_owner: "old", github_repo: "repo", name: "Old Repo", github_url: "https://github.com/old/repo")
     markdown = "## Rails\n- [Discourse](https://github.com/discourse/discourse)\n"
 
-    Projects::SyncService.new(readme_client: FakeReadmeClient.new(markdown)).call
+    class << $stdout
+      alias_method :original_tty?, :tty?
+      def tty? = true
+    end
+
+    begin
+      Projects::SyncService.new(readme_client: FakeReadmeClient.new(markdown)).call
+    ensure
+      class << $stdout
+        alias_method :tty?, :original_tty?
+        remove_method :original_tty?
+      end
+    end
 
     assert Project.find_by!(github_owner: "discourse", github_repo: "discourse").active?
     assert_not existing.reload.active?

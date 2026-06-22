@@ -13,7 +13,7 @@ class IssueSearchQuery
     scoped = filter_by_labels(scoped)
     scoped = filter_by_updated_since(scoped)
     scoped = filter_by_assignee_status(scoped)
-    scoped.order(updated_at_from_github: :desc)
+    aplicar_ordenacao(scoped)
   end
 
   private
@@ -70,5 +70,18 @@ class IssueSearchQuery
     return scoped.preload(:labels) if names.empty?
 
     scoped.joins(:labels).where("LOWER(labels.name) IN (?)", names.map(&:downcase)).distinct.preload(:labels)
+  end
+
+  def aplicar_ordenacao(scoped)
+    case params[:sort]
+    when "mais_antiga"
+      scoped.order(opened_at: :asc)
+    when "mais_nova"
+      scoped.order(opened_at: :desc)
+    when "atualizada_ha_mais_tempo"
+      scoped.order(updated_at_from_github: :asc)
+    else
+      scoped.order(updated_at_from_github: :desc)
+    end
   end
 end
