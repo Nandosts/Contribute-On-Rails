@@ -18,9 +18,22 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <%# TomSelect CSS loaded as a direct blocking stylesheet to prevent unstyled flashes.
+        The preload hint fetches it early; the link tag applies it before first paint. %>
+    <link
+      rel="preload"
+      href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css"
+      as="style"
+    >
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css"
+    >
+
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
 
+    <%# Preload TomSelect ESM so the module is already in cache when Stimulus connects %>
     <link
       rel="modulepreload"
       href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/+esm"
