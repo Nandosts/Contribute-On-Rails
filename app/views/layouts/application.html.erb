@@ -17,6 +17,10 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: dark)">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
     <%# TomSelect CSS loaded as a direct blocking stylesheet to prevent unstyled flashes.
         The preload hint fetches it early; the link tag applies it before first paint. %>
@@ -109,21 +113,8 @@
     </main>
 
     <footer class="border-t border-slate-200/80 bg-white/40 backdrop-blur-md dark:border-slate-800/85 dark:bg-slate-950/40 py-8 mt-16 text-xs text-slate-500 dark:text-slate-400">
-      <div class="mx-auto max-w-7xl px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-2.5">
-          <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          <span class="font-mono tracking-tight text-[11px] text-slate-600 dark:text-slate-300">
-            WEB4 NODE ACTIVE · SYNCED VIA SOLID QUEUE
-          </span>
-        </div>
-        <div class="flex items-center gap-4">
-          <span class="font-medium text-slate-600 dark:text-slate-400">Contribute on Rails &copy; <%= Time.current.year %></span>
-          <span class="text-slate-300 dark:text-slate-800">|</span>
-          <%= link_to "AI Rules", "/.agents/AGENTS.md", class: "font-semibold hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors underline decoration-dotted underline-offset-2" %>
-        </div>
+      <div class="mx-auto max-w-7xl px-6 flex items-center justify-center">
+        <span class="font-medium text-slate-600 dark:text-slate-400">Contribute on Rails &copy; <%= Time.current.year %></span>
       </div>
     </footer>
   </body>
