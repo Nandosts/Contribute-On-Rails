@@ -1,15 +1,18 @@
 <% content_for :title, t("issues.index.title") %>
 
 <section class="mx-auto px-6 py-10 max-w-7xl">
-  <header class="flex md:flex-row flex-col md:justify-between md:items-end gap-4 mb-8">
+  <header class="flex md:flex-row flex-col md:justify-between md:items-end gap-4 mb-8 animate-fade-in-up">
     <div>
-      <p class="font-medium text-slate-500 text-sm dark:text-slate-400">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border dark:border-indigo-800/40 shadow-sm mb-3">
+        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
         <%= t("app.tagline") %>
-      </p>
+      </div>
 
       <h1
         class="
-          mt-2 font-bold text-slate-900 text-4xl tracking-tight
+          mt-2 font-extrabold text-slate-900 text-4xl tracking-tight
+          bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900
+          dark:from-white dark:via-indigo-200 dark:to-white
           dark:text-white
         "
       >
@@ -21,10 +24,15 @@
       </p>
     </div>
 
-    <%= link_to t("issues.random_project"), random_issues_path(request.query_parameters), class: "inline-flex cursor-pointer items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 font-medium text-slate-900 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800" %>
+    <%= link_to random_issues_path(request.query_parameters), class: "group inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-900 shadow-sm transition-all hover:border-indigo-400 hover:bg-slate-50 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:hover:border-indigo-500 dark:hover:bg-slate-800" do %>
+      <span><%= t("issues.random_project") %></span>
+      <svg class="w-4 h-4 text-slate-500 group-hover:text-indigo-600 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3M3 12c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M3 12l-3 3m3-3l3 3" />
+      </svg>
+    <% end %>
   </header>
 
-  <%= form_with url: issues_path, method: :get, class: "mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-4 dark:border-slate-800 dark:bg-slate-900" do |form| %>
+  <%= form_with url: issues_path, method: :get, class: "mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-4 dark:border-slate-800 dark:bg-slate-900 animate-fade-in-up" do |form| %>
     <div class="floating-label-group md:col-span-2">
       <%= form.search_field :q, value: @active_search_params["q"], placeholder: " ", id: "input_q", class: "h-11 w-full rounded-xl border border-slate-300 px-4 pt-3 text-slate-900 shadow-sm outline-none ring-0 focus:border-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-slate-700" %>
       <%= form.label :q, t("issues.filters.search"), for: "input_q" %>
@@ -150,13 +158,13 @@
   </div>
 
   <% if @grouped_issues.any? %>
-    <div class="space-y-8">
+    <div class="space-y-8 animate-fade-in-up">
       <% @grouped_issues.each do |(organization, project), issues| %>
         <section aria-labelledby="project-<%= project.id %>">
           <div class="flex items-center gap-3 mb-3">
             <p
               class="
-                font-medium text-slate-500 text-sm uppercase tracking-wide
+                font-medium text-slate-600 text-sm uppercase tracking-wide
                 dark:text-slate-400
               "
             >
@@ -167,10 +175,9 @@
               id="project-<%= project.id %>"
               class="
                 font-semibold text-slate-900 text-xl dark:text-white
-                dark:hover:text-slate-200
               "
             >
-              <%= link_to project.github_repo, project_path(project) %>
+              <%= link_to project.github_repo, project_path(project), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
             </h2>
 
             <span
@@ -181,6 +188,8 @@
             >
               <%= t("issues.index.project_count", count: @project_issue_counts.fetch(project.id, 0)) %>
             </span>
+
+            <div class="flex-1 h-px bg-slate-200 dark:bg-slate-800/60"></div>
           </div>
 
           <div class="space-y-4">
@@ -202,7 +211,7 @@
                   <% issue.labels.each do |label| %>
                     <span
                       class="
-                        bg-slate-100 px-2 py-1 rounded-full text-xs
+                        bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full text-xs shimmer-badge
                         dark:bg-slate-800 dark:text-slate-300
                       "
                     >
@@ -227,13 +236,13 @@
                 <h3
                   class="
                     mt-3 font-semibold text-slate-900 text-xl
-                    dark:text-white dark:hover:text-slate-200
+                    dark:text-white
                   "
                 >
-                  <%= link_to issue.title, issue.github_url, target: "_blank", rel: "noopener" %>
+                  <%= link_to issue.title, issue.github_url, target: "_blank", rel: "noopener", class: "hover:text-indigo-600 dark:hover:text-indigo-400 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none rounded transition-colors" %>
                 </h3>
 
-                <p class="mt-2 text-slate-500 text-sm dark:text-slate-400">
+                <p class="mt-2 text-slate-600 text-sm dark:text-slate-400">
                   <%= t("issues.index.opened", date: l(issue.opened_at, format: :long)) %>
                   ·
                   <%= t("issues.index.updated", date: l(issue.updated_at_from_github, format: :long)) %>

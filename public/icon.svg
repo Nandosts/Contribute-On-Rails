@@ -1,3 +1,61 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="512" height="512">
+  <defs>
+    <linearGradient id="g-top" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b9d"/>
+      <stop offset="100%" stop-color="#e8003d"/>
+    </linearGradient>
+    <linearGradient id="g-left" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#c00038"/>
+      <stop offset="100%" stop-color="#7a001e"/>
+    </linearGradient>
+    <linearGradient id="g-right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8003d"/>
+      <stop offset="100%" stop-color="#9e0028"/>
+    </linearGradient>
+    <linearGradient id="g-bevel" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff8fb4"/>
+      <stop offset="100%" stop-color="#ff2d6b"/>
+    </linearGradient>
+    <linearGradient id="g-shine" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="60%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shadow/glow blob -->
+  <ellipse cx="32" cy="58" rx="18" ry="4" fill="#cc0033" opacity="0.18"/>
+
+  <!-- Left side facet (bevel strip) -->
+  <polygon points="8,16 14,8 14,16" fill="#ff9bbf"/>
+
+  <!-- Right side facet (bevel strip) -->
+  <polygon points="50,8 56,16 50,16" fill="#b50030"/>
+
+  <!-- Top bevel band -->
+  <polygon points="14,8 50,8 56,16 8,16" fill="url(#g-bevel)"/>
+
+  <!-- Left pavilion -->
+  <polygon points="8,16 32,56 18,16" fill="url(#g-left)"/>
+
+  <!-- Center pavilion -->
+  <polygon points="18,16 32,56 46,16" fill="url(#g-top)"/>
+
+  <!-- Right pavilion -->
+  <polygon points="46,16 32,56 56,16" fill="url(#g-right)"/>
+
+  <!-- Specular highlight on top face -->
+  <polygon points="14,8 50,8 56,16 8,16" fill="url(#g-shine)" opacity="0.65"/>
+
+  <!-- Inner shine on center facet -->
+  <polygon points="22,16 32,38 42,16" fill="#ffffff" opacity="0.06"/>
+
+  <!-- Code symbol </> centered in bevel face -->
+  <g stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.93">
+    <!-- < -->
+    <polyline points="25,10 20,14 25,18"/>
+    <!-- > -->
+    <polyline points="39,10 44,14 39,18"/>
+    <!-- / -->
+    <line x1="35" y1="8.5" x2="29" y2="19.5"/>
+  </g>
 </svg>
