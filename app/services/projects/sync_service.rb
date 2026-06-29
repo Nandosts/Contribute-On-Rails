@@ -34,7 +34,11 @@ module Projects
     attr_reader :readme_client
 
     def catalog_entries
-      upstream_entries = Github::ProjectCatalogImporter.new(readme_client.call).call
+      upstream_entries = if ENV["IGNORE_UPSTREAM_PROJECTS"] == "true"
+        []
+      else
+        Github::ProjectCatalogImporter.new(readme_client.call).call
+      end
       curated_entries = CuratedCatalog.new.call
       (upstream_entries + curated_entries).index_by { |entry| [ entry.owner.downcase, entry.repo.downcase ] }.values
     end

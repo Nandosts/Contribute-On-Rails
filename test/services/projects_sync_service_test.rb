@@ -36,4 +36,19 @@ class ProjectsSyncServiceTest < ActiveSupport::TestCase
     assert_equal "Rails Applications", project.source_category
     assert_equal 1, Project.where(github_owner: "discourse", github_repo: "discourse").count
   end
+
+  test "ignores upstream projects when IGNORE_UPSTREAM_PROJECTS is true" do
+    Project.delete_all
+    markdown = "## Apps\n- [Fictional](https://github.com/fictional/fictional-repo)\n"
+    ENV["IGNORE_UPSTREAM_PROJECTS"] = "true"
+
+    begin
+      Projects::SyncService.new(readme_client: FakeReadmeClient.new(markdown)).call
+    ensure
+      ENV.delete("IGNORE_UPSTREAM_PROJECTS")
+    end
+
+    assert_nil Project.find_by(github_owner: "fictional", github_repo: "fictional-repo")
+    assert Project.find_by!(github_owner: "rails", github_repo: "rails").active?
+  end
 end
