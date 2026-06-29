@@ -11,6 +11,12 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find(params[:id])
-    @issues = IssueSearchQuery.new(@project.issues, labels: params[:labels], updated_since: params[:updated_since], assignee_status: params[:assignee_status]).call
+    @issues = IssueSearchQuery.new(
+      @project.issues,
+      labels: params[:labels],
+      updated_since: params[:updated_since],
+      assignee_status: params[:assignee_status],
+      include_project: false
+    ).call
   end
 end

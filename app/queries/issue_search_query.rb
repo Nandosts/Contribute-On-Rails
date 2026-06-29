@@ -1,11 +1,13 @@
 class IssueSearchQuery
   def initialize(relation = Issue.all, params = {})
     @relation = relation
-    @params = params
+    @include_project = params.is_a?(Hash) ? params.fetch(:include_project, true) : true
+    @params = params.is_a?(Hash) ? params.except(:include_project) : params
   end
 
   def call
-    scoped = relation.open.includes(:project)
+    scoped = relation.open
+    scoped = scoped.includes(:project) if @include_project
     scoped = filter_by_query(scoped)
     scoped = filter_by_project(scoped)
     scoped = filter_by_organization(scoped)

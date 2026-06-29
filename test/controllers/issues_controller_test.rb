@@ -46,6 +46,12 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "pt-BR", I18n.locale.to_s
   end
 
+  test "extracts locale from accept language header and falls back to default if no match" do
+    get issues_url, headers: { "HTTP_ACCEPT_LANGUAGE": "fr-FR" }
+    assert_response :success
+    assert_equal "en", I18n.locale.to_s
+  end
+
   test "redirects random project to a project with matching issues" do
     get random_issues_url
 

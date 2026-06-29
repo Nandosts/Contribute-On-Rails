@@ -77,4 +77,12 @@ class IssueSearchQueryTest < ActiveSupport::TestCase
     assert_includes results, unassigned_issue
     assert_includes results, assigned_issue
   end
+
+  test "includes or excludes project relation based on include_project parameter" do
+    query_with = IssueSearchQuery.new(Issue.all, include_project: true).call
+    query_without = IssueSearchQuery.new(Issue.all, include_project: false).call
+
+    assert_includes query_with.includes_values, :project
+    assert_not_includes query_without.includes_values, :project
+  end
 end
