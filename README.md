@@ -47,11 +47,17 @@ bundle install
 bin/rails db:prepare
 ```
 
-Create a GitHub token and export it in your terminal, or simply add it to a `.env` file in the root directory (it will be loaded automatically):
+Copy the example environment file and fill in your variables:
 
 ```bash
-GITHUB_TOKEN=your_token_here
+cp .env.example .env
 ```
+
+### Key Environment Variables
+
+* `GITHUB_TOKEN`: A GitHub Personal Access Token (classic or fine-grained) to fetch issues and prevent API rate-limiting.
+* `IGNORE_UPSTREAM_PROJECTS`: Set to `true` to disable importing projects from the remote upstream README catalog, syncing only from `config/curated_projects.yml`.
+* `SOLID_QUEUE_IN_PUMA`: Set to `true` to run the Solid Queue background worker thread directly inside the Puma process (useful for single-dyno deploys).
 
 Start the app:
 
