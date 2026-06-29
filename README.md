@@ -1,4 +1,5 @@
 # Contribute on Rails
+![contribute-on-rails-sample](https://github.com/user-attachments/assets/8eded37d-94ca-41ae-a758-9abba3cfaf0c)
 
 A small Rails app that helps people find contribution-friendly issues across open-source Ruby and Rails projects.
 
