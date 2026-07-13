@@ -19,6 +19,11 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_select "input[type=submit][value=Filter]"
     assert_select "select[name=updated_since]"
     assert_select "p", text: /Opened/
+
+    # Collapsible project issues assertions
+    assert_select "section[data-controller='collapsible']"
+    assert_select "button[data-action='click->collapsible#toggle']"
+    assert_select "div[data-collapsible-target='content']"
   end
 
   test "renders pt-BR locale without missing translations" do
