@@ -6,12 +6,25 @@ module Issues
 
     def call(project, force_fetch: false)
       should_fetch_all = force_fetch || project.fetch_all_issues
-      payloads = client.open_issues(owner: project.github_owner, repo: project.github_repo, fetch_all: should_fetch_all)
+      current_etags = project.github_etags
+
+      response = client.open_issues(
+        owner: project.github_owner,
+        repo: project.github_repo,
+        fetch_all: should_fetch_all,
+        etags: current_etags
+      )
+
+      unless response[:any_modified]
+        project.update!(last_synced_at: Time.current)
+        return
+      end
+
       seen_ids = []
       now = Time.current
 
       Issue.transaction do
-        payloads.each do |payload|
+        response[:issues].each do |payload|
           issue = Issue.find_or_initialize_by(github_id: payload.fetch("id"))
           issue.update!(
             project:,
@@ -30,8 +43,24 @@ module Issues
           seen_ids << issue.github_id
         end
 
+        if should_fetch_all
+          if response[:not_modified_labels].include?("all")
+            seen_ids.concat(project.issues.pluck(:github_id))
+          end
+        else
+          labels_304 = response[:not_modified_labels]
+          if labels_304.any?
+            issues_to_keep = project.issues.joins(:labels).where(labels: { name: labels_304 }).pluck(:github_id)
+            seen_ids.concat(issues_to_keep)
+          end
+        end
+
+        seen_ids.uniq!
+
         project.issues.where.not(github_id: seen_ids).destroy_all
-        project.update!(last_synced_at: now)
+        project.github_etags = response[:etags]
+        project.last_synced_at = now
+        project.save!
       end
     end
 

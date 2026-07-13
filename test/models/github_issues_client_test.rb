@@ -12,8 +12,9 @@ class GithubIssuesClientTest < ActiveSupport::TestCase
   test "deduplicates issues returned by multiple tracked labels" do
     client = Github::IssuesClient.new(token: "token")
     payload = [ { "id" => 1, "number" => 1 } ]
-    client.define_singleton_method(:issues_for_label) { |**| payload }
+    client.define_singleton_method(:issues_for_label) { |**| { not_modified: false, issues: payload, etag: "etag" } }
 
-    assert_equal payload, client.open_issues(owner: "rails", repo: "rails")
+    results = client.open_issues(owner: "rails", repo: "rails")
+    assert_equal payload, results[:issues]
   end
 end
