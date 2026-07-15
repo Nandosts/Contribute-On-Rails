@@ -202,4 +202,27 @@
 - owner: github
   repo: linguist
   category: Ruby Ecosystem
-
+- owner: heartcombo
+  repo: simple_form
+  category: Rails Ecosystem
+- owner: heartcombo
+  repo: responders
+  category: Rails Ecosystem
+- owner: BoletoBancario
+  repo: brcobranca
+  category: Ruby Ecosystem
+- owner: fnando
+  repo: cpf_cnpj
+  category: Ruby Ecosystem
+- owner: fnando
+  repo: browser
+  category: Ruby Ecosystem
+- owner: thiagopradi
+  repo: correios-cep
+  category: Ruby Ecosystem
+- owner: pagarme
+  repo: pagarme-ruby
+  category: Ruby Ecosystem
+- owner: Iugu
+  repo: iugu-ruby
+  category: Ruby Ecosystem
