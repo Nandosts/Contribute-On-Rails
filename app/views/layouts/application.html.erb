@@ -2,11 +2,19 @@
 
 <html>
   <head>
-    <title><%= content_for(:title) || "Contribute On Rails" %></title>
+    <title><%= content_for(:title) || "Contribute on Rails" %></title>
+    <meta name="description" content="<%= content_for(:description) || "Find the best open-source Ruby on Rails projects to contribute to. Discover 'good first issues' and 'help wanted' tasks." %>">
+    <meta property="og:title" content="<%= content_for(:title) || "Contribute on Rails" %>">
+    <meta property="og:description" content="<%= content_for(:description) || "Find the best open-source Ruby on Rails projects to contribute to. Discover 'good first issues' and 'help wanted' tasks." %>">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://contribute-on-rails.fly.dev/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= content_for(:title) || "Contribute on Rails" %>">
+    <meta name="twitter:description" content="<%= content_for(:description) || "Find the best open-source Ruby on Rails projects to contribute to. Discover 'good first issues' and 'help wanted' tasks." %>">
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Contribute On Rails">
+    <meta name="application-name" content="Contribute on Rails">
     <meta name="mobile-web-app-capable" content="yes">
 
     <%= csrf_meta_tags %>
@@ -15,7 +23,6 @@
     <%= yield :head %>
 
     <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)">
@@ -73,7 +80,7 @@
             <div class="relative flex items-center justify-center p-1.5 rounded-xl bg-slate-100 border border-slate-200 group-hover:border-indigo-400/50 transition-colors dark:bg-slate-900 dark:border-slate-800 dark:group-hover:border-indigo-500/50">
               <!-- Cybernetic glowing ring behind the logo on group hover -->
               <div class="absolute inset-0 rounded-xl bg-gradient-to-tr from-indigo-500 via-pink-500 to-cyan-400 opacity-0 blur-xs group-hover:opacity-40 group-hover:animate-spin-slow transition-opacity duration-500"></div>
-              <%= image_tag "/icon.svg", class: "relative h-6 w-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12", alt: "Logo" %>
+              <%= image_tag "/icon.png", class: "relative h-6 w-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12", alt: "Logo" %>
             </div>
             <span>Contribute on Rails</span>
           <% end %>
