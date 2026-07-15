@@ -27,7 +27,12 @@ module Issues
           SyncService.new.call(project, force_fetch: fetch_all)
           synced_names << "#{project.github_owner}/#{project.github_repo}"
         rescue StandardError => error
-          Rails.logger.warn("Issue sync failed for #{project.github_owner}/#{project.github_repo}: #{error.message}")
+          if error.message.include?("404")
+            project.update!(active: false)
+            Rails.logger.warn("Project deactivated (404 Not Found): #{project.github_owner}/#{project.github_repo}")
+          else
+            Rails.logger.warn("Issue sync failed for #{project.github_owner}/#{project.github_repo}: #{error.message}")
+          end
         end
       ensure
         ActiveRecord::Base.logger = original_logger
