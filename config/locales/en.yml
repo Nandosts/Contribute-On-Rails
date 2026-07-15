@@ -22,6 +22,8 @@ en:
       project_count:
         one: "%{count} issue"
         other: "%{count} issues"
+      group_by_project: "Grouped by Project"
+      flat_list: "Flat List"
     filters:
       search: "Search issue titles"
       project: "Project"

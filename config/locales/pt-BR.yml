@@ -38,6 +38,8 @@ pt-BR:
       project_count:
         one: "%{count} issue"
         other: "%{count} issues"
+      group_by_project: "Agrupado por Projeto"
+      flat_list: "Lista Simples"
     filters:
       search: "Buscar nos títulos"
       project: "Projeto"

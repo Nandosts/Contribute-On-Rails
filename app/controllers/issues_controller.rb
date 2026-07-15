@@ -1,13 +1,15 @@
 class IssuesController < ApplicationController
   def index
-    return redirect_to issues_path if request.query_parameters.except("page", "locale").present? && normalized_search_params.values.all?(&:blank?)
+    return redirect_to issues_path if request.query_parameters.except("page", "locale", "group_by_project").present? && normalized_search_params.values.all?(&:blank?)
 
     @active_search_params = normalized_search_params
+    @group_by_project = params.fetch(:group_by_project, "true") == "true"
 
     scoped_issues = IssueSearchQuery.new(Issue.all, @active_search_params).call
     @project_issue_counts = scoped_issues.unscope(:includes, :order).group(:project_id).count
     @pagy, @issues = pagy(scoped_issues, limit: 30, size: [ 1, 4, 4, 1 ])
-    @grouped_issues = @issues.group_by { |issue| [ issue.project.github_owner, issue.project ] }
+
+    @grouped_issues = @group_by_project ? @issues.group_by { |issue| [ issue.project.github_owner, issue.project ] } : {}
 
     active_projects = Project.active.where(id: scoped_issues.unscope(:order).select(:project_id)).distinct
 
