@@ -91,3 +91,115 @@
 - owner: redmine
   repo: redmine
   category: Rails Applications
+- owner: github
+  repo: view_component
+  category: Rails Ecosystem
+- owner: rails
+  repo: solid_queue
+  category: Background Jobs
+- owner: rails
+  repo: solid_cache
+  category: Rails Ecosystem
+- owner: rails
+  repo: solid_cable
+  category: Rails Ecosystem
+- owner: rails
+  repo: jbuilder
+  category: Rails Ecosystem
+- owner: ruby-concurrency
+  repo: concurrent-ruby
+  category: Core Ruby and Rails
+- owner: sorbet
+  repo: sorbet
+  category: Developer Tooling
+- owner: paper-trail-gem
+  repo: paper_trail
+  category: Rails Ecosystem
+- owner: ankane
+  repo: pghero
+  category: Rails Ecosystem
+- owner: redis
+  repo: redis-rb
+  category: Web Infrastructure
+- owner: jwt
+  repo: ruby-jwt
+  category: Security
+- owner: brianmario
+  repo: mysql2
+  category: Web Infrastructure
+- owner: bkeepers
+  repo: dotenv
+  category: Developer Tooling
+- owner: faker-ruby
+  repo: faker
+  category: Developer Tooling
+- owner: vcr
+  repo: vcr
+  category: Testing
+- owner: ruby
+  repo: debug
+  category: Developer Tooling
+- owner: rubysherpas
+  repo: paranoia
+  category: Rails Ecosystem
+- owner: rubys
+  repo: awdwr
+  category: Learning
+- owner: ankane
+  repo: searchkick
+  category: Rails Ecosystem
+- owner: ankane
+  repo: groupdate
+  category: Rails Ecosystem
+- owner: rubocop
+  repo: rubocop-rspec
+  category: Developer Tooling
+- owner: rails
+  repo: importmap-rails
+  category: Rails Ecosystem
+- owner: rails
+  repo: propshaft
+  category: Rails Ecosystem
+- owner: hotwired
+  repo: stimulus
+  category: Rails Ecosystem
+- owner: hotwired
+  repo: turbo
+  category: Rails Ecosystem
+- owner: mperham
+  repo: connection_pool
+  category: Web Infrastructure
+- owner: Homebrew
+  repo: brew
+  category: Developer Tooling
+- owner: fastlane
+  repo: fastlane
+  category: Developer Tooling
+- owner: CocoaPods
+  repo: CocoaPods
+  category: Developer Tooling
+- owner: jekyll
+  repo: jekyll
+  category: Web Infrastructure
+- owner: hashicorp
+  repo: vagrant
+  category: Developer Tooling
+- owner: flippercloud
+  repo: flipper
+  category: Ruby Ecosystem
+- owner: lostisland
+  repo: faraday
+  category: Web Infrastructure
+- owner: sparklemotion
+  repo: nokogiri
+  category: Web Infrastructure
+- owner: jnunemaker
+  repo: httparty
+  category: Web Infrastructure
+- owner: fluent
+  repo: fluentd
+  category: Background Jobs
+- owner: github
+  repo: linguist
+  category: Ruby Ecosystem
+
