@@ -118,7 +118,7 @@ module Github
       rescue EOFError, Errno::ECONNRESET, OpenSSL::SSL::SSLError, Net::ReadTimeout, SocketError => e
         retries += 1
         raise e if retries > 3
-        
+
         sleep(2 ** retries) # Exponential backoff: 2s, 4s, 8s
         retry
       end

@@ -107,4 +107,38 @@ class IssuesSyncServiceTest < ActiveSupport::TestCase
     assert_equal "etag_gfi_old", project.github_etags["Good First Issue"]
     assert_equal "etag_hw_new", project.github_etags["Help Wanted"]
   end
+  test "returns early if no issues were modified" do
+    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails", last_synced_at: 1.day.ago)
+
+    mock_client = Object.new
+    mock_client.define_singleton_method(:open_issues) do |owner:, repo:, labels: nil, fetch_all: false, etags: {}|
+      { any_modified: false }
+    end
+
+    assert_changes -> { project.reload.last_synced_at } do
+      Issues::SyncService.new(client: mock_client).call(project)
+    end
+  end
+
+  test "preserves all issues when fetch_all is true and not modified" do
+    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
+    issue = project.issues.create!(github_id: 100, number: 100, title: "Keep me", state: "open", github_url: "https://github.com/rails/rails/issues/100")
+
+    fake_response = {
+      issues: [],
+      etags: { "all" => "etag_all_new" },
+      not_modified_labels: [ "all" ],
+      any_modified: true
+    }
+
+    mock_client = Object.new
+    mock_client.define_singleton_method(:open_issues) do |**_kwargs|
+      fake_response
+    end
+
+    Issues::SyncService.new(client: mock_client).call(project, force_fetch: true)
+
+    assert Issue.exists?(issue.id)
+    assert_equal "etag_all_new", project.github_etags["all"]
+  end
 end

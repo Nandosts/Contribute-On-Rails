@@ -238,4 +238,55 @@ class GithubClientsTest < ActiveSupport::TestCase
       end
     end
   end
+  test "IssuesClient retries on network error and eventually raises" do
+    class << ::Net::HTTP
+      alias_method :original_start, :start
+      define_method(:start) do |hostname, port, options = {}, &block|
+        raise Errno::ECONNRESET
+      end
+    end
+
+    client = Github::IssuesClient.new(token: "fake_token")
+    client.define_singleton_method(:sleep) { |time| }
+
+    assert_raises(Errno::ECONNRESET) do
+      client.open_issues(owner: "rails", repo: "rails", labels: [ "good first issue" ])
+    end
+  ensure
+    class << ::Net::HTTP
+      if method_defined?(:original_start)
+        alias_method :start, :original_start
+        remove_method :original_start
+      end
+    end
+  end
+  test "IssuesClient returns not_modified for all when fetch_all is true and receiving 304" do
+    mock_response = ::Net::HTTPNotModified.new("1.1", "304", "Not Modified")
+
+    class << ::Net::HTTP
+      alias_method :original_start, :start
+      define_method(:start) do |hostname, port, options = {}, &block|
+        connection = Object.new
+        mock_response_captured = @mock_response
+        connection.define_singleton_method(:request) { |req| mock_response_captured }
+        block.call(connection)
+      end
+    end
+    ::Net::HTTP.instance_variable_set(:@mock_response, mock_response)
+
+    client = Github::IssuesClient.new(token: "fake_token")
+    results = client.open_issues(owner: "rails", repo: "rails", fetch_all: true, etags: { "all" => "some_etag" })
+
+    refute results[:any_modified]
+    assert_equal [ "all" ], results[:not_modified_labels]
+    assert_empty results[:issues]
+    assert_equal "some_etag", results[:etags]["all"]
+  ensure
+    class << ::Net::HTTP
+      if method_defined?(:original_start)
+        alias_method :start, :original_start
+        remove_method :original_start
+      end
+    end
+  end
 end

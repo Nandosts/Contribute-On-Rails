@@ -20,6 +20,22 @@ class IssuesSyncJobTest < ActiveJob::TestCase
     Issues::SyncService.define_singleton_method(:new, original_new)
   end
 
+  test "deactivates project if error includes 404" do
+    first = Project.create!(github_owner: "missing", github_repo: "repo", name: "Missing", github_url: "https://github.com/missing/repo", active: true)
+    service = Object.new
+    service.define_singleton_method(:call) do |project, **_kwargs|
+      raise "GitHub issues request failed: 404"
+    end
+
+    original_new = Issues::SyncService.method(:new)
+    Issues::SyncService.define_singleton_method(:new) { service }
+    Issues::SyncJob.perform_now
+
+    assert_not first.reload.active
+  ensure
+    Issues::SyncService.define_singleton_method(:new, original_new)
+  end
+
   test "prints progress and completion when not in test env" do
     project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
     service = Object.new
