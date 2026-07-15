@@ -218,14 +218,14 @@
           </div>
 
           <div class="space-y-4 animate-fade-in-up" data-collapsible-target="content">
-            <%= render partial: "issue", collection: issues %>
+            <%= render partial: "issue", collection: issues, locals: { group_by_project: @group_by_project } %>
           </div>
         </section>
       <% end %>
     </div>
   <% elsif !@group_by_project && @issues.any? %>
     <div class="space-y-4 animate-fade-in-up">
-      <%= render partial: "issue", collection: @issues %>
+      <%= render partial: "issue", collection: @issues, locals: { group_by_project: @group_by_project } %>
     </div>
   <% else %>
     <p

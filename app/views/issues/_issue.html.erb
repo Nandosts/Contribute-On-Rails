@@ -1,6 +1,6 @@
 <article class="bg-white shadow-sm p-5 border border-slate-200 rounded-2xl dark:border-slate-850 dark:bg-slate-900">
   <div class="flex flex-wrap items-center gap-2 text-slate-500 text-sm dark:text-slate-400">
-    <% unless @group_by_project %>
+    <% unless group_by_project %>
       <%= link_to "#{issue.project.github_owner}/#{issue.project.github_repo}", project_path(issue.project), class: "font-medium text-slate-700 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition-colors" %>
       <span class="text-slate-300 dark:text-slate-600">•</span>
     <% end %>
