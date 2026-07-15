@@ -141,25 +141,25 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     issue_b.labels << Label.find_or_create_by!(name: "Good First Issue")
 
     # 1. Mais antiga (opened_at asc) -> Issue A depois Issue B
-    get issues_url, params: { sort: "mais_antiga" }
+    get issues_url, params: { sort: "oldest" }
     assert_response :success
     titulos = css_select("h3 a").map(&:text).map(&:strip)
     assert_equal [ "Issue A", "Issue B" ], titulos
 
     # 2. Mais nova (opened_at desc) -> Issue B depois Issue A
-    get issues_url, params: { sort: "mais_nova" }
+    get issues_url, params: { sort: "newest" }
     assert_response :success
     titulos = css_select("h3 a").map(&:text).map(&:strip)
     assert_equal [ "Issue B", "Issue A" ], titulos
 
     # 3. Atualizada há mais tempo (updated_at_from_github asc) -> Issue B depois Issue A
-    get issues_url, params: { sort: "atualizada_ha_mais_tempo" }
+    get issues_url, params: { sort: "least_recently_updated" }
     assert_response :success
     titulos = css_select("h3 a").map(&:text).map(&:strip)
     assert_equal [ "Issue B", "Issue A" ], titulos
 
     # 4. Atualizada recentemente (updated_at_from_github desc) -> Issue A depois Issue B
-    get issues_url, params: { sort: "atualizada_recentemente" }
+    get issues_url, params: { sort: "recently_updated" }
     assert_response :success
     titulos = css_select("h3 a").map(&:text).map(&:strip)
     assert_equal [ "Issue A", "Issue B" ], titulos

@@ -38,7 +38,7 @@ class IssuesController < ApplicationController
         filters["labels"] = Issue::DEFAULT_LABELS
         filters["updated_since"] = "365"
         filters["assignee_status"] = "unassigned"
-        filters["sort"] = "atualizada_recentemente"
+        filters["sort"] = "recently_updated"
       else
         filters["labels"] = Array(filters["labels"]).reject(&:blank?)
       end

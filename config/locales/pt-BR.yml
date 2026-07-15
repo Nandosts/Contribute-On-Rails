@@ -60,10 +60,10 @@ pt-BR:
       all_assignees: "Todas as issues"
       sort: "Ordenar por"
       sort_options:
-        atualizada_recentemente: "Atualizada recentemente"
-        mais_nova: "Mais nova (aberta recentemente)"
-        mais_antiga: "Mais antiga (aberta há mais tempo)"
-        atualizada_ha_mais_tempo: "Atualizada há mais tempo"
+        recently_updated: "Atualizada recentemente"
+        newest: "Mais nova (aberta recentemente)"
+        oldest: "Mais antiga (aberta há mais tempo)"
+        least_recently_updated: "Atualizada há mais tempo"
       submit: "Filtrar"
   projects:
     index:

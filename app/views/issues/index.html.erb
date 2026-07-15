@@ -64,7 +64,7 @@
     </div>
 
     <div class="floating-label-group">
-      <%= form.select :sort, options_for_select([[t("issues.filters.sort_options.atualizada_recentemente"), "atualizada_recentemente"], [t("issues.filters.sort_options.mais_nova"), "mais_nova"], [t("issues.filters.sort_options.mais_antiga"), "mais_antiga"], [t("issues.filters.sort_options.atualizada_ha_mais_tempo"), "atualizada_ha_mais_tempo"]], @active_search_params["sort"]), {}, class: "select-control", data: { controller: "select" }, id: "select_sort" %>
+      <%= form.select :sort, options_for_select([[t("issues.filters.sort_options.recently_updated"), "recently_updated"], [t("issues.filters.sort_options.newest"), "newest"], [t("issues.filters.sort_options.oldest"), "oldest"], [t("issues.filters.sort_options.least_recently_updated"), "least_recently_updated"]], @active_search_params["sort"]), {}, class: "select-control", data: { controller: "select" }, id: "select_sort" %>
       <%= form.label :sort, t("issues.filters.sort"), for: "select_sort" %>
     </div>
 

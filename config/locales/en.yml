@@ -44,10 +44,10 @@ en:
       all_assignees: "All issues"
       sort: "Sort by"
       sort_options:
-        atualizada_recentemente: "Recently updated"
-        mais_nova: "Newest (recently opened)"
-        mais_antiga: "Oldest (opened longest ago)"
-        atualizada_ha_mais_tempo: "Least recently updated"
+        recently_updated: "Recently updated"
+        newest: "Newest (recently opened)"
+        oldest: "Oldest (opened longest ago)"
+        least_recently_updated: "Least recently updated"
       submit: "Filter"
   projects:
     index:
