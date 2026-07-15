@@ -34,7 +34,7 @@ class IssuesController < ApplicationController
 
   def normalized_search_params
     search_params.to_h.tap do |filters|
-      if request.query_parameters.except("page").empty?
+      if request.query_parameters.except("page", "locale", "group_by_project").empty?
         filters["labels"] = Issue::DEFAULT_LABELS
         filters["updated_since"] = "365"
         filters["assignee_status"] = "unassigned"
