@@ -112,7 +112,16 @@ module Github
       request["Authorization"] = "Bearer #{token}"
       request["X-GitHub-Api-Version"] = "2022-11-28"
       request["If-None-Match"] = etag if etag.present?
-      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }
+      retries = 0
+      begin
+        response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }
+      rescue EOFError, Errno::ECONNRESET, OpenSSL::SSL::SSLError, Net::ReadTimeout, SocketError => e
+        retries += 1
+        raise e if retries > 3
+        
+        sleep(2 ** retries) # Exponential backoff: 2s, 4s, 8s
+        retry
+      end
 
       return response unless response.is_a?(Net::HTTPRedirection) && response.code != "304"
       raise "Too many GitHub redirects" if redirects_remaining.zero?
