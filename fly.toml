@@ -28,5 +28,6 @@ console_command = '/rails/bin/rails console'
 [[vm]]
   memory = '256mb'
   cpus = 1
+  cpu_kind = "shared"
   memory_mb = 256
 swap_size_mb = 512
