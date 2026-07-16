@@ -28,7 +28,7 @@ It curates an extensive catalog of canonical Ruby and Rails open-source projects
 
 ## Catalog sources
 
-The catalog combines the upstream application list with a small, hand-curated set of canonical Ruby and Rails repositories in `config/curated_projects.yml`. The curated file is intentionally selective: it is meant for projects that are important references for the ecosystem, not for bulk-importing every repository from large organizations.
+The catalog relies entirely on a hand-curated set of canonical Ruby and Rails repositories defined in `config/curated_projects.yml`. The curated list is intentionally selective: it is meant for projects that are important references for the ecosystem, ensuring high-quality contribution opportunities while protecting GitHub API rate limits.
 
 ### Fetching All Issues
 By default, the application only syncs issues with the labels `good first issue` or `help wanted` to maintain a curated experience for beginners. 

@@ -2,7 +2,6 @@ require "test_helper"
 require "net/http"
 
 class GithubClientsTest < ActiveSupport::TestCase
-
   # IssuesClient Tests
   test "IssuesClient raises error if token is missing" do
     client = Github::IssuesClient.new(token: "")
