@@ -5,7 +5,8 @@ class IssuesController < ApplicationController
     @active_search_params = normalized_search_params
     @group_by_project = params.fetch(:group_by_project, "true") == "true"
 
-    scoped_issues = IssueSearchQuery.new(Issue.all, @active_search_params).call
+    base_scope = Issue.joins(:project).where(projects: { active: true })
+    scoped_issues = IssueSearchQuery.new(base_scope, @active_search_params).call
     @project_issue_counts = scoped_issues.unscope(:includes, :order).group(:project_id).count
     @pagy, @issues = pagy(scoped_issues, limit: 30, size: [ 1, 4, 4, 1 ])
 
