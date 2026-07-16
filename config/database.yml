@@ -95,14 +95,14 @@ production:
     <<: *primary_production
     database: contribute_on_rails_production_cache
     migrations_paths: db/cache_migrate
-    url: <%= URI.parse(ENV["DATABASE_URL"]).tap { |url| url.path += "_cache" } if ENV["DATABASE_URL"] %>
+    url: <%= ENV["DATABASE_URL"] ? URI.parse(ENV["DATABASE_URL"]).tap { |u| u.path = u.path.empty? ? "/_cache" : "#{u.path}_cache" }.to_s : nil %>
   queue:
     <<: *primary_production
     database: contribute_on_rails_production_queue
     migrations_paths: db/queue_migrate
-    url: <%= URI.parse(ENV["DATABASE_URL"]).tap { |url| url.path += "_queue" } if ENV["DATABASE_URL"] %>
+    url: <%= ENV["DATABASE_URL"] ? URI.parse(ENV["DATABASE_URL"]).tap { |u| u.path = u.path.empty? ? "/_queue" : "#{u.path}_queue" }.to_s : nil %>
   cable:
     <<: *primary_production
     database: contribute_on_rails_production_cable
     migrations_paths: db/cable_migrate
-    url: <%= URI.parse(ENV["DATABASE_URL"]).tap { |url| url.path += "_cable" } if ENV["DATABASE_URL"] %>
+    url: <%= ENV["DATABASE_URL"] ? URI.parse(ENV["DATABASE_URL"]).tap { |u| u.path = u.path.empty? ? "/_cable" : "#{u.path}_cable" }.to_s : nil %>
