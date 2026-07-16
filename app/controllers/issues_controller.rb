@@ -1,6 +1,6 @@
 class IssuesController < ApplicationController
   def index
-    return redirect_to issues_path if request.query_parameters.except("page", "locale", "group_by_project").present? && normalized_search_params.values.all?(&:blank?)
+    return redirect_to issues_path(request.query_parameters.slice("group_by_project")) if request.query_parameters.except("page", "locale", "group_by_project").present? && normalized_search_params.values.all?(&:blank?)
 
     @active_search_params = normalized_search_params
     @group_by_project = params.fetch(:group_by_project, "true") == "true"

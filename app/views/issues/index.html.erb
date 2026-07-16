@@ -33,6 +33,7 @@
   </header>
 
   <%= form_with url: issues_path, method: :get, class: "relative z-20 mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-4 dark:border-slate-800 dark:bg-slate-900 animate-fade-in-up" do |form| %>
+    <%= form.hidden_field :group_by_project, value: @group_by_project %>
     <div class="floating-label-group md:col-span-2">
       <%= form.search_field :q, value: @active_search_params["q"], placeholder: " ", id: "input_q", class: "h-11 w-full rounded-xl border border-slate-300 px-4 pt-3 text-slate-900 shadow-sm outline-none ring-0 focus:border-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-slate-700" %>
       <%= form.label :q, t("issues.filters.search"), for: "input_q" %>

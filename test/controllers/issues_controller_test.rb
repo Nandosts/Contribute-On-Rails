@@ -69,6 +69,12 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to issues_url
   end
 
+  test "preserves group_by_project parameter when redirecting empty filters" do
+    get issues_url, params: { q: "", project_id: "", organization: "", category: "", assignee_status: "", labels: [ "" ], group_by_project: "false" }
+
+    assert_redirected_to issues_url(group_by_project: "false")
+  end
+
   test "renders an empty state when filters match nothing" do
     get issues_url, params: { q: "nope" }
 
