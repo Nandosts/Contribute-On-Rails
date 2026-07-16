@@ -430,3 +430,78 @@
 - owner: iancanderson
   repo: ingreedy
   category: Ruby Ecosystem
+- owner: ManageIQ
+  repo: manageiq
+  category: Rails Applications
+- owner: code-dot-org
+  repo: code-dot-org
+  category: Rails Applications
+- owner: autolab
+  repo: Autolab
+  category: Rails Applications
+- owner: openfoodfoundation
+  repo: openfoodnetwork
+  category: Rails Applications
+- owner: TheOdinProject
+  repo: theodinproject
+  category: Rails Applications
+- owner: freeCodeCamp
+  repo: devdocs
+  category: Developer Tooling
+- owner: archivesspace
+  repo: archivesspace
+  category: Rails Applications
+- owner: annict
+  repo: annict
+  category: Rails Applications
+- owner: karafka
+  repo: karafka
+  category: Background Jobs
+- owner: standardnotes
+  repo: listed
+  category: Rails Applications
+- owner: publify
+  repo: publify
+  category: Rails Applications
+- owner: nanoc
+  repo: nanoc
+  category: Ruby Ecosystem
+- owner: havenweb
+  repo: haven
+  category: Rails Applications
+- owner: thoughtbot
+  repo: suspenders
+  category: Developer Tooling
+- owner: lewagon
+  repo: rails-templates
+  category: Developer Tooling
+- owner: nickjj
+  repo: docker-rails-example
+  category: Developer Tooling
+- owner: shakacode
+  repo: react-webpack-rails-tutorial
+  category: Learning
+- owner: fnando
+  repo: kitabu
+  category: Ruby Ecosystem
+- owner: errbit
+  repo: errbit
+  category: Developer Tooling
+- owner: hellostealth
+  repo: stealth
+  category: Ruby Ecosystem
+- owner: dejan
+  repo: rails_panel
+  category: Developer Tooling
+- owner: SpinaCMS
+  repo: Spina
+  category: Rails Applications
+- owner: refinery
+  repo: refinerycms
+  category: Rails Applications
+- owner: coopdevs
+  repo: timeoverflow
+  category: Rails Applications
+- owner: codevise
+  repo: pageflow
+  category: Rails Applications
