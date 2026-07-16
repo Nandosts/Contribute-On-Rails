@@ -3,7 +3,7 @@
 
 A small Rails app that helps people find contribution-friendly issues across open-source Ruby and Rails projects.
 
-It imports repositories from [`asyraffff/Open-Source-Ruby-and-Rails-Apps`](https://github.com/asyraffff/Open-Source-Ruby-and-Rails-Apps), refreshes open GitHub issues daily, and surfaces issues labeled `good first issue` or `help wanted` updated in the last 12 months by default.
+It curates an extensive catalog of canonical Ruby and Rails open-source projects, refreshes open GitHub issues daily, and surfaces issues labeled `good first issue` or `help wanted` updated in the last 12 months by default.
 
 ## Stack
 

@@ -2,47 +2,6 @@ require "test_helper"
 require "net/http"
 
 class GithubClientsTest < ActiveSupport::TestCase
-  # ReadmeClient Tests
-  test "ReadmeClient returns body on success" do
-    mock_response = ::Net::HTTPSuccess.new("1.1", "200", "OK")
-    mock_response.define_singleton_method(:body) { "markdown content" }
-
-    class << ::Net::HTTP
-      alias_method :original_get_response, :get_response
-      define_method(:get_response) { |url| @mock_response }
-    end
-    ::Net::HTTP.instance_variable_set(:@mock_response, mock_response)
-
-    assert_equal "markdown content", Github::ReadmeClient.new.call
-  ensure
-    class << ::Net::HTTP
-      if method_defined?(:original_get_response)
-        alias_method :get_response, :original_get_response
-        remove_method :original_get_response
-      end
-    end
-  end
-
-  test "ReadmeClient raises error on failure" do
-    mock_response = ::Net::HTTPBadRequest.new("1.1", "400", "Bad Request")
-
-    class << ::Net::HTTP
-      alias_method :original_get_response, :get_response
-      define_method(:get_response) { |url| @mock_response }
-    end
-    ::Net::HTTP.instance_variable_set(:@mock_response, mock_response)
-
-    assert_raises(RuntimeError) do
-      Github::ReadmeClient.new.call
-    end
-  ensure
-    class << ::Net::HTTP
-      if method_defined?(:original_get_response)
-        alias_method :get_response, :original_get_response
-        remove_method :original_get_response
-      end
-    end
-  end
 
   # IssuesClient Tests
   test "IssuesClient raises error if token is missing" do
