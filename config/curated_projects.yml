@@ -1,6 +1,4 @@
-# Projects intentionally curated beyond the upstream catalog.
-# Keep this list focused on canonical Ruby/Rails projects that are useful
-# references for contributors and likely to remain relevant over time.
+---
 - owner: rails
   repo: rails
   category: Core Ruby and Rails
@@ -9,9 +7,6 @@
   category: Core Ruby and Rails
 - owner: rubygems
   repo: rubygems
-  category: Core Ruby and Rails
-- owner: rubygems
-  repo: bundler
   category: Core Ruby and Rails
 - owner: ruby
   repo: irb
@@ -37,9 +32,6 @@
 - owner: rubocop
   repo: rubocop-rails
   category: Developer Tooling
-- owner: rspec
-  repo: rspec-core
-  category: Testing
 - owner: rspec
   repo: rspec-rails
   category: Testing
@@ -142,9 +134,6 @@
 - owner: rubysherpas
   repo: paranoia
   category: Rails Ecosystem
-- owner: rubys
-  repo: awdwr
-  category: Learning
 - owner: ankane
   repo: searchkick
   category: Rails Ecosystem
@@ -217,14 +206,8 @@
 - owner: fnando
   repo: browser
   category: Ruby Ecosystem
-- owner: prodis
-  repo: correios-cep
-  category: Ruby Ecosystem
 - owner: pagarme
   repo: pagarme-ruby-sdk
-  category: Ruby Ecosystem
-- owner: Iugu
-  repo: iugu-ruby
   category: Ruby Ecosystem
 - owner: nandosts
   repo: contribute-on-rails
@@ -295,7 +278,7 @@
 - owner: omniauth
   repo: omniauth
   category: Security
-- owner: mongoid
+- owner: mongodb
   repo: mongoid
   category: Web Infrastructure
 - owner: resque
@@ -376,9 +359,6 @@
 - owner: gitlabhq
   repo: gitlabhq
   category: Rails Applications
-- owner: maybe-finance
-  repo: maybe
-  category: Rails Applications
 - owner: postalserver
   repo: postal
   category: Rails Applications
@@ -427,9 +407,6 @@
 - owner: rubysec
   repo: ruby-advisory-db
   category: Developer Tooling
-- owner: iancanderson
-  repo: ingreedy
-  category: Ruby Ecosystem
 - owner: ManageIQ
   repo: manageiq
   category: Rails Applications

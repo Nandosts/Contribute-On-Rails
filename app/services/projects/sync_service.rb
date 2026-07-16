@@ -7,6 +7,7 @@ module Projects
       synced_names = []
 
       Project.transaction do
+        imported_ids = []
         entries.each do |entry|
           progress += 1
           print "\rSyncing Projects: #{progress}/#{total} (#{entry.repo})".ljust(80) if $stdout.tty?
@@ -14,9 +15,9 @@ module Projects
           project = Project.find_or_initialize_by(github_owner: entry.owner, github_repo: entry.repo)
           project.update!(name: entry.name, source_category: entry.category, github_url: entry.url, active: true, fetch_all_issues: entry.fetch_all_issues)
           synced_names << entry.repo
+          imported_ids << project.id
         end
 
-        imported_ids = Project.where(github_owner: entries.map(&:owner), github_repo: entries.map(&:repo)).pluck(:id)
         Project.where.not(id: imported_ids).update_all(active: false, updated_at: Time.current)
       end
 
