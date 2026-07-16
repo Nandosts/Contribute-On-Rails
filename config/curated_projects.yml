@@ -505,3 +505,366 @@
 - owner: codevise
   repo: pageflow
   category: Rails Applications
+- owner: expertiza
+  repo: expertiza
+  category: Rails Applications
+- owner: projectblacklight
+  repo: spotlight
+  category: Rails Applications
+- owner: connorshea
+  repo: vglist
+  category: Rails Applications
+- owner: joyofrails
+  repo: joyofrails.com
+  category: Rails Applications
+- owner: aces
+  repo: cbrain
+  category: Rails Applications
+- owner: fastruby
+  repo: points
+  category: Rails Applications
+- owner: codidact
+  repo: qpixel
+  category: Rails Applications
+- owner: calagator
+  repo: calagator
+  category: Rails Applications
+- owner: tidewave-ai
+  repo: tidewave_rails
+  category: Developer Tooling
+- owner: railspulse-org
+  repo: rails_pulse
+  category: Developer Tooling
+- owner: excid3
+  repo: revise_auth
+  category: Rails Ecosystem
+- owner: basecamp
+  repo: audits1984
+  category: Developer Tooling
+- owner: rubymonolith
+  repo: superform
+  category: Rails Ecosystem
+- owner: maglevhq
+  repo: maglev-core
+  category: Rails Applications
+- owner: Rails-Designer
+  repo: rails_icons
+  category: Rails Ecosystem
+- owner: rubyatscale
+  repo: packs-rails
+  category: Developer Tooling
+- owner: thuss
+  repo: standalone-migrations
+  category: Rails Ecosystem
+- owner: rails-sqlserver
+  repo: activerecord-sqlserver-adapter
+  category: Rails Ecosystem
+- owner: ankane
+  repo: mailkick
+  category: Rails Ecosystem
+- owner: pupilfirst
+  repo: pupilfirst
+  category: Developer Tooling
+- owner: activeagents
+  repo: activeagent
+  category: Rails Applications
+- owner: textacular
+  repo: textacular
+  category: Ruby Ecosystem
+- owner: enriclluelles
+  repo: route_translator
+  category: Rails Applications
+- owner: rails
+  repo: jquery-rails
+  category: Rails Ecosystem
+- owner: rgeo
+  repo: activerecord-postgis-adapter
+  category: Ruby Ecosystem
+- owner: rails
+  repo: jsbundling-rails
+  category: Rails Ecosystem
+- owner: TarteelAI
+  repo: quranic-universal-library
+  category: Ruby Ecosystem
+- owner: palkan
+  repo: anyway_config
+  category: Developer Tooling
+- owner: gma
+  repo: nesta
+  category: Ruby Ecosystem
+- owner: capistrano
+  repo: rails
+  category: Rails Ecosystem
+- owner: jruby
+  repo: warbler
+  category: Ruby Ecosystem
+- owner: codeplant
+  repo: simple-navigation
+  category: Rails Applications
+- owner: teoljungberg
+  repo: fx
+  category: Rails Ecosystem
+- owner: integrallis
+  repo: stripe_event
+  category: Rails Applications
+- owner: fpsvogel
+  repo: learn-ruby
+  category: Rails Ecosystem
+- owner: wearefine
+  repo: fae
+  category: Rails Ecosystem
+- owner: ankane
+  repo: neighbor
+  category: Rails Ecosystem
+- owner: motor-admin
+  repo: motor-admin-rails
+  category: Rails Ecosystem
+- owner: shadabahmed
+  repo: logstasher
+  category: Rails Ecosystem
+- owner: basecamp
+  repo: console1984
+  category: Rails Ecosystem
+- owner: jekyll
+  repo: jekyll-redirect-from
+  category: Testing
+- owner: obie
+  repo: claude-on-rails
+  category: Rails Ecosystem
+- owner: activeadmin
+  repo: arbre
+  category: Ruby Ecosystem
+- owner: sunny
+  repo: actor
+  category: Ruby Ecosystem
+- owner: jamesmartin
+  repo: inline_svg
+  category: Rails Ecosystem
+- owner: excid3
+  repo: madmin
+  category: Rails Applications
+- owner: ledermann
+  repo: unread
+  category: Rails Ecosystem
+- owner: thoughtbot
+  repo: flutie
+  category: Rails Applications
+- owner: countries
+  repo: country_select
+  category: Rails Ecosystem
+- owner: pat
+  repo: combustion
+  category: Rails Ecosystem
+- owner: tricknotes
+  repo: ember-cli-rails
+  category: Rails Ecosystem
+- owner: huacnlee
+  repo: rucaptcha
+  category: Rails Ecosystem
+- owner: klausmeyer
+  repo: docker-registry-browser
+  category: Rails Ecosystem
+- owner: davidcelis
+  repo: api-pagination
+  category: Rails Ecosystem
+- owner: Shopify
+  repo: ruby-lsp-rails
+  category: Rails Ecosystem
+- owner: telegram-bot-rb
+  repo: telegram-bot
+  category: Rails Ecosystem
+- owner: josefarias
+  repo: hotwire_combobox
+  category: Rails Ecosystem
+- owner: daqing
+  repo: rabel
+  category: Rails Ecosystem
+- owner: rails
+  repo: cssbundling-rails
+  category: Rails Ecosystem
+- owner: usetrmnl
+  repo: terminus
+  category: Ruby Ecosystem
+- owner: etewiah
+  repo: property_web_builder
+  category: Rails Ecosystem
+- owner: rails-lambda
+  repo: lamby
+  category: Rails Ecosystem
+- owner: aws
+  repo: aws-sdk-rails
+  category: Rails Ecosystem
+- owner: drwl
+  repo: annotaterb
+  category: Rails Ecosystem
+- owner: jbox-web
+  repo: ajax-datatables-rails
+  category: Rails Applications
+- owner: rails
+  repo: activerecord-session_store
+  category: Rails Ecosystem
+- owner: pcreux
+  repo: csv-importer
+  category: Rails Ecosystem
+- owner: ankane
+  repo: field_test
+  category: Rails Ecosystem
+- owner: minitest
+  repo: minitest-rails
+  category: Rails Ecosystem
+- owner: 18F
+  repo: identity-idp
+  category: Ruby Ecosystem
+- owner: rossta
+  repo: serviceworker-rails
+  category: Rails Ecosystem
+- owner: toptal
+  repo: database_validations
+  category: Ruby Ecosystem
+- owner: maquina-app
+  repo: rails-mcp-server
+  category: Rails Ecosystem
+- owner: basecamp
+  repo: google_sign_in
+  category: Rails Applications
+- owner: jekyll
+  repo: jekyll-import
+  category: Ruby Ecosystem
+- owner: rails
+  repo: rubocop-rails-omakase
+  category: Rails Ecosystem
+- owner: calebhearth
+  repo: formulaic
+  category: Ruby Ecosystem
+- owner: oivoodoo
+  repo: devise_masquerade
+  category: Ruby Ecosystem
+- owner: jnunemaker
+  repo: crack
+  category: Rails Ecosystem
+- owner: jpmcgrath
+  repo: shortener
+  category: Rails Applications
+- owner: e621ng
+  repo: e621ng
+  category: Ruby Ecosystem
+- owner: matestack
+  repo: matestack-ui-core
+  category: Rails Ecosystem
+- owner: radar
+  repo: distance_of_time_in_words
+  category: Rails Ecosystem
+- owner: anycable
+  repo: anycable-rails
+  category: Rails Applications
+- owner: yuki24
+  repo: rambulance
+  category: Rails Applications
+- owner: NARKOZ
+  repo: ginatra
+  category: Ruby Ecosystem
+- owner: simukappu
+  repo: activity_notification
+  category: Rails Ecosystem
+- owner: BaseSecrete
+  repo: active_analytics
+  category: Rails Applications
+- owner: cookpad
+  repo: garage
+  category: Rails Ecosystem
+- owner: zendesk
+  repo: racecar
+  category: Ruby Ecosystem
+- owner: exoego
+  repo: rspec-openapi
+  category: Testing
+- owner: rails-on-services
+  repo: apartment
+  category: Rails Applications
+- owner: RailsEventStore
+  repo: ecommerce
+  category: Rails Applications
+- owner: ostinelli
+  repo: apnotic
+  category: Developer Tooling
+- owner: opal
+  repo: opal-rails
+  category: Rails Ecosystem
+- owner: untra
+  repo: polyglot
+  category: Developer Tooling
+- owner: shakacode
+  repo: shakapacker
+  category: Rails Applications
+- owner: rollbar
+  repo: rollbar-gem
+  category: Ruby Ecosystem
+- owner: mgomes
+  repo: api_auth
+  category: Rails Ecosystem
+- owner: yaroslav
+  repo: russian
+  category: Rails Ecosystem
+- owner: jruby
+  repo: activerecord-jdbc-adapter
+  category: Ruby Ecosystem
+- owner: alexbevi
+  repo: redmine_knowledgebase
+  category: Ruby Ecosystem
+- owner: rmosolgo
+  repo: graphiql-rails
+  category: Rails Applications
+- owner: Shopify
+  repo: better-html
+  category: Rails Ecosystem
+- owner: validates-email-format-of
+  repo: validates_email_format_of
+  category: Rails Ecosystem
+- owner: baoagency
+  repo: polaris_view_components
+  category: Ruby Ecosystem
+- owner: palkan
+  repo: view_component-contrib
+  category: Developer Tooling
+- owner: cloudinary
+  repo: cloudinary_gem
+  category: Rails Ecosystem
+- owner: reidmorrison
+  repo: rails_semantic_logger
+  category: Rails Applications
+- owner: algolia
+  repo: algoliasearch-rails
+  category: Rails Ecosystem
+- owner: Mange
+  repo: roadie-rails
+  category: Rails Ecosystem
+- owner: excid3
+  repo: prefixed_ids
+  category: Rails Ecosystem
+- owner: BaseSecrete
+  repo: rorvswild
+  category: Rails Applications
+- owner: ForestAdmin
+  repo: forest-rails
+  category: Rails Applications
+- owner: Shopify
+  repo: measured
+  category: Rails Ecosystem
+- owner: excid3
+  repo: simple_discussion
+  category: Rails Ecosystem
+- owner: ankane
+  repo: distribute_reads
+  category: Rails Ecosystem
+- owner: hanami
+  repo: hanami-api
+  category: Testing
+- owner: ombulabs
+  repo: claude-code_rails-upgrade-skill
+  category: Rails Ecosystem
+- owner: matthodan
+  repo: jekyll-asset-pipeline
+  category: Ruby Ecosystem
+- owner: yippee-fun
+  repo: phlex-rails
+  category: Rails Ecosystem
