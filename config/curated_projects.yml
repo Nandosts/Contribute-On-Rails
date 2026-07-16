@@ -229,3 +229,186 @@
 - owner: nandosts
   repo: contribute-on-rails
   category: Rails Applications
+- owner: phlex-ruby
+  repo: phlex
+  category: Ruby Ecosystem
+- owner: bensheldon
+  repo: good_job
+  category: Background Jobs
+- owner: ddnexus
+  repo: pagy
+  category: Rails Ecosystem
+- owner: anycable
+  repo: anycable
+  category: Web Infrastructure
+- owner: hanami
+  repo: hanami
+  category: Ruby Ecosystem
+- owner: jeremyevans
+  repo: sequel
+  category: Web Infrastructure
+- owner: jeremyevans
+  repo: roda
+  category: Ruby Ecosystem
+- owner: jeremyevans
+  repo: rodauth
+  category: Rails Ecosystem
+- owner: standardrb
+  repo: standard
+  category: Developer Tooling
+- owner: rubycritic
+  repo: rubycritic
+  category: Developer Tooling
+- owner: troessner
+  repo: reek
+  category: Developer Tooling
+- owner: minitest
+  repo: minitest
+  category: Testing
+- owner: decidim
+  repo: decidim
+  category: Rails Applications
+- owner: activeadmin
+  repo: activeadmin
+  category: Rails Ecosystem
+- owner: avo-hq
+  repo: avo
+  category: Rails Ecosystem
+- owner: shrinerb
+  repo: shrine
+  category: Ruby Ecosystem
+- owner: thoughtbot
+  repo: administrate
+  category: Rails Ecosystem
+- owner: mikel
+  repo: mail
+  category: Core Ruby and Rails
+- owner: kaminari
+  repo: kaminari
+  category: Rails Ecosystem
+- owner: ruby-grape
+  repo: grape
+  category: Ruby Ecosystem
+- owner: doorkeeper-gem
+  repo: doorkeeper
+  category: Security
+- owner: omniauth
+  repo: omniauth
+  category: Security
+- owner: mongoid
+  repo: mongoid
+  category: Web Infrastructure
+- owner: resque
+  repo: resque
+  category: Background Jobs
+- owner: collectiveidea
+  repo: delayed_job
+  category: Background Jobs
+- owner: CanCanCommunity
+  repo: cancancan
+  category: Rails Ecosystem
+- owner: aasm
+  repo: aasm
+  category: Ruby Ecosystem
+- owner: mbleigh
+  repo: acts-as-taggable-on
+  category: Rails Ecosystem
+- owner: carrierwaveuploader
+  repo: carrierwave
+  category: Rails Ecosystem
+- owner: dry-rb
+  repo: dry-validation
+  category: Ruby Ecosystem
+- owner: rom-rb
+  repo: rom
+  category: Ruby Ecosystem
+- owner: trailblazer
+  repo: trailblazer
+  category: Ruby Ecosystem
+- owner: flyerhzm
+  repo: bullet
+  category: Developer Tooling
+- owner: rack
+  repo: rack-attack
+  category: Security
+- owner: ankane
+  repo: blazer
+  category: Rails Ecosystem
+- owner: ankane
+  repo: ahoy
+  category: Rails Ecosystem
+- owner: ankane
+  repo: chartkick
+  category: Rails Ecosystem
+- owner: basecamp
+  repo: kamal
+  category: Web Infrastructure
+- owner: basecamp
+  repo: thruster
+  category: Web Infrastructure
+- owner: basecamp
+  repo: mission_control-jobs
+  category: Background Jobs
+- owner: Shopify
+  repo: liquid
+  category: Ruby Ecosystem
+- owner: rmosolgo
+  repo: graphql-ruby
+  category: Ruby Ecosystem
+- owner: ruby
+  repo: rake
+  category: Core Ruby and Rails
+- owner: zammad
+  repo: zammad
+  category: Rails Applications
+- owner: huginn
+  repo: huginn
+  category: Rails Applications
+- owner: lobsters
+  repo: lobsters
+  category: Rails Applications
+- owner: sharetribe
+  repo: sharetribe
+  category: Rails Applications
+- owner: instructure
+  repo: canvas-lms
+  category: Rails Applications
+- owner: gitlabhq
+  repo: gitlabhq
+  category: Rails Applications
+- owner: maybe-finance
+  repo: maybe
+  category: Rails Applications
+- owner: postalserver
+  repo: postal
+  category: Rails Applications
+- owner: gollum
+  repo: gollum
+  category: Ruby Ecosystem
+- owner: diaspora
+  repo: diaspora
+  category: Rails Applications
+- owner: capistrano
+  repo: capistrano
+  category: Developer Tooling
+- owner: sinatra
+  repo: sinatra
+  category: Core Ruby and Rails
+- owner: javan
+  repo: whenever
+  category: Rails Ecosystem
+- owner: github-changelog-generator
+  repo: github-changelog-generator
+  category: Developer Tooling
+- owner: github
+  repo: scientist
+  category: Ruby Ecosystem
+- owner: pry
+  repo: pry
+  category: Developer Tooling
+- owner: alexreisner
+  repo: geocoder
+  category: Rails Ecosystem
+- owner: norman
+  repo: friendly_id
+  category: Rails Ecosystem
