@@ -8,7 +8,7 @@ module Projects
           owner: entry.fetch("owner"),
           repo: entry.fetch("repo"),
           name: entry.fetch("repo").tr("-", " ").titleize,
-          category: entry.fetch("category"),
+          category: entry.fetch("category", "Ruby Ecosystem"),
           url: "https://github.com/#{entry.fetch("owner")}/#{entry.fetch("repo")}",
           fetch_all_issues: entry.fetch("fetch_all_issues", false)
         )

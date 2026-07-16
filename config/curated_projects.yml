@@ -414,13 +414,19 @@
   category: Rails Ecosystem
 - owner: Freika
   repo: dawarich
+  category: Ruby Ecosystem
 - owner: crmne
   repo: ruby_llm
+  category: Ruby Ecosystem
 - owner: ctran
   repo: annotate_models
+  category: Ruby Ecosystem
 - owner: simplecov-ruby
   repo: simplecov
+  category: Developer Tooling
 - owner: rubysec
   repo: ruby-advisory-db
+  category: Developer Tooling
 - owner: iancanderson
   repo: ingreedy
+  category: Ruby Ecosystem
