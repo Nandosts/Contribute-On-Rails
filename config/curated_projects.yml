@@ -208,7 +208,7 @@
 - owner: heartcombo
   repo: responders
   category: Rails Ecosystem
-- owner: BoletoBancario
+- owner: kivanio
   repo: brcobranca
   category: Ruby Ecosystem
 - owner: fnando
@@ -217,11 +217,11 @@
 - owner: fnando
   repo: browser
   category: Ruby Ecosystem
-- owner: thiagopradi
+- owner: prodis
   repo: correios-cep
   category: Ruby Ecosystem
 - owner: pagarme
-  repo: pagarme-ruby
+  repo: pagarme-ruby-sdk
   category: Ruby Ecosystem
 - owner: Iugu
   repo: iugu-ruby
@@ -256,7 +256,7 @@
 - owner: standardrb
   repo: standard
   category: Developer Tooling
-- owner: rubycritic
+- owner: whitesmith
   repo: rubycritic
   category: Developer Tooling
 - owner: troessner
@@ -412,3 +412,15 @@
 - owner: norman
   repo: friendly_id
   category: Rails Ecosystem
+- owner: Freika
+  repo: dawarich
+- owner: crmne
+  repo: ruby_llm
+- owner: ctran
+  repo: annotate_models
+- owner: simplecov-ruby
+  repo: simplecov
+- owner: rubysec
+  repo: ruby-advisory-db
+- owner: iancanderson
+  repo: ingreedy
