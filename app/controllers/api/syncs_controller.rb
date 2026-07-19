@@ -3,10 +3,14 @@ module Api
     before_action :authenticate_request
 
     def create
-      Projects::SyncJob.perform_later
-      Issues::SyncJob.perform_later
+      Thread.new do
+        Rails.application.executor.wrap do
+          Projects::SyncJob.perform_now
+          Issues::SyncJob.perform_now
+        end
+      end
 
-      render json: { status: "enqueued" }, status: :accepted
+      render json: { status: "accepted" }, status: :accepted
     end
 
     private
