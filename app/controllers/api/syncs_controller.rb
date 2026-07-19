@@ -3,10 +3,12 @@ module Api
     before_action :authenticate_request
 
     def create
+      fetch_all = params[:fetch_all] == "true"
+
       Thread.new do
         Rails.application.executor.wrap do
           Projects::SyncJob.perform_now
-          Issues::SyncJob.perform_now
+          Issues::SyncJob.perform_now(fetch_all: fetch_all)
         end
       end
 
