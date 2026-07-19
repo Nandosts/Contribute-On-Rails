@@ -15,7 +15,7 @@ console_command = '/rails/bin/rails console'
   PORT = '8080'
 
 [processes]
-  app = './bin/rails server'
+  app = './bin/thrust ./bin/rails server'
 
 [http_service]
   internal_port = 8080
