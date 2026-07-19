@@ -26,6 +26,7 @@ module Issues
 
           SyncService.new.call(project, force_fetch: fetch_all)
           synced_names << "#{project.github_owner}/#{project.github_repo}"
+          GC.start
         rescue StandardError => error
           if error.message.include?("404")
             project.update!(active: false)
