@@ -12,7 +12,7 @@ console_command = '/rails/bin/rails console'
   release_command = './bin/rails db:prepare'
 
 [env]
-  PORT = '8080'
+  HTTP_PORT = '8080'
   SOLID_QUEUE_IN_PUMA = 'true'
 
 [processes]
