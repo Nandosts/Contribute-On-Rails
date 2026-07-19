@@ -10,4 +10,8 @@ Rails.application.routes.draw do
     end
   end
   resources :projects, only: %i[index show]
+
+  namespace :api do
+    resources :syncs, only: :create
+  end
 end

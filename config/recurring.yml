@@ -6,10 +6,10 @@ development:
     class: Issues::SyncJob
     schedule: every day at 3am
 
-production:
-  sync_projects:
-    class: Projects::SyncJob
-    schedule: every day at 2am
-  sync_issues:
-    class: Issues::SyncJob
-    schedule: every day at 3am
+# production:
+#   sync_projects:
+#     class: Projects::SyncJob
+#     schedule: every day at 2am
+#   sync_issues:
+#     class: Issues::SyncJob
+#     schedule: every day at 3am
