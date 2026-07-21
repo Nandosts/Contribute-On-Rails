@@ -15,6 +15,12 @@ en:
       opened: "Opened %{date}"
       updated: "Updated %{date}"
       assigned_to: "Assigned to %{names}"
+      comments_count:
+        one: "%{count} comment"
+        other: "%{count} comments"
+      pull_requests_count:
+        one: "%{count} related pull request"
+        other: "%{count} related pull requests"
       results:
         one: "%{count} matching issue"
         other: "%{count} matching issues"

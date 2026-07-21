@@ -25,6 +25,10 @@ module Issues
 
       Issue.transaction do
         response[:issues].each do |payload|
+          comments_count = payload.fetch("comments", 0)
+          pull_requests_count = payload["pull_requests_count"] ||
+            (client.respond_to?(:pull_requests_count) ? client.pull_requests_count(owner: project.github_owner, repo: project.github_repo, number: payload.fetch("number"), body: payload["body"]) : 0)
+
           issue = Issue.find_or_initialize_by(github_id: payload.fetch("id"))
           issue.update!(
             project:,
@@ -37,7 +41,9 @@ module Issues
             updated_at_from_github: payload["updated_at"],
             closed_at: payload["closed_at"],
             last_synced_at: now,
-            assignees: payload["assignees"] || []
+            assignees: payload["assignees"] || [],
+            comments_count: comments_count,
+            pull_requests_count: pull_requests_count
           )
           sync_labels(issue, payload.fetch("labels", []))
           seen_ids << issue.github_id

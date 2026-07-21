@@ -17,4 +17,12 @@ class GithubIssuesClientTest < ActiveSupport::TestCase
     results = client.open_issues(owner: "rails", repo: "rails")
     assert_equal payload, results[:issues]
   end
+
+  test "pull_requests_count parses body for pull request URLs when token is not present" do
+    client = Github::IssuesClient.new(token: nil)
+    body = "Fixes https://github.com/rails/rails/pull/12345 and https://github.com/rails/rails/pull/67890"
+
+    count = client.pull_requests_count(owner: "rails", repo: "rails", number: 100, body: body)
+    assert_equal 2, count
+  end
 end

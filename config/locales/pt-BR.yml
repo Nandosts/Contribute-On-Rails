@@ -31,6 +31,12 @@ pt-BR:
       opened: "Aberta em %{date}"
       updated: "Atualizada em %{date}"
       assigned_to: "Atribuída a %{names}"
+      comments_count:
+        one: "%{count} comentário"
+        other: "%{count} comentários"
+      pull_requests_count:
+        one: "%{count} pull request relacionado"
+        other: "%{count} pull requests relacionados"
       results:
         one: "%{count} issue encontrada"
         other: "%{count} issues encontradas"

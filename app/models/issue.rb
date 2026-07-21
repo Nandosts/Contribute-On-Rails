@@ -8,6 +8,7 @@ class Issue < ApplicationRecord
   validates :github_id, :number, :title, :state, :github_url, presence: true
   validates :github_id, uniqueness: true
   validates :number, uniqueness: { scope: :project_id }
+  validates :comments_count, :pull_requests_count, numericality: { greater_than_or_equal_to: 0 }
 
   scope :open, -> { where(state: "open") }
   scope :unassigned, -> { where("assignees IS NULL OR jsonb_array_length(assignees) = 0") }
@@ -15,6 +16,10 @@ class Issue < ApplicationRecord
 
   before_destroy :remember_labels, prepend: true
   after_destroy :cleanup_orphaned_labels
+
+  def has_pull_requests?
+    pull_requests_count > 0
+  end
 
   def assigned?
     assignees.present?

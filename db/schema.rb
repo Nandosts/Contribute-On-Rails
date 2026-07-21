@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_19_144719) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_21_103000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,6 +28,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_19_144719) do
     t.jsonb "assignees"
     t.text "body"
     t.datetime "closed_at"
+    t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.bigint "github_id", null: false
     t.string "github_url", null: false
@@ -35,6 +36,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_19_144719) do
     t.integer "number", null: false
     t.datetime "opened_at"
     t.bigint "project_id", null: false
+    t.integer "pull_requests_count", default: 0, null: false
     t.string "state", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false

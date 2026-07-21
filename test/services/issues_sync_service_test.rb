@@ -37,6 +37,8 @@ class IssuesSyncServiceTest < ActiveSupport::TestCase
       "created_at" => Time.current.iso8601,
       "updated_at" => Time.current.iso8601,
       "closed_at" => nil,
+      "comments" => 5,
+      "pull_requests_count" => 1,
       "labels" => [
         { "name" => "Good First Issue", "color" => "ffffff" },
         { "name" => "New Label", "color" => "000000" }
@@ -51,6 +53,8 @@ class IssuesSyncServiceTest < ActiveSupport::TestCase
 
     issue = Issue.find_by!(github_id: 2)
     assert_equal [ "Good First Issue", "New Label" ], issue.labels.pluck(:name).sort
+    assert_equal 5, issue.comments_count
+    assert_equal 1, issue.pull_requests_count
   end
 
   test "preserves local issues for labels that return 304 Not Modified" do

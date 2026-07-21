@@ -63,6 +63,24 @@ module Github
       end
     end
 
+    def pull_requests_count(owner:, repo:, number:, body: nil)
+      return 0 if body.blank?
+
+      pr_numbers = Set.new
+
+      # Match GitHub PR URLs: https://github.com/owner/repo/pull/123
+      body.scan(%r{github\.com/#{Regexp.escape(owner)}/#{Regexp.escape(repo)}/pull/(\d+)}i).flatten.each do |pr_num|
+        pr_numbers << pr_num.to_i
+      end
+
+      # Match explicit PR references like "PR #123", "pull #123", "pull request #123"
+      body.scan(/(?:pull\s*request|pull|pr)s?\s*[:#]\s*(\d+)/i).flatten.each do |pr_num|
+        pr_numbers << pr_num.to_i
+      end
+
+      pr_numbers.size
+    end
+
     private
 
     attr_reader :token
