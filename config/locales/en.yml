@@ -9,10 +9,10 @@ en:
     random_project: "Choose a random project"
     pagination: "Issue pages"
     starter_mode:
-      label: "Starter mode"
+      label: "New contributor"
       description: "Good First Issue and Help Wanted"
-      toggle: "Toggle starter mode"
-      cookie_tooltip: "Your Starter Mode preference is saved in this browser with a cookie. You can remove either label from the filters at any time."
+      toggle: "Toggle the new contributor filter"
+      cookie_tooltip: "Your New Contributor preference is saved in this browser with a cookie. You can remove either label from the filters at any time."
     saved_searches:
       label: "Saved searches"
       description: "Keep your favorite filter combinations in this browser."
@@ -32,7 +32,7 @@ en:
     index:
       title: "Open issues"
       heading: "Open issues worth contributing to"
-      description: "Browse open GitHub issues from curated Ruby and Rails projects. By default, results include good first issue and help wanted labels."
+      description: "Find a contribution that fits you in curated Ruby and Rails projects. The New Contributor filter highlights issues communities have marked as welcoming entry points, and you can adjust the labels at any time."
       opened: "Opened %{date}"
       updated: "Updated %{date}"
       assigned_to: "Assigned to %{names}"

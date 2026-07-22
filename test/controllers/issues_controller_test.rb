@@ -19,7 +19,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_select "input[type=submit][value=Filter]"
     assert_select "select[name=updated_since]"
     assert_select "p", text: /Opened/
-    assert_select "button[role=switch][aria-checked=true]", text: /Starter mode/
+    assert_select "button[role=switch][aria-checked=true]", text: /New contributor/
     assert_select "[role=tooltip]", text: /saved in this browser with a cookie/
     assert_select "div[data-controller=saved-searches][data-saved-searches-pristine-value=true]"
     assert_select "input[data-saved-searches-target=name]"

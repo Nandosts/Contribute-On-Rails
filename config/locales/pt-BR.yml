@@ -25,10 +25,10 @@ pt-BR:
     random_project: "Escolher projeto aleatório"
     pagination: "Páginas de issues"
     starter_mode:
-      label: "Modo iniciante"
+      label: "Novo contribuinte"
       description: "Good First Issue e Help Wanted"
-      toggle: "Alternar modo iniciante"
-      cookie_tooltip: "Sua preferência do Modo Iniciante é salva neste navegador usando um cookie. Você pode remover qualquer uma das labels nos filtros."
+      toggle: "Alternar filtro para novo contribuinte"
+      cookie_tooltip: "Sua preferência de Novo Contribuinte é salva neste navegador usando um cookie. Você pode remover qualquer uma das labels nos filtros."
     saved_searches:
       label: "Buscas salvas"
       description: "Guarde suas combinações favoritas de filtros neste navegador."
@@ -48,7 +48,7 @@ pt-BR:
     index:
       title: "Issues abertas"
       heading: "Issues abertas para contribuir"
-      description: "Explore issues abertas do GitHub em projetos Ruby e Rails selecionados. Por padrão, os resultados incluem good first issue e help wanted."
+      description: "Encontre uma contribuição que combine com você em projetos Ruby e Rails selecionados. O filtro Novo Contribuinte destaca issues indicadas pelas comunidades como boas portas de entrada, e você pode ajustar as labels quando quiser."
       opened: "Aberta em %{date}"
       updated: "Atualizada em %{date}"
       assigned_to: "Atribuída a %{names}"
