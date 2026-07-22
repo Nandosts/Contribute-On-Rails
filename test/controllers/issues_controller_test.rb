@@ -21,6 +21,10 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_select "p", text: /Opened/
     assert_select "button[role=switch][aria-checked=true]", text: /Starter mode/
     assert_select "[role=tooltip]", text: /saved in this browser with a cookie/
+    assert_select "div[data-controller=saved-searches][data-saved-searches-pristine-value=true]"
+    assert_select "input[data-saved-searches-target=name]"
+    assert_select "button[data-action='saved-searches#save']", text: "Save current search"
+    assert_select "form[data-saved-searches-target=form]"
 
     # Collapsible project issues assertions
     assert_select "section[data-controller='collapsible']"

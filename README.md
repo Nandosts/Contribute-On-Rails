@@ -20,6 +20,7 @@ It curates an extensive catalog of canonical Ruby and Rails open-source projects
 - Persistent Starter Mode that preselects the `good first issue` and `help wanted` label filters
 - Unrestricted issue and label exploration when Starter Mode is disabled
 - Search by title, label, organization, project, and source category
+- Browser-local saved searches with an optional default filter combination
 - Grouped issue results by organization and repository
 - Searchable project filters, pagination, and random project discovery
 - Hand-curated catalog of important Ruby and Rails ecosystem projects

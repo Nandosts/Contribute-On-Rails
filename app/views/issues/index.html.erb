@@ -36,52 +36,73 @@
     </div>
   </header>
 
-  <%= form_with url: issues_path, method: :get, class: "relative z-20 mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-4 dark:border-slate-800 dark:bg-slate-900 animate-fade-in-up" do |form| %>
-    <%= form.hidden_field :group_by_project, value: @group_by_project %>
-    <div class="floating-label-group md:col-span-2">
-      <%= form.search_field :q, value: @active_search_params["q"], placeholder: " ", id: "input_q", class: "h-11 w-full rounded-xl border border-slate-300 px-4 pt-3 text-slate-900 shadow-sm outline-none ring-0 focus:border-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-slate-700" %>
-      <%= form.label :q, t("issues.filters.search"), for: "input_q" %>
-    </div>
+  <div
+    data-controller="saved-searches"
+    data-saved-searches-storage-key-value="contribute-on-rails.saved-searches.v1"
+    data-saved-searches-path-value="<%= issues_path %>"
+    data-saved-searches-pristine-value="<%= request.query_parameters.except('locale', 'group_by_project', 'page').empty? %>"
+    data-saved-searches-limit-value="10"
+    data-saved-searches-apply-label-value="<%= t('issues.saved_searches.apply') %>"
+    data-saved-searches-default-label-value="<%= t('issues.saved_searches.make_default') %>"
+    data-saved-searches-remove-default-label-value="<%= t('issues.saved_searches.remove_default') %>"
+    data-saved-searches-delete-label-value="<%= t('issues.saved_searches.delete') %>"
+    data-saved-searches-default-badge-value="<%= t('issues.saved_searches.default_badge') %>"
+    data-saved-searches-name-required-value="<%= t('issues.saved_searches.name_required') %>"
+    data-saved-searches-saved-message-value="<%= t('issues.saved_searches.saved') %>"
+    data-saved-searches-updated-message-value="<%= t('issues.saved_searches.updated') %>"
+    data-saved-searches-limit-message-value="<%= t('issues.saved_searches.limit') %>"
+    data-saved-searches-storage-error-value="<%= t('issues.saved_searches.storage_error') %>"
+  >
+    <%= render "saved_searches" %>
 
-    <div class="floating-label-group">
-      <%= form.select :project_id, options_from_collection_for_select(@projects, :id, ->(project) { "#{project.github_owner}/#{project.github_repo}" }, @active_search_params["project_id"]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_project" %>
-      <%= form.label :project_id, t("issues.filters.project"), for: "select_project" %>
-    </div>
+    <%= form_with url: issues_path, method: :get, class: "relative z-20 mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-4 dark:border-slate-800 dark:bg-slate-900 animate-fade-in-up", data: { saved_searches_target: "form" } do |form| %>
+      <%= form.hidden_field :group_by_project, value: @group_by_project %>
+      <%= form.hidden_field :starter_mode, value: starter_mode? %>
+      <div class="floating-label-group md:col-span-2">
+        <%= form.search_field :q, value: @active_search_params["q"], placeholder: " ", id: "input_q", class: "h-11 w-full rounded-xl border border-slate-300 px-4 pt-3 text-slate-900 shadow-sm outline-none ring-0 focus:border-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-slate-700" %>
+        <%= form.label :q, t("issues.filters.search"), for: "input_q" %>
+      </div>
 
-    <div class="floating-label-group">
-      <%= form.select :organization, options_for_select(@organizations, @active_search_params["organization"]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_organization" %>
-      <%= form.label :organization, t("issues.filters.organization"), for: "select_organization" %>
-    </div>
+      <div class="floating-label-group">
+        <%= form.select :project_id, options_from_collection_for_select(@projects, :id, ->(project) { "#{project.github_owner}/#{project.github_repo}" }, @active_search_params["project_id"]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_project" %>
+        <%= form.label :project_id, t("issues.filters.project"), for: "select_project" %>
+      </div>
 
-    <div class="floating-label-group">
-      <%= form.select :category, options_for_select(@categories, @active_search_params["category"]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_category" %>
-      <%= form.label :category, t("issues.filters.category"), for: "select_category" %>
-    </div>
+      <div class="floating-label-group">
+        <%= form.select :organization, options_for_select(@organizations, @active_search_params["organization"]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_organization" %>
+        <%= form.label :organization, t("issues.filters.organization"), for: "select_organization" %>
+      </div>
 
-    <div class="floating-label-group">
-      <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), "all"], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], @active_search_params["updated_since"]), {}, class: "select-control", data: { controller: "select" }, id: "select_updated_since" %>
-      <%= form.label :updated_since, t("issues.filters.updated_since"), for: "select_updated_since" %>
-    </div>
+      <div class="floating-label-group">
+        <%= form.select :category, options_for_select(@categories, @active_search_params["category"]), { include_blank: "" }, class: "select-control", data: { controller: "select" }, id: "select_category" %>
+        <%= form.label :category, t("issues.filters.category"), for: "select_category" %>
+      </div>
 
-    <div class="floating-label-group">
-      <%= form.select :assignee_status, options_for_select([[t("issues.filters.unassigned_only"), "unassigned"], [t("issues.filters.assigned_only"), "assigned"], [t("issues.filters.all_assignees"), "all"]], @active_search_params["assignee_status"]), {}, class: "select-control", data: { controller: "select" }, id: "select_assignee_status" %>
-      <%= form.label :assignee_status, t("issues.filters.assignee_status"), for: "select_assignee_status" %>
-    </div>
+      <div class="floating-label-group">
+        <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), "all"], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], @active_search_params["updated_since"]), {}, class: "select-control", data: { controller: "select" }, id: "select_updated_since" %>
+        <%= form.label :updated_since, t("issues.filters.updated_since"), for: "select_updated_since" %>
+      </div>
 
-    <div class="floating-label-group">
-      <%= form.select :sort, options_for_select([[t("issues.filters.sort_options.recently_updated"), "recently_updated"], [t("issues.filters.sort_options.newest"), "newest"], [t("issues.filters.sort_options.oldest"), "oldest"], [t("issues.filters.sort_options.least_recently_updated"), "least_recently_updated"]], @active_search_params["sort"]), {}, class: "select-control", data: { controller: "select" }, id: "select_sort" %>
-      <%= form.label :sort, t("issues.filters.sort"), for: "select_sort" %>
-    </div>
+      <div class="floating-label-group">
+        <%= form.select :assignee_status, options_for_select([[t("issues.filters.unassigned_only"), "unassigned"], [t("issues.filters.assigned_only"), "assigned"], [t("issues.filters.all_assignees"), "all"]], @active_search_params["assignee_status"]), {}, class: "select-control", data: { controller: "select" }, id: "select_assignee_status" %>
+        <%= form.label :assignee_status, t("issues.filters.assignee_status"), for: "select_assignee_status" %>
+      </div>
 
-    <div class="floating-label-group md:col-span-3">
-      <%= select_tag "labels[]", options_for_select(@all_labels, @active_search_params["labels"]), multiple: true, class: "select-control", data: { controller: "select" }, id: "select_labels" %>
-      <label for="select_labels"><%= t("issues.filters.labels") %></label>
-    </div>
+      <div class="floating-label-group">
+        <%= form.select :sort, options_for_select([[t("issues.filters.sort_options.recently_updated"), "recently_updated"], [t("issues.filters.sort_options.newest"), "newest"], [t("issues.filters.sort_options.oldest"), "oldest"], [t("issues.filters.sort_options.least_recently_updated"), "least_recently_updated"]], @active_search_params["sort"]), {}, class: "select-control", data: { controller: "select" }, id: "select_sort" %>
+        <%= form.label :sort, t("issues.filters.sort"), for: "select_sort" %>
+      </div>
 
-    <div>
-      <%= form.submit t("issues.filters.submit"), class: "h-11 w-full cursor-pointer rounded-xl bg-slate-900 px-4 font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200" %>
-    </div>
-  <% end %>
+      <div class="floating-label-group md:col-span-3">
+        <%= select_tag "labels[]", options_for_select(@all_labels, @active_search_params["labels"]), multiple: true, class: "select-control", data: { controller: "select" }, id: "select_labels" %>
+        <label for="select_labels"><%= t("issues.filters.labels") %></label>
+      </div>
+
+      <div>
+        <%= form.submit t("issues.filters.submit"), class: "h-11 w-full cursor-pointer rounded-xl bg-slate-900 px-4 font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200" %>
+      </div>
+    <% end %>
+  </div>
 
   <div
     class="
