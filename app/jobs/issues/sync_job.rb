@@ -13,7 +13,7 @@ module Issues
         projects_failed: 0,
         issues_upserted: 0,
         issues_deleted: 0,
-        errors: {}
+        failure_details: {}
       }
       scheduled_full_ids = projects.where.not(last_full_synced_at: nil)
         .where("last_full_synced_at < ?", Issues::SyncService::FULL_RECONCILIATION_INTERVAL.ago)
@@ -33,7 +33,7 @@ module Issues
       rescue StandardError => error
         project.sync_failed!(error)
         stats[:projects_failed] += 1
-        stats[:errors]["#{project.github_owner}/#{project.github_repo}"] = error.message
+        stats[:failure_details]["#{project.github_owner}/#{project.github_repo}"] = error.message
         Rails.logger.warn("Issue sync failed for #{project.github_owner}/#{project.github_repo}: #{error.message}")
       end
 

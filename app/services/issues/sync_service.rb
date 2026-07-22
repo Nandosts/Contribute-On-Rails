@@ -99,7 +99,7 @@ module Issues
         Issue.upsert_all(
           rows,
           unique_by: :index_issues_on_github_id,
-          update_only: %i[project_id number title state github_url opened_at updated_at_from_github last_synced_at assignees comments_count pull_requests_count updated_at]
+          update_only: %i[project_id number title state github_url opened_at updated_at_from_github last_synced_at assignees comments_count pull_requests_count]
         )
         sync_labels(payloads, synced_at)
       end

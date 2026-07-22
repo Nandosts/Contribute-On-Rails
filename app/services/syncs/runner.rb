@@ -21,7 +21,11 @@ module Syncs
           Result.new(status: run.status.to_sym, sync_run: run)
         rescue StandardError => error
           if run
-            run.update!(status: "failed", finished_at: Time.current, errors: run.errors.merge("system" => error.message))
+            run.update!(
+              status: "failed",
+              finished_at: Time.current,
+              failure_details: run.failure_details.merge("system" => error.message)
+            )
           end
           raise
         ensure
