@@ -60,4 +60,13 @@ class ApplicationController < ActionController::Base
   def starter_mode?
     @starter_mode
   end
+
+  def effective_issue_labels
+    labels = Array(params[:labels]).reject(&:blank?)
+    starter_labels = Issue::STARTER_LABELS.map(&:downcase).sort
+
+    return [] if !starter_mode? && labels.map(&:downcase).uniq.sort == starter_labels
+
+    labels
+  end
 end

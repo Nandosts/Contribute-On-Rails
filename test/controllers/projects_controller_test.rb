@@ -81,6 +81,20 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_select "button[role=switch][aria-checked=false]"
   end
 
+  test "disabling starter mode clears stale automatic labels" do
+    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
+    starter_issue = project.issues.create!(github_id: 201, number: 201, title: "Starter issue", state: "open", github_url: "https://example.test/201", opened_at: 2.days.ago, updated_at_from_github: Time.current)
+    starter_issue.labels << Label.create!(name: "Help Wanted")
+    regular_issue = project.issues.create!(github_id: 202, number: 202, title: "Regular issue", state: "open", github_url: "https://example.test/202", opened_at: 1.day.ago, updated_at_from_github: Time.current)
+
+    get project_url(project, starter_mode: false, labels: Issue::STARTER_LABELS)
+
+    assert_response :success
+    assert_select "button[role=switch][aria-checked=false]"
+    assert_select "h3 a", text: starter_issue.title
+    assert_select "h3 a", text: regular_issue.title
+  end
+
   test "paginates issues on the project page" do
     project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
     31.times do |number|

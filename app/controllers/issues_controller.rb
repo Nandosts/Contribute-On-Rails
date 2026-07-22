@@ -25,11 +25,14 @@ class IssuesController < ApplicationController
   end
 
   def random
+    filters = normalized_search_params
     base_scope = Issue.joins(:project).where(projects: { active: true })
-    project_ids = IssueSearchQuery.new(base_scope, normalized_search_params).call.unscope(:order).distinct.pluck(:project_id)
+    project_ids = IssueSearchQuery.new(base_scope, filters).call.unscope(:order).distinct.pluck(:project_id)
     project = Project.active.where(id: project_ids).order(Arel.sql("RANDOM()")).first
+    redirect_params = request.query_parameters.except("labels").merge(from_random: true, starter_mode: filters["starter_mode"])
+    redirect_params["labels"] = filters["labels"] if filters["labels"].present?
 
-    redirect_to(project ? project_path(project, request.query_parameters.merge(from_random: true)) : projects_path)
+    redirect_to(project ? project_path(project, redirect_params) : projects_path)
   end
 
   private
@@ -50,7 +53,7 @@ class IssuesController < ApplicationController
         filters["assignee_status"] = "unassigned"
         filters["sort"] = "recently_updated"
       else
-        filters["labels"] = Array(filters["labels"]).reject(&:blank?)
+        filters["labels"] = effective_issue_labels
       end
       filters["starter_mode"] = starter_mode?
     end

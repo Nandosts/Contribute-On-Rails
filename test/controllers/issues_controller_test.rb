@@ -87,6 +87,31 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h3 a", text: issue.title
   end
 
+  test "disabling starter mode clears stale automatic labels" do
+    issue = @project.issues.create!(github_id: 105, number: 105, title: "Advanced refactor", state: "open", github_url: "https://example.test/105", opened_at: 1.day.ago, updated_at_from_github: Time.current)
+
+    get issues_url, params: { starter_mode: "false", labels: Issue::STARTER_LABELS }
+
+    assert_redirected_to issues_url(starter_mode: false)
+    follow_redirect!
+    assert_response :success
+    assert_select "button[role=switch][aria-checked=false]"
+    assert_select "h3 a", text: issue.title
+    assert_select "select[name='labels[]'] option[selected]", count: 0
+  end
+
+  test "keeps one manually selected starter label when starter mode is disabled" do
+    help_wanted = @project.issues.create!(github_id: 106, number: 106, title: "Help with tests", state: "open", github_url: "https://example.test/106", opened_at: 1.day.ago, updated_at_from_github: Time.current)
+    help_wanted.labels << Label.create!(name: "Help Wanted")
+
+    get issues_url, params: { starter_mode: "false", labels: [ "Help Wanted" ] }
+
+    assert_response :success
+    assert_select "button[role=switch][aria-checked=false]"
+    assert_select "h3 a", text: help_wanted.title
+    assert_select "select[name='labels[]'] option[selected]", text: "Help Wanted", count: 1
+  end
+
   test "renders pt-BR locale without missing translations" do
     get issues_url, headers: { "HTTP_ACCEPT_LANGUAGE": "pt-BR" }
 
@@ -121,7 +146,13 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
   test "redirects random project to a project with matching issues" do
     get random_issues_url
 
-    assert_redirected_to project_url(@project, from_random: true)
+    assert_redirected_to project_url(@project, from_random: true, labels: Issue::STARTER_LABELS, starter_mode: true)
+  end
+
+  test "removes stale automatic labels from a random project redirect" do
+    get random_issues_url, params: { starter_mode: "false", labels: Issue::STARTER_LABELS }
+
+    assert_redirected_to project_url(@project, from_random: true, starter_mode: false)
   end
 
   test "redirects empty filters back to the canonical issues url" do

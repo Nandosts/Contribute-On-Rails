@@ -30,7 +30,7 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find(params[:id])
-    @active_labels = Array(params[:labels]).reject(&:blank?)
+    @active_labels = effective_issue_labels
     @active_labels = Issue::STARTER_LABELS if !params.key?(:labels) && starter_mode?
     scoped_issues = IssueSearchQuery.new(
       @project.issues,
