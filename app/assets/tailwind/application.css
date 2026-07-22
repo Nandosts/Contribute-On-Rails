@@ -92,7 +92,7 @@ select[data-controller="select"][data-enhanced="true"] {
 
 /* ── Card interactions ─────────────────────────────────────────────── */
 article {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease, box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
 }
@@ -114,13 +114,13 @@ article::before {
   border-radius: 0 2px 2px 0;
   background: linear-gradient(to bottom, #06b6d4, #6366f1, #d946ef, #8b5cf6);
   background-size: 100% 300%;
-  animation: gradientShift 6s linear infinite;
   opacity: 0;
   transition: opacity 0.25s ease;
 }
 
 article:hover::before {
   opacity: 1;
+  animation: gradientShift 1.8s linear infinite;
 }
 
 /* ── Animations ────────────────────────────────────────────────────── */
@@ -185,7 +185,10 @@ article:hover::before {
     rgba(255, 255, 255, 0)    100%
   );
   content: '';
-  animation: shimmerSlide 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.shimmer-badge:hover::after {
+  animation: shimmerSlide 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── Dot-matrix background grid ────────────────────────────────────── */
@@ -226,7 +229,7 @@ summary:focus-visible,
   outline-offset: 3px;
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce), (update: slow) {
   *,
   *::before,
   *::after {
@@ -238,6 +241,10 @@ summary:focus-visible,
 
   article:hover {
     transform: none;
+  }
+
+  .dark article {
+    backdrop-filter: none;
   }
 }
 
