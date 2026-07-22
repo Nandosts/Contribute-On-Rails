@@ -41,6 +41,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_select "span", text: "Documentation"
     assert_select "select[name=updated_since]"
     assert_select "p", text: /Opened/
+    assert_select "button[role=switch][aria-checked=false]"
   end
 
   test "paginates issues on the project page" do

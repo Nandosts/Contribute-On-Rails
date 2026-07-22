@@ -25,6 +25,10 @@
     <p class="mt-2 text-slate-500 text-sm dark:text-slate-400">
       <%= t("projects.show.last_synced", date: @project.last_synced_at ? l(@project.last_synced_at, format: :long) : t("projects.show.never")) %>
     </p>
+
+    <div class="mt-4">
+      <%= render "shared/starter_mode_toggle", toggle_path: project_path(@project), query_params: request.query_parameters %>
+    </div>
   </div>
 
   <%= form_with url: project_path(@project), method: :get, class: "relative z-20 mt-6 grid gap-4 md:grid-cols-2 max-w-xl" do |form| %>

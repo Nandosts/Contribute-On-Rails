@@ -25,15 +25,7 @@
     </div>
 
     <div class="flex flex-col items-stretch gap-3 sm:items-end">
-      <%= button_to issues_path, method: :get, params: request.query_parameters.except("starter_mode", "page").merge(starter_mode: !starter_mode?), form: { class: "inline-flex" }, class: "inline-flex cursor-pointer items-center gap-3 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-left shadow-sm transition hover:border-indigo-300 hover:bg-indigo-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-indigo-800/60 dark:bg-indigo-950/40 dark:hover:border-indigo-700", role: "switch", aria: { checked: starter_mode?, label: t("issues.starter_mode.toggle") } do %>
-        <span class="relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors <%= starter_mode? ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-700' %>" aria-hidden="true">
-          <span class="absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform <%= starter_mode? ? 'translate-x-5' : 'translate-x-0.5' %>"></span>
-        </span>
-        <span>
-          <span class="block text-sm font-semibold text-slate-900 dark:text-white"><%= t("issues.starter_mode.label") %></span>
-          <span class="block text-xs text-slate-500 dark:text-slate-400"><%= t("issues.starter_mode.description") %></span>
-        </span>
-      <% end %>
+      <%= render "shared/starter_mode_toggle", toggle_path: issues_path, query_params: request.query_parameters %>
 
       <%= link_to random_issues_path(@active_search_params), class: "group inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-900 shadow-sm transition-all hover:border-indigo-400 hover:bg-slate-50 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:hover:border-indigo-500 dark:hover:bg-slate-800" do %>
         <span><%= t("issues.random_project") %></span>
