@@ -835,7 +835,7 @@
   category: Rails Ecosystem
 - owner: hanami
   repo: hanami-api
-  category: Testing
+  category: Ruby Ecosystem
 - owner: ombulabs
   repo: claude-code_rails-upgrade-skill
   category: Rails Ecosystem
@@ -845,3 +845,237 @@
 - owner: yippee-fun
   repo: phlex-rails
   category: Rails Ecosystem
+
+# Hanami ecosystem
+- owner: hanami
+  repo: ruby-lsp-hanami
+  category: Developer Tooling
+- owner: hanami
+  repo: hanami-cli
+  category: Developer Tooling
+- owner: hanami
+  repo: hanami-action
+  category: Ruby Ecosystem
+- owner: hanami
+  repo: hanami-webconsole
+  category: Developer Tooling
+- owner: hanami
+  repo: hanami-rspec
+  category: Testing
+- owner: hanami
+  repo: hanami-db
+  category: Web Infrastructure
+- owner: hanami
+  repo: hanami-mailer
+  category: Ruby Ecosystem
+- owner: hanami
+  repo: hanami-view
+  category: Ruby Ecosystem
+- owner: hanami
+  repo: hanami-router
+  category: Web Infrastructure
+- owner: hanami
+  repo: hanami-validations
+  category: Ruby Ecosystem
+
+# dry-rb and ROM ecosystem
+- owner: dry-rb
+  repo: dry-system
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-cli
+  category: Developer Tooling
+- owner: dry-rb
+  repo: dry-monads
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-operation
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-auto_inject
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-initializer
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-configurable
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-transformer
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-schema
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-types
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-transaction
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-rails
+  category: Rails Ecosystem
+- owner: dry-rb
+  repo: dry-core
+  category: Ruby Ecosystem
+- owner: dry-rb
+  repo: dry-container
+  category: Ruby Ecosystem
+- owner: rom-rb
+  repo: rom-sql
+  category: Web Infrastructure
+- owner: rom-rb
+  repo: rom-factory
+  category: Testing
+- owner: rom-rb
+  repo: rom-rails
+  category: Rails Ecosystem
+
+# Bridgetown ecosystem
+- owner: bridgetownrb
+  repo: bridgetown
+  category: Ruby Ecosystem
+- owner: bridgetownrb
+  repo: bridgetown-seo-tag
+  category: Ruby Ecosystem
+- owner: bridgetownrb
+  repo: bridgetown_sequel
+  category: Ruby Ecosystem
+- owner: bridgetownrb
+  repo: bridgetown-feed
+  category: Ruby Ecosystem
+
+# Official Ruby libraries
+- owner: ruby
+  repo: webrick
+  category: Core Ruby and Rails
+- owner: ruby
+  repo: json
+  category: Core Ruby and Rails
+- owner: ruby
+  repo: ruby.wasm
+  category: Core Ruby and Rails
+- owner: ruby
+  repo: rbs
+  category: Core Ruby and Rails
+- owner: ruby
+  repo: reline
+  category: Core Ruby and Rails
+- owner: ruby
+  repo: psych
+  category: Core Ruby and Rails
+- owner: ruby
+  repo: net-imap
+  category: Core Ruby and Rails
+- owner: ruby
+  repo: fiddle
+  category: Core Ruby and Rails
+
+# Active Rails applications and libraries from Basecamp
+- owner: basecamp
+  repo: once-campfire
+  category: Rails Applications
+- owner: basecamp
+  repo: fizzy
+  category: Rails Applications
+- owner: basecamp
+  repo: writebook
+  category: Rails Applications
+- owner: basecamp
+  repo: activerecord-tenanted
+  category: Rails Ecosystem
+- owner: basecamp
+  repo: geared_pagination
+  category: Rails Ecosystem
+- owner: basecamp
+  repo: mission_control-web
+  category: Rails Ecosystem
+- owner: basecamp
+  repo: upright
+  category: Web Infrastructure
+- owner: basecamp
+  repo: marginalia
+  category: Rails Ecosystem
+
+# Shopify Ruby and Rails ecosystem
+- owner: Shopify
+  repo: maintenance_tasks
+  category: Rails Ecosystem
+- owner: Shopify
+  repo: job-iteration
+  category: Background Jobs
+- owner: Shopify
+  repo: worldwide
+  category: Ruby Ecosystem
+- owner: Shopify
+  repo: statsd-instrument
+  category: Developer Tooling
+- owner: Shopify
+  repo: tapioca
+  category: Developer Tooling
+- owner: Shopify
+  repo: graphql-batch
+  category: Ruby Ecosystem
+- owner: Shopify
+  repo: ruby-lsp
+  category: Developer Tooling
+- owner: Shopify
+  repo: product-taxonomy
+  category: Ruby Ecosystem
+
+# Testing and Rails development tools
+- owner: thoughtbot
+  repo: factory_bot_rails
+  category: Testing
+- owner: thoughtbot
+  repo: clearance
+  category: Rails Ecosystem
+- owner: thoughtbot
+  repo: shoulda-matchers
+  category: Testing
+- owner: thoughtbot
+  repo: top_secret
+  category: Security
+- owner: thoughtbot
+  repo: capybara_accessibility_audit
+  category: Testing
+- owner: rspec
+  repo: rspec
+  category: Testing
+- owner: test-prof
+  repo: test-prof
+  category: Testing
+- owner: rubyzip
+  repo: rubyzip
+  category: Ruby Ecosystem
+- owner: activerecord-hackery
+  repo: ransack
+  category: Rails Ecosystem
+
+# Async Ruby infrastructure
+- owner: socketry
+  repo: falcon
+  category: Web Infrastructure
+- owner: socketry
+  repo: async-http
+  category: Web Infrastructure
+- owner: socketry
+  repo: async
+  category: Web Infrastructure
+- owner: socketry
+  repo: async-container
+  category: Web Infrastructure
+
+# Trailblazer ecosystem
+- owner: trailblazer
+  repo: reform
+  category: Ruby Ecosystem
+- owner: trailblazer
+  repo: trailblazer-rails
+  category: Rails Ecosystem
+- owner: trailblazer
+  repo: cells
+  category: Rails Ecosystem
+- owner: trailblazer
+  repo: trailblazer-activity
+  category: Ruby Ecosystem
