@@ -10,12 +10,13 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find(params[:id])
+    @active_labels = Array(params[:labels]).reject(&:blank?)
+    @active_labels = Issue::STARTER_LABELS if !params.key?(:labels) && starter_mode?
     scoped_issues = IssueSearchQuery.new(
       @project.issues,
-      labels: params[:labels],
+      labels: @active_labels,
       updated_since: params[:updated_since],
       assignee_status: params[:assignee_status],
-      starter_mode: starter_mode?,
       include_project: false
     ).call
     @pagy, @issues = pagy(scoped_issues, limit: 30)

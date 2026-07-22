@@ -25,7 +25,7 @@
     </div>
 
     <div class="flex flex-col items-stretch gap-3 sm:items-end">
-      <%= render "shared/starter_mode_toggle", toggle_path: issues_path, query_params: request.query_parameters %>
+      <%= render "shared/starter_mode_toggle", toggle_path: issues_path, filter_params: @active_search_params %>
 
       <%= link_to random_issues_path(@active_search_params), class: "group inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-900 shadow-sm transition-all hover:border-indigo-400 hover:bg-slate-50 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:hover:border-indigo-500 dark:hover:bg-slate-800" do %>
         <span><%= t("issues.random_project") %></span>

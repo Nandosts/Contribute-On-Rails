@@ -28,6 +28,7 @@ pt-BR:
       label: "Modo iniciante"
       description: "Good First Issue e Help Wanted"
       toggle: "Alternar modo iniciante"
+      cookie_tooltip: "Sua preferência do Modo Iniciante é salva neste navegador usando um cookie. Você pode remover qualquer uma das labels nos filtros."
     index:
       title: "Issues abertas"
       heading: "Issues abertas para contribuir"

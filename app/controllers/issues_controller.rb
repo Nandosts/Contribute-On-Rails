@@ -45,7 +45,7 @@ class IssuesController < ApplicationController
   def normalized_search_params
     search_params.to_h.tap do |filters|
       if submitted_search_params.empty?
-        filters["labels"] = []
+        filters["labels"] = starter_mode? ? Issue::STARTER_LABELS : []
         filters["updated_since"] = "365"
         filters["assignee_status"] = "unassigned"
         filters["sort"] = "recently_updated"

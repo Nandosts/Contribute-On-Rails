@@ -24,7 +24,7 @@ class IssueSearchQueryTest < ActiveSupport::TestCase
     assert_equal [ issue ], results
   end
 
-  test "starter mode includes good first issue and help wanted labels" do
+  test "multiple labels include issues matching any selected label" do
     project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
     good_first_issue = project.issues.create!(github_id: 21, number: 21, title: "Starter", state: "open", github_url: "https://example.test/21")
     help_wanted = project.issues.create!(github_id: 22, number: 22, title: "Help", state: "open", github_url: "https://example.test/22")
@@ -33,7 +33,7 @@ class IssueSearchQueryTest < ActiveSupport::TestCase
     help_wanted.labels << Label.create!(name: "Help Wanted")
     advanced.labels << Label.create!(name: "Bug")
 
-    results = IssueSearchQuery.new(Issue.all, starter_mode: true).call
+    results = IssueSearchQuery.new(Issue.all, labels: Issue::STARTER_LABELS).call
 
     assert_includes results, good_first_issue
     assert_includes results, help_wanted

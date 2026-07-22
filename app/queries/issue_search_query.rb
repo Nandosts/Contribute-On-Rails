@@ -12,7 +12,6 @@ class IssueSearchQuery
     scoped = filter_by_project(scoped)
     scoped = filter_by_organization(scoped)
     scoped = filter_by_category(scoped)
-    scoped = filter_by_starter_mode(scoped)
     scoped = filter_by_labels(scoped)
     scoped = filter_by_updated_since(scoped)
     scoped = filter_by_assignee_status(scoped)
@@ -73,15 +72,6 @@ class IssueSearchQuery
     return scoped.preload(:labels) if names.empty?
 
     scoped.joins(:labels).where("LOWER(labels.name) IN (?)", names.map(&:downcase)).distinct.preload(:labels)
-  end
-
-  def filter_by_starter_mode(scoped)
-    return scoped unless ActiveModel::Type::Boolean.new.cast(params[:starter_mode])
-
-    starter_issue_ids = Issue.joins(:labels)
-      .where("LOWER(labels.name) IN (?)", Issue::STARTER_LABELS.map(&:downcase))
-      .select(:id)
-    scoped.where(id: starter_issue_ids)
   end
 
   def apply_sorting(scoped)

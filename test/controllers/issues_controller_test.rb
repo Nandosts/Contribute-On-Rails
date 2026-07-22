@@ -20,6 +20,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_select "select[name=updated_since]"
     assert_select "p", text: /Opened/
     assert_select "button[role=switch][aria-checked=true]", text: /Starter mode/
+    assert_select "[role=tooltip]", text: /saved in this browser with a cookie/
 
     # Collapsible project issues assertions
     assert_select "section[data-controller='collapsible']"
@@ -39,7 +40,21 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h3 a", text: issue.title, count: 0
     assert_select "h3 a", text: @issue.title
     assert_select "h3 a", text: help_wanted.title
-    assert_select "select[name='labels[]'] option[selected]", count: 0
+    assert_select "select[name='labels[]'] option[selected]", count: 2
+    assert_select "select[name='labels[]'] option[selected]", text: "Good First Issue"
+    assert_select "select[name='labels[]'] option[selected]", text: "Help Wanted"
+  end
+
+  test "allows removing one of the starter labels" do
+    help_wanted = @project.issues.create!(github_id: 104, number: 104, title: "Help with tests", state: "open", github_url: "https://example.test/104", opened_at: 1.day.ago, updated_at_from_github: Time.current)
+    help_wanted.labels << Label.create!(name: "Help Wanted")
+
+    get issues_url, params: { labels: [ "Good First Issue" ] }
+
+    assert_response :success
+    assert_select "h3 a", text: @issue.title
+    assert_select "h3 a", text: help_wanted.title, count: 0
+    assert_select "select[name='labels[]'] option[selected]", count: 1
   end
 
   test "disabling starter mode persists across requests" do

@@ -27,11 +27,14 @@
     </p>
 
     <div class="mt-4">
-      <%= render "shared/starter_mode_toggle", toggle_path: project_path(@project), query_params: request.query_parameters %>
+      <%= render "shared/starter_mode_toggle", toggle_path: project_path(@project), filter_params: request.query_parameters.merge(labels: @active_labels) %>
     </div>
   </div>
 
   <%= form_with url: project_path(@project), method: :get, class: "relative z-20 mt-6 grid gap-4 md:grid-cols-2 max-w-xl" do |form| %>
+    <% @active_labels.each do |label| %>
+      <%= hidden_field_tag "labels[]", label %>
+    <% end %>
     <div class="floating-label-group">
       <%= form.select :updated_since, options_for_select([[t("issues.filters.any_time"), "all"], [t("issues.filters.last_30_days"), 30], [t("issues.filters.last_90_days"), 90], [t("issues.filters.last_year"), 365]], params[:updated_since] || "all"), {}, class: "select-control", data: { controller: "select" }, id: "select_updated_since", onchange: "this.form.requestSubmit()" %>
       <%= form.label :updated_since, t("issues.filters.updated_since"), for: "select_updated_since" %>

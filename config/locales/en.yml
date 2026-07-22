@@ -12,6 +12,7 @@ en:
       label: "Starter mode"
       description: "Good First Issue and Help Wanted"
       toggle: "Toggle starter mode"
+      cookie_tooltip: "Your Starter Mode preference is saved in this browser with a cookie. You can remove either label from the filters at any time."
     index:
       title: "Open issues"
       heading: "Open issues worth contributing to"
