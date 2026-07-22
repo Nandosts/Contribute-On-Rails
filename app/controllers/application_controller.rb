@@ -3,7 +3,9 @@ class ApplicationController < ActionController::Base
 
   allow_browser versions: :modern
 
-  before_action :set_locale
+  before_action :set_locale, :set_starter_mode
+
+  helper_method :starter_mode?
 
   private
 
@@ -33,5 +35,29 @@ class ApplicationController < ActionController::Base
     end
 
     nil
+  end
+
+  def set_starter_mode
+    stored_preference = cookies.signed[:starter_mode]
+    @starter_mode = if params.key?(:starter_mode)
+      ActiveModel::Type::Boolean.new.cast(params[:starter_mode])
+    elsif stored_preference.nil?
+      true
+    else
+      ActiveModel::Type::Boolean.new.cast(stored_preference)
+    end
+
+    return unless params.key?(:starter_mode)
+
+    cookies.permanent.signed[:starter_mode] = {
+      value: @starter_mode,
+      httponly: true,
+      same_site: :lax,
+      secure: Rails.env.production?
+    }
+  end
+
+  def starter_mode?
+    @starter_mode
   end
 end

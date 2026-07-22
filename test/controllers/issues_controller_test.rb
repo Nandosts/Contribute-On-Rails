@@ -19,6 +19,7 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_select "input[type=submit][value=Filter]"
     assert_select "select[name=updated_since]"
     assert_select "p", text: /Opened/
+    assert_select "button[role=switch][aria-checked=true]", text: /Starter mode/
 
     # Collapsible project issues assertions
     assert_select "section[data-controller='collapsible']"
@@ -27,14 +28,34 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert response.headers["Content-Security-Policy"].present?
   end
 
-  test "does not restrict the default results to contribution labels" do
+  test "starter mode restricts default results to contribution labels" do
     issue = @project.issues.create!(github_id: 101, number: 101, title: "Regular bug", state: "open", github_url: "https://example.test/101", opened_at: 1.day.ago, updated_at_from_github: Time.current)
+    help_wanted = @project.issues.create!(github_id: 102, number: 102, title: "Help with docs", state: "open", github_url: "https://example.test/102", opened_at: 1.day.ago, updated_at_from_github: Time.current)
+    help_wanted.labels << Label.create!(name: "Help Wanted")
 
     get issues_url
 
     assert_response :success
-    assert_select "h3 a", text: issue.title
+    assert_select "h3 a", text: issue.title, count: 0
+    assert_select "h3 a", text: @issue.title
+    assert_select "h3 a", text: help_wanted.title
     assert_select "select[name='labels[]'] option[selected]", count: 0
+  end
+
+  test "disabling starter mode persists across requests" do
+    issue = @project.issues.create!(github_id: 103, number: 103, title: "Advanced refactor", state: "open", github_url: "https://example.test/103", opened_at: 1.day.ago, updated_at_from_github: Time.current)
+
+    get issues_url, params: { starter_mode: "false" }
+
+    assert_response :success
+    assert_select "button[role=switch][aria-checked=false]"
+    assert_select "h3 a", text: issue.title
+
+    get issues_url
+
+    assert_response :success
+    assert_select "button[role=switch][aria-checked=false]"
+    assert_select "h3 a", text: issue.title
   end
 
   test "renders pt-BR locale without missing translations" do

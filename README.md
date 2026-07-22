@@ -17,7 +17,8 @@ It curates an extensive catalog of canonical Ruby and Rails open-source projects
 
 - Project catalog sync from a curated YAML file
 - Incremental GitHub issue sync with periodic full reconciliation
-- Recent, unassigned issues by default, with unrestricted label filtering
+- Persistent Starter Mode for recent, unassigned `good first issue` and `help wanted` opportunities
+- Unrestricted issue and label exploration when Starter Mode is disabled
 - Search by title, label, organization, project, and source category
 - Grouped issue results by organization and repository
 - Searchable project filters, pagination, and random project discovery

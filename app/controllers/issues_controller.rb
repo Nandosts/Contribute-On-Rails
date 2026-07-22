@@ -1,6 +1,10 @@
 class IssuesController < ApplicationController
+  CONTROL_PARAMS = %w[page locale group_by_project starter_mode].freeze
+
   def index
-    return redirect_to issues_path(request.query_parameters.slice("group_by_project")) if request.query_parameters.except("page", "locale", "group_by_project").present? && normalized_search_params.values.all?(&:blank?)
+    if submitted_search_params.present? && normalized_search_params.except("starter_mode").values.all?(&:blank?)
+      return redirect_to issues_path(request.query_parameters.slice("group_by_project", "starter_mode"))
+    end
 
     @active_search_params = normalized_search_params
     @group_by_project = params.fetch(:group_by_project, "true") == "true"
@@ -31,12 +35,16 @@ class IssuesController < ApplicationController
   private
 
   def search_params
-    params.permit(:q, :project_id, :organization, :category, :updated_since, :assignee_status, :sort, labels: [])
+    params.permit(:q, :project_id, :organization, :category, :updated_since, :assignee_status, :sort, :starter_mode, labels: [])
+  end
+
+  def submitted_search_params
+    request.query_parameters.except(*CONTROL_PARAMS)
   end
 
   def normalized_search_params
     search_params.to_h.tap do |filters|
-      if request.query_parameters.except("page", "locale", "group_by_project").empty?
+      if submitted_search_params.empty?
         filters["labels"] = []
         filters["updated_since"] = "365"
         filters["assignee_status"] = "unassigned"
@@ -44,6 +52,7 @@ class IssuesController < ApplicationController
       else
         filters["labels"] = Array(filters["labels"]).reject(&:blank?)
       end
+      filters["starter_mode"] = starter_mode?
     end
   end
 end

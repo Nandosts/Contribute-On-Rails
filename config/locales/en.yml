@@ -8,6 +8,10 @@ en:
   issues:
     random_project: "Choose a random project"
     pagination: "Issue pages"
+    starter_mode:
+      label: "Starter mode"
+      description: "Good First Issue and Help Wanted"
+      toggle: "Toggle starter mode"
     index:
       title: "Open issues"
       heading: "Open issues worth contributing to"

@@ -34,7 +34,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     issue.labels << Label.create!(name: "good first issue")
     issue.labels << Label.create!(name: "documentation")
 
-    get project_url(project)
+    get project_url(project, starter_mode: false)
 
     assert_response :success
     assert_select "span", text: "Good First Issue"
@@ -49,7 +49,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
       project.issues.create!(github_id: 500 + number, number: 500 + number, title: "Issue #{number}", state: "open", github_url: "https://example.test/#{number}", opened_at: 2.days.ago, updated_at_from_github: Time.current)
     end
 
-    get project_url(project)
+    get project_url(project, starter_mode: false)
 
     assert_response :success
     assert_select "article", count: 30
