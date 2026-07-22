@@ -23,11 +23,15 @@ module Issues
       seen_ids = []
       now = Time.current
 
+      pr_counts = client.respond_to?(:fetch_pull_requests_counts) ?
+        client.fetch_pull_requests_counts(owner: project.github_owner, repo: project.github_repo, issues: response[:issues]) : {}
+
       Issue.transaction do
         response[:issues].each do |payload|
+          number = payload.fetch("number")
           comments_count = payload.fetch("comments", 0)
-          pull_requests_count = payload["pull_requests_count"] ||
-            (client.respond_to?(:pull_requests_count) ? client.pull_requests_count(owner: project.github_owner, repo: project.github_repo, number: payload.fetch("number"), body: payload["body"]) : 0)
+          pull_requests_count = payload["pull_requests_count"] || pr_counts[number] ||
+            (client.respond_to?(:pull_requests_count) ? client.pull_requests_count(owner: project.github_owner, repo: project.github_repo, number: number, body: payload["body"]) : 0)
 
           issue = Issue.find_or_initialize_by(github_id: payload.fetch("id"))
           issue.update!(

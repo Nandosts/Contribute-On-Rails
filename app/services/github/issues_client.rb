@@ -63,17 +63,68 @@ module Github
       end
     end
 
+    def fetch_pull_requests_counts(owner:, repo:, issues:)
+      return {} if issues.empty?
+
+      counts = {}
+      issues.each do |issue_hash|
+        number = issue_hash["number"]
+        body = issue_hash["body"]
+        counts[number] = pull_requests_count(owner:, repo:, number:, body:)
+      end
+
+      if token.present?
+        begin
+          issues.each_slice(50) do |slice|
+            query_parts = slice.map do |issue_hash|
+              num = issue_hash["number"]
+              "issue_#{num}: issue(number: #{num}) { closedByPullRequestsReferences { totalCount } }"
+            end.join("\n")
+
+            gql = <<~GQL
+              query {
+                repository(owner: "#{owner}", name: "#{repo}") {
+                  #{query_parts}
+                }
+              }
+            GQL
+
+            uri = URI("https://api.github.com/graphql")
+            req = Net::HTTP::Post.new(uri)
+            req["Authorization"] = "Bearer #{token}"
+            req["Content-Type"] = "application/json"
+            req["Accept"] = "application/vnd.github+json"
+            req.body = { query: gql }.to_json
+
+            res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |h| h.request(req) }
+            if res.is_a?(Net::HTTPSuccess)
+              data = JSON.parse(res.body).dig("data", "repository") || {}
+              data.each do |key, val|
+                if key.start_with?("issue_") && val && val["closedByPullRequestsReferences"]
+                  num = key.sub("issue_", "").to_i
+                  gql_count = val.dig("closedByPullRequestsReferences", "totalCount").to_i
+                  counts[num] = [ counts[num].to_i, gql_count ].max
+                end
+              end
+            end
+          end
+        rescue StandardError => e
+          Rails.logger.warn("Failed to fetch GraphQL linked PR counts for #{owner}/#{repo}: #{e.message}")
+        end
+      end
+
+      counts
+    end
+
     def pull_requests_count(owner:, repo:, number:, body: nil)
       return 0 if body.blank?
 
       pr_numbers = Set.new
 
-      # Match GitHub PR URLs: https://github.com/owner/repo/pull/123
       body.scan(%r{github\.com/#{Regexp.escape(owner)}/#{Regexp.escape(repo)}/pull/(\d+)}i).flatten.each do |pr_num|
         pr_numbers << pr_num.to_i
       end
 
-      # Match explicit PR references like "PR #123", "pull #123", "pull request #123"
       body.scan(/(?:pull\s*request|pull|pr)s?\s*[:#]\s*(\d+)/i).flatten.each do |pr_num|
         pr_numbers << pr_num.to_i
       end

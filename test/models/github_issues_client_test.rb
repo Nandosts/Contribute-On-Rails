@@ -25,4 +25,15 @@ class GithubIssuesClientTest < ActiveSupport::TestCase
     count = client.pull_requests_count(owner: "rails", repo: "rails", number: 100, body: body)
     assert_equal 2, count
   end
+
+  test "fetch_pull_requests_counts returns mapped PR counts for multiple issues" do
+    client = Github::IssuesClient.new(token: nil)
+    issues = [
+      { "number" => 1, "body" => "Fixes https://github.com/rails/rails/pull/10" },
+      { "number" => 2, "body" => "No PRs" }
+    ]
+
+    counts = client.fetch_pull_requests_counts(owner: "rails", repo: "rails", issues: issues)
+    assert_equal({ 1 => 1, 2 => 0 }, counts)
+  end
 end
