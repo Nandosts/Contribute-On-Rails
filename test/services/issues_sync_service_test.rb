@@ -1,148 +1,109 @@
 require "test_helper"
 
 class IssuesSyncServiceTest < ActiveSupport::TestCase
-  FakeClient = Struct.new(:issues) do
-    def open_issues(owner:, repo:, labels: Issue::DEFAULT_LABELS, fetch_all: false, etags: {})
-      {
-        issues: issues,
-        etags: {},
-        not_modified_labels: [],
-        any_modified: true
-      }
+  class FakeClient
+    attr_reader :state, :since
+
+    def initialize(pages, error_after_pages: false, pr_counts: {})
+      @pages = pages
+      @error_after_pages = error_after_pages
+      @pr_counts = pr_counts
+    end
+
+    def each_issues_page(owner:, repo:, state:, since:)
+      @state = state
+      @since = since
+      @pages.each { |page| yield page }
+      raise "request interrupted" if @error_after_pages
+    end
+
+    def fetch_pull_requests_counts(owner:, repo:, issues:)
+      @pr_counts.slice(*issues.map { |issue| issue.fetch("number") })
     end
   end
 
-  test "syncs issues, labels, and destroys missing open issues and orphaned labels" do
-    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
+  test "full reconciliation upserts open issues and deletes missing issues only after completion" do
+    project = create_project
+    old_issue = project.issues.create!(github_id: 1, number: 1, title: "Old", state: "open", github_url: "https://example.test/1")
+    payload = issue_payload(id: 2, number: 2, labels: [ { "name" => "documentation", "color" => "ffffff" } ])
+    client = FakeClient.new([ [ payload ] ], pr_counts: { 2 => 1 })
 
-    # Create an old issue with a unique label "Stale Label"
-    old_issue = project.issues.create!(github_id: 1, number: 1, title: "Old", state: "open", github_url: "https://github.com/rails/rails/issues/1")
-    stale_label = Label.create!(name: "Stale Label")
-    old_issue.labels << stale_label
-
-    # Create a shared label "Good First Issue" which is also on another issue (so it shouldn't be deleted)
-    shared_label = Label.create!(name: "Good First Issue")
-    old_issue.labels << shared_label
-
-    another_issue = project.issues.create!(github_id: 3, number: 3, title: "Another", state: "open", github_url: "https://github.com/rails/rails/issues/3")
-    another_issue.labels << shared_label
-
-    payload = [ {
-      "id" => 2,
-      "number" => 2,
-      "title" => "New issue",
-      "body" => "Body",
-      "state" => "open",
-      "html_url" => "https://github.com/rails/rails/issues/2",
-      "created_at" => Time.current.iso8601,
-      "updated_at" => Time.current.iso8601,
-      "closed_at" => nil,
-      "comments" => 5,
-      "pull_requests_count" => 1,
-      "labels" => [
-        { "name" => "Good First Issue", "color" => "ffffff" },
-        { "name" => "New Label", "color" => "000000" }
-      ]
-    } ]
-
-    Issues::SyncService.new(client: FakeClient.new(payload)).call(project)
+    result = Issues::SyncService.new(client:).call(project)
 
     refute Issue.exists?(old_issue.id)
-    refute Label.exists?(stale_label.id) # Stale label should be cleaned up!
-    assert Label.exists?(shared_label.id) # Shared label should persist!
-
     issue = Issue.find_by!(github_id: 2)
-    assert_equal [ "Good First Issue", "New Label" ], issue.labels.pluck(:name).sort
-    assert_equal 5, issue.comments_count
+    assert_equal [ "Documentation" ], issue.labels.pluck(:name)
     assert_equal 1, issue.pull_requests_count
+    assert_equal "open", client.state
+    assert_nil client.since
+    assert result.full_reconciliation
+    assert_equal 1, result.issues_upserted
+    assert_equal 1, result.issues_deleted
+    assert project.reload.last_full_synced_at.present?
   end
 
-  test "preserves local issues for labels that return 304 Not Modified" do
-    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
+  test "incremental sync preserves unseen issues and deletes issues returned as closed" do
+    checkpoint = 1.day.ago
+    project = create_project(last_synced_at: checkpoint, last_full_synced_at: 1.day.ago)
+    preserved = project.issues.create!(github_id: 10, number: 10, title: "Unchanged", state: "open", github_url: "https://example.test/10")
+    closed = project.issues.create!(github_id: 20, number: 20, title: "Closed", state: "open", github_url: "https://example.test/20")
+    payloads = [ issue_payload(id: 20, number: 20, state: "closed"), issue_payload(id: 30, number: 30) ]
+    client = FakeClient.new([ payloads ])
 
-    gfi_label = Label.create!(name: "Good First Issue")
-    hw_label = Label.create!(name: "Help Wanted")
+    result = Issues::SyncService.new(client:).call(project)
 
-    issue_gfi = project.issues.create!(github_id: 10, number: 10, title: "Good issue", state: "open", github_url: "https://github.com/rails/rails/issues/10")
-    issue_gfi.labels << gfi_label
-
-    issue_hw = project.issues.create!(github_id: 20, number: 20, title: "Help issue", state: "open", github_url: "https://github.com/rails/rails/issues/20")
-    issue_hw.labels << hw_label
-
-    fake_response = {
-      issues: [
-        {
-          "id" => 30,
-          "number" => 30,
-          "title" => "New help issue",
-          "body" => "Body",
-          "state" => "open",
-          "html_url" => "https://github.com/rails/rails/issues/30",
-          "created_at" => Time.current.iso8601,
-          "updated_at" => Time.current.iso8601,
-          "closed_at" => nil,
-          "labels" => [
-            { "name" => "Help Wanted", "color" => "111111" }
-          ]
-        }
-      ],
-      etags: { "Good First Issue" => "etag_gfi_old", "Help Wanted" => "etag_hw_new" },
-      not_modified_labels: [ "Good First Issue" ],
-      any_modified: true
-    }
-
-    mock_client = Object.new
-    mock_client.define_singleton_method(:open_issues) do |owner:, repo:, labels: nil, fetch_all: false, etags: {}|
-      fake_response
-    end
-
-    Issues::SyncService.new(client: mock_client).call(project)
-
-    # 1. GFI issue must be preserved
-    assert Issue.exists?(issue_gfi.id)
-
-    # 2. Old HW issue must be deleted
-    refute Issue.exists?(issue_hw.id)
-
-    # 3. New HW issue must be created
+    assert Issue.exists?(preserved.id)
+    refute Issue.exists?(closed.id)
     assert Issue.exists?(github_id: 30)
-
-    # 4. Project ETags must be updated
-    assert_equal "etag_gfi_old", project.github_etags["Good First Issue"]
-    assert_equal "etag_hw_new", project.github_etags["Help Wanted"]
-  end
-  test "returns early if no issues were modified" do
-    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails", last_synced_at: 1.day.ago)
-
-    mock_client = Object.new
-    mock_client.define_singleton_method(:open_issues) do |owner:, repo:, labels: nil, fetch_all: false, etags: {}|
-      { any_modified: false }
-    end
-
-    assert_changes -> { project.reload.last_synced_at } do
-      Issues::SyncService.new(client: mock_client).call(project)
-    end
+    assert_equal "all", client.state
+    assert_in_delta checkpoint - 5.minutes, client.since, 1.second
+    refute result.full_reconciliation
   end
 
-  test "preserves all issues when fetch_all is true and not modified" do
-    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
-    issue = project.issues.create!(github_id: 100, number: 100, title: "Keep me", state: "open", github_url: "https://github.com/rails/rails/issues/100")
+  test "an interrupted full reconciliation never deletes unseen issues or advances the checkpoint" do
+    project = create_project(last_synced_at: 2.days.ago)
+    existing = project.issues.create!(github_id: 40, number: 40, title: "Keep", state: "open", github_url: "https://example.test/40")
+    original_checkpoint = project.last_synced_at
+    client = FakeClient.new([ [ issue_payload(id: 50, number: 50) ] ], error_after_pages: true)
 
-    fake_response = {
-      issues: [],
-      etags: { "all" => "etag_all_new" },
-      not_modified_labels: [ "all" ],
-      any_modified: true
+    assert_raises(RuntimeError) do
+      Issues::SyncService.new(client:).call(project)
+    end
+
+    assert Issue.exists?(existing.id)
+    assert_equal original_checkpoint, project.reload.last_synced_at
+  end
+
+  test "replaces labels when an issue changes" do
+    project = create_project(last_synced_at: 1.day.ago, last_full_synced_at: 1.day.ago)
+    issue = project.issues.create!(github_id: 60, number: 60, title: "Issue", state: "open", github_url: "https://example.test/60", updated_at_from_github: 2.days.ago)
+    issue.labels << Label.create!(name: "Good First Issue")
+    payload = issue_payload(id: 60, number: 60, labels: [ { "name" => "bug", "color" => "ff0000" } ])
+
+    Issues::SyncService.new(client: FakeClient.new([ [ payload ] ])).call(project)
+
+    assert_equal [ "Bug" ], issue.reload.labels.pluck(:name)
+    refute Label.exists?(name: "Good First Issue")
+  end
+
+  private
+
+  def create_project(**attributes)
+    Project.create!({ github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails" }.merge(attributes))
+  end
+
+  def issue_payload(id:, number:, state: "open", labels: [])
+    {
+      "id" => id,
+      "number" => number,
+      "title" => "Issue #{number}",
+      "state" => state,
+      "html_url" => "https://github.com/rails/rails/issues/#{number}",
+      "created_at" => 2.days.ago.iso8601,
+      "updated_at" => Time.current.iso8601,
+      "comments" => 3,
+      "assignees" => [],
+      "labels" => labels
     }
-
-    mock_client = Object.new
-    mock_client.define_singleton_method(:open_issues) do |**_kwargs|
-      fake_response
-    end
-
-    Issues::SyncService.new(client: mock_client).call(project, force_fetch: true)
-
-    assert Issue.exists?(issue.id)
-    assert_equal "etag_all_new", project.github_etags["all"]
   end
 end

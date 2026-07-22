@@ -6,12 +6,10 @@ class Project < ApplicationRecord
 
   scope :active, -> { where(active: true) }
 
-  def github_etags
-    return {} if github_etag.blank?
-    JSON.parse(github_etag) rescue {}
-  end
-
-  def github_etags=(hash)
-    self.github_etag = hash.present? ? JSON.generate(hash) : nil
+  def sync_failed!(error)
+    failures = sync_failures_count + 1
+    attributes = { last_sync_error: error.message, sync_failures_count: failures }
+    attributes[:active] = false if error.respond_to?(:status) && error.status == 404 && failures >= 3
+    update!(attributes)
   end
 end

@@ -1,48 +1,44 @@
 module Issues
   class SyncJob < ApplicationJob
+    FULL_RECONCILIATIONS_PER_RUN = 10
+
     queue_as :default
 
-    def perform(fetch_all: false)
+    def perform(force_full: false, sync_run_id: nil)
+      run = SyncRun.find_by(id: sync_run_id)
       projects = Project.active
-      total = projects.count
-      progress = 0
-      synced_names = []
+      stats = {
+        projects_total: projects.count,
+        projects_succeeded: 0,
+        projects_failed: 0,
+        issues_upserted: 0,
+        issues_deleted: 0,
+        errors: {}
+      }
+      scheduled_full_ids = projects.where.not(last_full_synced_at: nil)
+        .where("last_full_synced_at < ?", Issues::SyncService::FULL_RECONCILIATION_INTERVAL.ago)
+        .order(:last_full_synced_at)
+        .limit(FULL_RECONCILIATIONS_PER_RUN)
+        .pluck(:id)
 
-      # Silence SQL logging to prevent stdout pollution breaking carriage returns
-      original_logger = ActiveRecord::Base.logger
-      ActiveRecord::Base.logger = nil
-
-      original_sync = $stdout.sync
-      $stdout.sync = true
-
-      begin
-        projects.find_each do |project|
-          progress += 1
-
-          unless Rails.env.test?
-            print "\rSyncing Issues: #{progress}/#{total} (#{project.github_owner}/#{project.github_repo})\e[K"
-            $stdout.flush
-          end
-
-          SyncService.new.call(project, force_fetch: fetch_all)
-          synced_names << "#{project.github_owner}/#{project.github_repo}"
-          GC.start
-        rescue StandardError => error
-          if error.message.include?("404")
-            project.update!(active: false)
-            Rails.logger.warn("Project deactivated (404 Not Found): #{project.github_owner}/#{project.github_repo}")
-          else
-            Rails.logger.warn("Issue sync failed for #{project.github_owner}/#{project.github_repo}: #{error.message}")
-          end
-        end
-      ensure
-        ActiveRecord::Base.logger = original_logger
-        $stdout.sync = original_sync
+      projects.find_each do |project|
+        result = SyncService.new.call(
+          project,
+          force_full:,
+          allow_scheduled_full: scheduled_full_ids.include?(project.id)
+        )
+        stats[:projects_succeeded] += 1
+        stats[:issues_upserted] += result.issues_upserted
+        stats[:issues_deleted] += result.issues_deleted
+      rescue StandardError => error
+        project.sync_failed!(error)
+        stats[:projects_failed] += 1
+        stats[:errors]["#{project.github_owner}/#{project.github_repo}"] = error.message
+        Rails.logger.warn("Issue sync failed for #{project.github_owner}/#{project.github_repo}: #{error.message}")
       end
 
-      unless Rails.env.test?
-        puts "\nCompleted! Synced projects: #{synced_names.join(', ')}"
-      end
+      run&.update!(stats)
+      stats
     end
   end
 end

@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_21_103000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_22_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_trgm"
 
   create_table "issue_labels", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -26,8 +27,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_103000) do
 
   create_table "issues", force: :cascade do |t|
     t.jsonb "assignees"
-    t.text "body"
-    t.datetime "closed_at"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.bigint "github_id", null: false
@@ -45,6 +44,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_103000) do
     t.index ["project_id", "number"], name: "index_issues_on_project_id_and_number", unique: true
     t.index ["project_id", "state"], name: "index_issues_on_project_id_and_state"
     t.index ["project_id"], name: "index_issues_on_project_id"
+    t.index ["title"], name: "index_issues_on_title_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["updated_at_from_github"], name: "index_issues_on_updated_at_from_github"
   end
 
@@ -60,14 +60,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_103000) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.text "description"
-    t.boolean "fetch_all_issues", default: false, null: false
-    t.string "github_etag"
     t.string "github_owner", null: false
     t.string "github_repo", null: false
     t.string "github_url", null: false
+    t.datetime "last_full_synced_at"
+    t.text "last_sync_error"
     t.datetime "last_synced_at"
     t.string "name", null: false
     t.string "source_category"
+    t.integer "sync_failures_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["active"], name: "index_projects_on_active"
     t.index ["github_owner", "github_repo"], name: "index_projects_on_github_owner_and_github_repo", unique: true
@@ -93,6 +94,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_103000) do
     t.index ["byte_size"], name: "index_solid_cache_entries_on_byte_size"
     t.index ["key_hash", "byte_size"], name: "index_solid_cache_entries_on_key_hash_and_byte_size"
     t.index ["key_hash"], name: "index_solid_cache_entries_on_key_hash", unique: true
+  end
+
+  create_table "sync_runs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "errors", default: {}, null: false
+    t.datetime "finished_at"
+    t.integer "issues_deleted", default: 0, null: false
+    t.integer "issues_upserted", default: 0, null: false
+    t.integer "projects_failed", default: 0, null: false
+    t.integer "projects_succeeded", default: 0, null: false
+    t.integer "projects_total", default: 0, null: false
+    t.datetime "started_at", null: false
+    t.string "status", null: false
+    t.datetime "updated_at", null: false
+    t.index ["started_at"], name: "index_sync_runs_on_started_at"
   end
 
   add_foreign_key "issue_labels", "issues"

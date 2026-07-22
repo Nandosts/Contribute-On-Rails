@@ -4,73 +4,76 @@ class Api::SyncsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @original_token = ENV["SYNC_TOKEN"]
     ENV["SYNC_TOKEN"] = "super-secret-token"
-
-    @original_projects_sync = Projects::SyncJob.method(:perform_now)
-    @original_issues_sync = Issues::SyncJob.method(:perform_now)
-    @original_thread_new = Thread.method(:new)
-
-    @projects_called = false
-    @issues_called = false
-    @issues_fetch_all = nil
-
+    @original_runner_new = Syncs::Runner.method(:new)
+    @force_full = nil
+    @runner_status = :succeeded
     test_instance = self
-    Projects::SyncJob.define_singleton_method(:perform_now) { test_instance.instance_variable_set(:@projects_called, true) }
-    Issues::SyncJob.define_singleton_method(:perform_now) do |**kwargs|
-      test_instance.instance_variable_set(:@issues_called, true)
-      test_instance.instance_variable_set(:@issues_fetch_all, kwargs[:fetch_all])
+
+    Syncs::Runner.define_singleton_method(:new) do |force_full:|
+      test_instance.instance_variable_set(:@force_full, force_full)
+      runner = Object.new
+      runner.define_singleton_method(:call) do
+        status = test_instance.instance_variable_get(:@runner_status)
+        if status == :already_running
+          Syncs::Runner::Result.new(status:, sync_run: nil)
+        else
+          run = SyncRun.create!(status: status.to_s, started_at: Time.current, finished_at: Time.current, projects_succeeded: 2, issues_upserted: 5)
+          Syncs::Runner::Result.new(status:, sync_run: run)
+        end
+      end
+      runner
     end
-    Thread.define_singleton_method(:new) { |&block| block.call; Object.new }
   end
 
   teardown do
     ENV["SYNC_TOKEN"] = @original_token
-
-    Projects::SyncJob.define_singleton_method(:perform_now, @original_projects_sync)
-    Issues::SyncJob.define_singleton_method(:perform_now, @original_issues_sync)
-    Thread.define_singleton_method(:new, @original_thread_new)
+    Syncs::Runner.define_singleton_method(:new, @original_runner_new)
   end
 
-  test "should trigger sync jobs with authorization header" do
+  test "runs synchronously with a bearer token" do
     post api_syncs_url, headers: { "Authorization" => "Bearer super-secret-token" }
 
-    assert_response :accepted
-    assert_equal "accepted", JSON.parse(response.body)["status"]
-    assert @projects_called
-    assert @issues_called
-    assert_equal false, @issues_fetch_all
+    assert_response :success
+    payload = JSON.parse(response.body)
+    assert_equal "succeeded", payload["status"]
+    assert_equal 2, payload["projects_succeeded"]
+    assert_equal 5, payload["issues_upserted"]
+    assert_equal false, @force_full
   end
 
-  test "should trigger sync jobs with query param token" do
+  test "does not accept a token in the query string" do
     post api_syncs_url(token: "super-secret-token")
 
-    assert_response :accepted
-    assert_equal "accepted", JSON.parse(response.body)["status"]
-    assert @projects_called
-    assert @issues_called
-    assert_equal false, @issues_fetch_all
+    assert_response :unauthorized
   end
 
-  test "should pass fetch_all true parameter to issues job" do
-    post api_syncs_url(token: "super-secret-token", fetch_all: "true")
+  test "passes the full reconciliation option to the runner" do
+    post api_syncs_url(force_full: "true"), headers: { "Authorization" => "Bearer super-secret-token" }
 
-    assert_response :accepted
-    assert_equal "accepted", JSON.parse(response.body)["status"]
-    assert @projects_called
-    assert @issues_called
-    assert_equal true, @issues_fetch_all
+    assert_response :success
+    assert_equal true, @force_full
   end
 
-  test "should return unauthorized with incorrect token" do
+  test "returns conflict when a synchronization is already running" do
+    @runner_status = :already_running
+
+    post api_syncs_url, headers: { "Authorization" => "Bearer super-secret-token" }
+
+    assert_response :conflict
+    assert_equal "already_running", JSON.parse(response.body)["status"]
+  end
+
+  test "returns unauthorized with an incorrect token" do
     post api_syncs_url, headers: { "Authorization" => "Bearer wrong-token" }
 
     assert_response :unauthorized
     assert_equal "Unauthorized", JSON.parse(response.body)["error"]
   end
 
-  test "should return internal server error if SYNC_TOKEN is blank" do
+  test "returns internal server error if SYNC_TOKEN is blank" do
     ENV["SYNC_TOKEN"] = nil
 
-    post api_syncs_url(token: "any-token")
+    post api_syncs_url, headers: { "Authorization" => "Bearer any-token" }
 
     assert_response :internal_server_error
     assert_equal "Sync token is not configured on the server", JSON.parse(response.body)["error"]

@@ -13,7 +13,7 @@ module Projects
           print "\rSyncing Projects: #{progress}/#{total} (#{entry.repo})".ljust(80) if $stdout.tty?
 
           project = Project.find_or_initialize_by(github_owner: entry.owner, github_repo: entry.repo)
-          project.update!(name: entry.name, source_category: entry.category, github_url: entry.url, active: true, fetch_all_issues: entry.fetch_all_issues)
+          project.update!(name: entry.name, source_category: entry.category, github_url: entry.url, active: true)
           synced_names << entry.repo
           imported_ids << project.id
         end

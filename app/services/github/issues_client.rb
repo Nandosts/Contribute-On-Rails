@@ -4,62 +4,40 @@ require "json"
 module Github
   class IssuesClient
     MAX_REDIRECTS = 3
+    MAX_RETRIES = 3
+    OPEN_TIMEOUT = 5
+    READ_TIMEOUT = 20
+    WRITE_TIMEOUT = 20
+
+    class RequestError < StandardError
+      attr_reader :status, :headers
+
+      def initialize(message, status:, headers: {})
+        @status = status
+        @headers = headers
+        super(message)
+      end
+    end
 
     def initialize(token: ENV["GITHUB_TOKEN"])
       @token = token
     end
 
-    def open_issues(owner:, repo:, labels: Issue::DEFAULT_LABELS, fetch_all: false, etags: {})
+    def each_issues_page(owner:, repo:, state:, since: nil)
+      return enum_for(__method__, owner:, repo:, state:, since:) unless block_given?
+
       raise "GITHUB_TOKEN is missing" if token.blank?
 
-      result_etags = {}
-      not_modified_labels = []
-      any_modified = false
+      page = 1
+      loop do
+        response = request_issues_page(owner:, repo:, state:, since:, page:)
+        payload = JSON.parse(response.body)
+        issues = payload.reject { |issue| issue.key?("pull_request") }
+        yield issues
 
-      if fetch_all
-        etag = etags["all"]
-        result = issues_for_label(owner:, repo:, label: nil, etag:)
+        break if payload.length < 100
 
-        result_etags["all"] = result[:etag]
-        if result[:not_modified]
-          not_modified_labels << "all"
-        else
-          any_modified = true
-        end
-
-        issues_sem_pr = result[:issues].reject { |issue| issue.key?("pull_request") }
-        issues_unicas = issues_sem_pr.uniq { |issue| issue.fetch("id") }
-
-        {
-          issues: issues_unicas,
-          etags: result_etags,
-          not_modified_labels: not_modified_labels,
-          any_modified: any_modified
-        }
-      else
-        issues_flat = []
-        labels.each do |label|
-          etag = etags[label]
-          result = issues_for_label(owner:, repo:, label:, etag:)
-
-          result_etags[label] = result[:etag]
-          if result[:not_modified]
-            not_modified_labels << label
-          else
-            any_modified = true
-            issues_flat.concat(result[:issues])
-          end
-        end
-
-        issues_sem_pr = issues_flat.reject { |issue| issue.key?("pull_request") }
-        issues_unicas = issues_sem_pr.uniq { |issue| issue.fetch("id") }
-
-        {
-          issues: issues_unicas,
-          etags: result_etags,
-          not_modified_labels: not_modified_labels,
-          any_modified: any_modified
-        }
+        page += 1
       end
     end
 
@@ -67,135 +45,156 @@ module Github
       return {} if issues.empty?
 
       counts = {}
-      issues.each do |issue_hash|
-        number = issue_hash["number"]
-        body = issue_hash["body"]
-        counts[number] = pull_requests_count(owner:, repo:, number:, body:)
-      end
+      issues.each_slice(50) do |slice|
+        fields = slice.map do |issue|
+          number = Integer(issue.fetch("number"))
+          "issue_#{number}: issue(number: #{number}) { closedByPullRequestsReferences { totalCount } }"
+        end.join("\n")
 
-      if token.present?
-        begin
-          issues.each_slice(50) do |slice|
-            query_parts = slice.map do |issue_hash|
-              num = issue_hash["number"]
-              "issue_#{num}: issue(number: #{num}) { closedByPullRequestsReferences { totalCount } }"
-            end.join("\n")
+        query = <<~GQL
+          query($owner: String!, $repo: String!) {
+            repository(owner: $owner, name: $repo) {
+              #{fields}
+            }
+          }
+        GQL
 
-            gql = <<~GQL
-              query {
-                repository(owner: "#{owner}", name: "#{repo}") {
-                  #{query_parts}
-                }
-              }
-            GQL
+        payload = graphql(query:, variables: { owner:, repo: })
+        repository = payload.dig("data", "repository") || {}
+        repository.each do |key, value|
+          next unless key.start_with?("issue_") && value
 
-            uri = URI("https://api.github.com/graphql")
-            req = Net::HTTP::Post.new(uri)
-            req["Authorization"] = "Bearer #{token}"
-            req["Content-Type"] = "application/json"
-            req["Accept"] = "application/vnd.github+json"
-            req.body = { query: gql }.to_json
-
-            res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |h| h.request(req) }
-            if res.is_a?(Net::HTTPSuccess)
-              data = JSON.parse(res.body).dig("data", "repository") || {}
-              data.each do |key, val|
-                if key.start_with?("issue_") && val && val["closedByPullRequestsReferences"]
-                  num = key.sub("issue_", "").to_i
-                  gql_count = val.dig("closedByPullRequestsReferences", "totalCount").to_i
-                  counts[num] = [ counts[num].to_i, gql_count ].max
-                end
-              end
-            end
-          end
-        rescue StandardError => e
-          Rails.logger.warn("Failed to fetch GraphQL linked PR counts for #{owner}/#{repo}: #{e.message}")
+          number = key.delete_prefix("issue_").to_i
+          counts[number] = value.dig("closedByPullRequestsReferences", "totalCount").to_i
         end
       end
 
       counts
-    end
-
-    def pull_requests_count(owner:, repo:, number:, body: nil)
-      return 0 if body.blank?
-
-      pr_numbers = Set.new
-
-      body.scan(%r{github\.com/#{Regexp.escape(owner)}/#{Regexp.escape(repo)}/pull/(\d+)}i).flatten.each do |pr_num|
-        pr_numbers << pr_num.to_i
-      end
-
-      body.scan(/(?:pull\s*request|pull|pr)s?\s*[:#]\s*(\d+)/i).flatten.each do |pr_num|
-        pr_numbers << pr_num.to_i
-      end
-
-      pr_numbers.size
+    rescue StandardError => error
+      Rails.logger.warn("Failed to fetch linked pull request counts for #{owner}/#{repo}: #{error.message}")
+      counts
     end
 
     private
 
     attr_reader :token
 
-    def issues_for_label(owner:, repo:, label:, etag: nil)
-      page = 1
-      issues = []
-      new_etag = nil
-      loop do
-        response = request(owner:, repo:, label:, page:, etag: (page == 1 ? etag : nil))
-
-        if response.code == "304"
-          return { not_modified: true, issues: [], etag: etag }
-        end
-
-        raise "GitHub issues request failed: #{response.code}" unless response.is_a?(Net::HTTPSuccess)
-
-        if page == 1
-          new_etag = response["ETag"]
-        end
-
-        payload = JSON.parse(response.body)
-        issues.concat(payload)
-        break if payload.length < 100
-
-        page += 1
-      end
-      { not_modified: false, issues: issues, etag: new_etag }
-    end
-
-    def request(owner:, repo:, label:, page:, etag: nil)
+    def request_issues_page(owner:, repo:, state:, since:, page:)
       uri = URI("https://api.github.com/repos/#{owner}/#{repo}/issues")
       params = {
-        state: "open",
+        state:,
+        sort: "updated",
+        direction: "asc",
         per_page: 100,
-        page: page,
-        since: 365.days.ago.utc.iso8601
+        page:
       }
-      params[:labels] = label if label.present?
+      params[:since] = since.utc.iso8601 if since
       uri.query = URI.encode_www_form(params)
-      get(uri, etag:)
+
+      request = Net::HTTP::Get.new(uri)
+      add_github_headers(request)
+      response = perform(uri, request)
+      return response if response.is_a?(Net::HTTPSuccess)
+
+      raise_request_error(response)
     end
 
-    def get(uri, etag: nil, redirects_remaining: MAX_REDIRECTS)
-      request = Net::HTTP::Get.new(uri)
+    def graphql(query:, variables:)
+      uri = URI("https://api.github.com/graphql")
+      request = Net::HTTP::Post.new(uri)
+      add_github_headers(request)
+      request["Content-Type"] = "application/json"
+      request.body = { query:, variables: }.to_json
+
+      response = perform(uri, request)
+      raise_request_error(response) unless response.is_a?(Net::HTTPSuccess)
+
+      payload = JSON.parse(response.body)
+      raise "GitHub GraphQL request failed: #{payload.fetch("errors").to_json}" if payload["errors"].present?
+
+      payload
+    end
+
+    def add_github_headers(request)
       request["Accept"] = "application/vnd.github+json"
       request["Authorization"] = "Bearer #{token}"
       request["X-GitHub-Api-Version"] = "2022-11-28"
-      request["If-None-Match"] = etag if etag.present?
-      retries = 0
-      begin
-        response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }
-      rescue EOFError, Errno::ECONNRESET, OpenSSL::SSL::SSLError, Net::ReadTimeout, SocketError => e
-        retries += 1
-        raise e if retries > 3
+    end
 
-        sleep(2 ** retries) # Exponential backoff: 2s, 4s, 8s
-        retry
+    def perform(uri, request, redirects_remaining: MAX_REDIRECTS)
+      response = perform_with_retries(uri, request)
+      return response unless response.is_a?(Net::HTTPRedirection)
+      raise RequestError.new("Too many GitHub redirects", status: response.code.to_i) if redirects_remaining.zero?
+
+      location = response["location"]
+      raise RequestError.new("GitHub redirect is missing a location", status: response.code.to_i) if location.blank?
+
+      redirected_uri = URI(location)
+      unless redirected_uri.is_a?(URI::HTTPS) && redirected_uri.host == "api.github.com"
+        raise RequestError.new("Refused GitHub redirect to an untrusted host", status: response.code.to_i)
       end
 
-      return response unless response.is_a?(Net::HTTPRedirection) && response.code != "304"
-      raise "Too many GitHub redirects" if redirects_remaining.zero?
+      redirected_request = Net::HTTP::Get.new(redirected_uri)
+      add_github_headers(redirected_request)
+      perform(redirected_uri, redirected_request, redirects_remaining: redirects_remaining - 1)
+    end
 
-      get(URI(response.fetch("location")), etag: etag, redirects_remaining: redirects_remaining - 1)
+    def perform_with_retries(uri, request)
+      retries = 0
+
+      loop do
+        begin
+          response = http_for(uri).request(request)
+        rescue EOFError, Errno::ECONNRESET, OpenSSL::SSL::SSLError, Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout, SocketError
+          raise if retries >= MAX_RETRIES
+
+          sleep(2**retries)
+          retries += 1
+          next
+        end
+
+        return response unless retryable_response?(response)
+        raise_request_error(response) if retries >= MAX_RETRIES
+
+        sleep(retry_delay(response, retries))
+        retries += 1
+      end
+    end
+
+    def http_for(uri)
+      Net::HTTP.new(uri.hostname, uri.port).tap do |http|
+        http.use_ssl = true
+        http.open_timeout = OPEN_TIMEOUT
+        http.read_timeout = READ_TIMEOUT
+        http.write_timeout = WRITE_TIMEOUT
+      end
+    end
+
+    def retryable_response?(response)
+      response.code.to_i >= 500 || rate_limited?(response)
+    end
+
+    def rate_limited?(response)
+      response.code == "429" || response.code == "403" && (
+        response["Retry-After"].present? ||
+        response["X-RateLimit-Remaining"] == "0" ||
+        response.body.to_s.downcase.include?("rate limit")
+      )
+    end
+
+    def retry_delay(response, retries)
+      retry_after = response["Retry-After"].to_i
+      return retry_after.clamp(1, 60) if retry_after.positive?
+
+      reset_at = response["X-RateLimit-Reset"].to_i
+      return (reset_at - Time.now.to_i).clamp(1, 60) if reset_at.positive?
+
+      (2**retries) + rand
+    end
+
+    def raise_request_error(response)
+      headers = response.each_header.to_h
+      raise RequestError.new("GitHub request failed: #{response.code}", status: response.code.to_i, headers:)
     end
   end
 end
