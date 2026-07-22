@@ -31,10 +31,23 @@ jobs:
             exit 1
           fi
 
-          curl --silent --show-error --fail-with-body \
-            --connect-timeout 30 \
-            --max-time 1500 \
-            --request POST \
-            --header "Accept: application/json" \
-            --header "Authorization: Bearer $SYNC_TOKEN" \
-            https://contribute-on-rails.fly.dev/api/syncs
+          response="$(
+            curl --silent --show-error --fail-with-body \
+              --connect-timeout 30 \
+              --max-time 1500 \
+              --request POST \
+              --header "Accept: application/json" \
+              --header "Authorization: Bearer $SYNC_TOKEN" \
+              https://contribute-on-rails.fly.dev/api/syncs
+          )"
+
+          printf '%s\n' "$response"
+
+          SYNC_RESPONSE="$response" python3 <<'PYTHON'
+          import json
+          import os
+
+          payload = json.loads(os.environ["SYNC_RESPONSE"])
+          if payload.get("status") != "succeeded":
+              raise SystemExit(f"Synchronization did not succeed: {payload}")
+          PYTHON
