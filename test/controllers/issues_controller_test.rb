@@ -12,6 +12,10 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "html[lang=en]"
+    assert_select "title", text: "Open issues | Contribute on Rails"
+    assert_select "link[rel=canonical][href='http://www.example.com/?locale=en']"
+    assert_select "link[rel=alternate][hreflang=pt-BR]"
+    assert_select "meta[property='og:url'][content='http://www.example.com/?locale=en']"
     assert_select "a[href='#main-content']", text: "Skip to main content"
     assert_select "main#main-content[tabindex='-1']"
     assert_select "nav[aria-label='Primary navigation']"

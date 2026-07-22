@@ -1,6 +1,7 @@
 en:
   app:
     tagline: "Find welcoming Ruby and Rails issues"
+    description: "Discover open-source Ruby and Rails projects and find welcoming GitHub issues to contribute to."
   layout:
     skip_to_content: "Skip to main content"
     nav:
@@ -38,6 +39,7 @@ en:
       storage_error: "This browser could not save the search."
     index:
       title: "Open issues"
+      meta_description: "Find open GitHub issues in curated Ruby and Rails projects, including welcoming opportunities for new contributors."
       heading: "Open issues worth contributing to"
       description: "Find a contribution that fits you in curated Ruby and Rails projects. The New Contributor filter highlights issues communities have marked as welcoming entry points, and you can adjust the labels at any time."
       opened: "Opened %{date}"
@@ -87,6 +89,7 @@ en:
   projects:
     index:
       heading: "Projects"
+      meta_description: "Explore curated open-source Ruby and Rails projects with open issues ready for contributors."
       open_issues:
         one: "%{count} open issue"
         other: "%{count} open issues"
@@ -94,6 +97,7 @@ en:
       back_to_issues: "Back to issues"
       last_synced: "Last synced: %{date}"
       never: "never"
+      meta_description: "Browse open GitHub issues and contribution opportunities for %{project}."
   pagy:
     nav:
       prev: "Previous page"

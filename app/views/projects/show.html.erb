@@ -1,3 +1,7 @@
+<% content_for :title, @project.name %>
+<% content_for :description, t("projects.show.meta_description", project: @project.name) %>
+<% content_for :enhanced_selects, true %>
+
 <section class="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
   <% if params[:from_random].present? %>
     <%= link_to issues_path, class: "mb-6 inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800" do %>

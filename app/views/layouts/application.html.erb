@@ -2,15 +2,23 @@
 
 <html lang="<%= I18n.locale %>">
   <head>
-    <title><%= content_for(:title) || "Contribute on Rails" %></title>
-    <meta name="description" content="<%= content_for(:description) || "Find the best open-source Ruby on Rails projects to contribute to. Discover 'good first issues' and 'help wanted' tasks." %>">
-    <meta property="og:title" content="<%= content_for(:title) || "Contribute on Rails" %>">
-    <meta property="og:description" content="<%= content_for(:description) || "Find the best open-source Ruby on Rails projects to contribute to. Discover 'good first issues' and 'help wanted' tasks." %>">
+    <title><%= page_title %></title>
+    <meta name="description" content="<%= page_description %>">
+    <link rel="canonical" href="<%= canonical_url %>">
+    <% I18n.available_locales.each do |locale| %>
+      <link rel="alternate" hreflang="<%= locale %>" href="<%= canonical_url(locale: locale) %>">
+    <% end %>
+    <link rel="alternate" hreflang="x-default" href="<%= canonical_url(locale: I18n.default_locale) %>">
+
+    <meta property="og:title" content="<%= page_title %>">
+    <meta property="og:description" content="<%= page_description %>">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://contribute-on-rails.fly.dev/">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<%= content_for(:title) || "Contribute on Rails" %>">
-    <meta name="twitter:description" content="<%= content_for(:description) || "Find the best open-source Ruby on Rails projects to contribute to. Discover 'good first issues' and 'help wanted' tasks." %>">
+    <meta property="og:url" content="<%= canonical_url %>">
+    <meta property="og:site_name" content="Contribute on Rails">
+    <meta property="og:locale" content="<%= I18n.locale.to_s.tr('-', '_') %>">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="<%= page_title %>">
+    <meta name="twitter:description" content="<%= page_description %>">
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -29,26 +37,16 @@
     <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: dark)">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-    <%# TomSelect CSS loaded as a direct blocking stylesheet to prevent unstyled flashes.
-        The preload hint fetches it early; the link tag applies it before first paint. %>
-    <link
-      rel="preload"
-      href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css"
-      as="style"
-    >
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css"
-    >
+    <% if content_for?(:enhanced_selects) %>
+      <%# TomSelect is only requested on pages that render enhanced filters. %>
+      <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+      <link rel="preload" href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css" as="style">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css">
+      <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/+esm">
+    <% end %>
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-
-    <%# Preload TomSelect ESM so the module is already in cache when Stimulus connects %>
-    <link
-      rel="modulepreload"
-      href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/+esm"
-    >
 
     <%= javascript_importmap_tags %>
 

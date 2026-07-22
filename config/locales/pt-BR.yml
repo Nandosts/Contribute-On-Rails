@@ -17,6 +17,7 @@ pt-BR:
     pm: "PM"
   app:
     tagline: "Encontre issues acolhedoras em Ruby e Rails"
+    description: "Descubra projetos open source Ruby e Rails e encontre issues acolhedoras do GitHub para contribuir."
   layout:
     skip_to_content: "Pular para o conteúdo principal"
     nav:
@@ -54,6 +55,7 @@ pt-BR:
       storage_error: "Este navegador não conseguiu salvar a busca."
     index:
       title: "Issues abertas"
+      meta_description: "Encontre issues abertas do GitHub em projetos Ruby e Rails selecionados, incluindo oportunidades acolhedoras para novos contribuidores."
       heading: "Issues abertas para contribuir"
       description: "Encontre uma contribuição que combine com você em projetos Ruby e Rails selecionados. O filtro Novo Contribuinte destaca issues indicadas pelas comunidades como boas portas de entrada, e você pode ajustar as labels quando quiser."
       opened: "Aberta em %{date}"
@@ -103,6 +105,7 @@ pt-BR:
   projects:
     index:
       heading: "Projetos"
+      meta_description: "Explore projetos open source Ruby e Rails selecionados com issues abertas prontas para receber contribuições."
       open_issues:
         one: "%{count} issue aberta"
         other: "%{count} issues abertas"
@@ -110,6 +113,7 @@ pt-BR:
       back_to_issues: "Voltar para issues"
       last_synced: "Última sincronização: %{date}"
       never: "nunca"
+      meta_description: "Veja issues abertas do GitHub e oportunidades de contribuição para %{project}."
   pagy:
     nav:
       prev: "Página anterior"

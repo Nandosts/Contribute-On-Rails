@@ -5,6 +5,8 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     get projects_url
 
     assert_response :success
+    assert_select "title", text: "Projects | Contribute on Rails"
+    assert_select "link[rel=canonical][href='http://www.example.com/projects?locale=en']"
   end
 
   test "renders active projects with open issues regardless of update date" do
@@ -26,6 +28,8 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     get project_url(project, from_random: true)
 
     assert_select "a", text: "Back to issues"
+    assert_select "title", text: "Rails | Contribute on Rails"
+    assert_select "meta[name=description][content*='Rails']"
   end
 
   test "renders issue labels on the project page" do
