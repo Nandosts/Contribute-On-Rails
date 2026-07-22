@@ -2,9 +2,6 @@
 - owner: rails
   repo: rails
   category: Core Ruby and Rails
-- owner: ruby
-  repo: ruby
-  category: Core Ruby and Rails
 - owner: rubygems
   repo: rubygems
   category: Core Ruby and Rails
@@ -62,9 +59,6 @@
 - owner: spree
   repo: spree
   category: Rails Applications
-- owner: discourse
-  repo: discourse
-  category: Rails Applications
 - owner: forem
   repo: forem
   category: Rails Applications
@@ -76,12 +70,6 @@
   category: Rails Applications
 - owner: mastodon
   repo: mastodon
-  category: Rails Applications
-- owner: opf
-  repo: openproject
-  category: Rails Applications
-- owner: redmine
-  repo: redmine
   category: Rails Applications
 - owner: github
   repo: view_component
@@ -278,9 +266,6 @@
 - owner: omniauth
   repo: omniauth
   category: Security
-- owner: mongodb
-  repo: mongoid
-  category: Web Infrastructure
 - owner: resque
   repo: resque
   category: Background Jobs
@@ -329,7 +314,7 @@
 - owner: basecamp
   repo: thruster
   category: Web Infrastructure
-- owner: basecamp
+- owner: rails
   repo: mission_control-jobs
   category: Background Jobs
 - owner: Shopify
@@ -355,9 +340,6 @@
   category: Rails Applications
 - owner: instructure
   repo: canvas-lms
-  category: Rails Applications
-- owner: gitlabhq
-  repo: gitlabhq
   category: Rails Applications
 - owner: postalserver
   repo: postal
@@ -427,9 +409,6 @@
   category: Developer Tooling
 - owner: archivesspace
   repo: archivesspace
-  category: Rails Applications
-- owner: annict
-  repo: annict
   category: Rails Applications
 - owner: karafka
   repo: karafka
@@ -701,9 +680,6 @@
 - owner: maquina-app
   repo: rails-mcp-server
   category: Rails Ecosystem
-- owner: basecamp
-  repo: google_sign_in
-  category: Rails Applications
 - owner: jekyll
   repo: jekyll-import
   category: Ruby Ecosystem

@@ -12,7 +12,7 @@ class ProjectsCuratedCatalogTest < ActiveSupport::TestCase
     assert_includes slugs, "dry-rb/dry-schema"
     assert_includes slugs, "bridgetownrb/bridgetown"
     assert_includes slugs, "Shopify/ruby-lsp"
-    assert_equal 354, entries.size
+    assert_equal 346, entries.size
     assert_equal slugs.uniq, slugs
   end
 end
