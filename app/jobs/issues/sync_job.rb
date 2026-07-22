@@ -4,7 +4,12 @@ module Issues
 
     queue_as :default
 
-    def perform(force_full: false, sync_run_id: nil)
+    def perform(force_full: false, sync_run_id: nil, fetch_all: nil)
+      unless fetch_all.nil?
+        Rails.logger.warn("Issues::SyncJob fetch_all is deprecated; use force_full instead")
+        force_full ||= ActiveModel::Type::Boolean.new.cast(fetch_all)
+      end
+
       run = SyncRun.find_by(id: sync_run_id)
       projects = Project.active
       stats = {

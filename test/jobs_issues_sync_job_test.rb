@@ -63,6 +63,22 @@ class IssuesSyncJobTest < ActiveJob::TestCase
     assert_equal 1, scheduled_full.count(false)
   end
 
+  test "accepts fetch_all as a legacy alias for force_full" do
+    create_project(owner: "rails", repo: "rails")
+    received_force_full = []
+    service = Object.new
+    service.define_singleton_method(:call) do |_project, force_full:, **|
+      received_force_full << force_full
+      Issues::SyncService::Result.new(issues_upserted: 0, issues_deleted: 0, full_reconciliation: force_full)
+    end
+
+    with_sync_service(service) do
+      Issues::SyncJob.perform_now(fetch_all: true)
+    end
+
+    assert_equal [ true ], received_force_full
+  end
+
   private
 
   def create_project(owner:, repo:)
