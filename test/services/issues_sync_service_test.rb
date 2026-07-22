@@ -78,11 +78,17 @@ class IssuesSyncServiceTest < ActiveSupport::TestCase
     project = create_project(last_synced_at: 1.day.ago, last_full_synced_at: 1.day.ago)
     issue = project.issues.create!(github_id: 60, number: 60, title: "Issue", state: "open", github_url: "https://example.test/60", updated_at_from_github: 2.days.ago)
     issue.labels << Label.create!(name: "Good First Issue")
-    payload = issue_payload(id: 60, number: 60, labels: [ { "name" => "bug", "color" => "ff0000" } ])
+    payload = issue_payload(
+      id: 60,
+      number: 60,
+      labels: [ { "name" => "bug", "color" => "ff0000" } ],
+      assignees: [ { "login" => "contributor", "avatar_url" => "https://example.test/avatar.png" } ]
+    )
 
     Issues::SyncService.new(client: FakeClient.new([ [ payload ] ])).call(project)
 
     assert_equal [ "Bug" ], issue.reload.labels.pluck(:name)
+    assert_equal [ { "login" => "contributor" } ], issue.assignees
     refute Label.exists?(name: "Good First Issue")
   end
 
@@ -92,7 +98,7 @@ class IssuesSyncServiceTest < ActiveSupport::TestCase
     Project.create!({ github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails" }.merge(attributes))
   end
 
-  def issue_payload(id:, number:, state: "open", labels: [])
+  def issue_payload(id:, number:, state: "open", labels: [], assignees: [])
     {
       "id" => id,
       "number" => number,
@@ -102,7 +108,7 @@ class IssuesSyncServiceTest < ActiveSupport::TestCase
       "created_at" => 2.days.ago.iso8601,
       "updated_at" => Time.current.iso8601,
       "comments" => 3,
-      "assignees" => [],
+      "assignees" => assignees,
       "labels" => labels
     }
   end

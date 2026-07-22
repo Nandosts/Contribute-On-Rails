@@ -20,4 +20,19 @@ class SyncsRunnerTest < ActiveSupport::TestCase
     Projects::SyncJob.define_singleton_method(:perform_now, original_projects_perform_now)
     Issues::SyncJob.define_singleton_method(:perform_now, original_issues_perform_now)
   end
+
+  test "records systemic failures and releases the lock" do
+    original_projects_perform_now = Projects::SyncJob.method(:perform_now)
+    Projects::SyncJob.define_singleton_method(:perform_now) { raise "catalog unavailable" }
+
+    error = assert_raises(RuntimeError) { Syncs::Runner.new.call }
+
+    run = SyncRun.order(:id).last
+    assert_equal "catalog unavailable", error.message
+    assert_equal "failed", run.status
+    assert_equal "catalog unavailable", run.failure_details["system"]
+    assert run.finished_at.present?
+  ensure
+    Projects::SyncJob.define_singleton_method(:perform_now, original_projects_perform_now)
+  end
 end

@@ -7,12 +7,15 @@ class Api::SyncsControllerTest < ActionDispatch::IntegrationTest
     @original_runner_new = Syncs::Runner.method(:new)
     @force_full = nil
     @runner_status = :succeeded
+    @runner_error = nil
     test_instance = self
 
     Syncs::Runner.define_singleton_method(:new) do |force_full:|
       test_instance.instance_variable_set(:@force_full, force_full)
       runner = Object.new
       runner.define_singleton_method(:call) do
+        raise test_instance.instance_variable_get(:@runner_error) if test_instance.instance_variable_get(:@runner_error)
+
         status = test_instance.instance_variable_get(:@runner_status)
         if status == :already_running
           Syncs::Runner::Result.new(status:, sync_run: nil)
@@ -77,5 +80,14 @@ class Api::SyncsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :internal_server_error
     assert_equal "Sync token is not configured on the server", JSON.parse(response.body)["error"]
+  end
+
+  test "returns a generic internal server error when synchronization crashes" do
+    @runner_error = RuntimeError.new("sensitive internal error")
+
+    post api_syncs_url, headers: { "Authorization" => "Bearer super-secret-token" }
+
+    assert_response :internal_server_error
+    assert_equal({ "status" => "failed", "error" => "Synchronization failed" }, JSON.parse(response.body))
   end
 end
