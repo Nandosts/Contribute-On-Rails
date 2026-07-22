@@ -24,6 +24,17 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     assert_select "section[data-controller='collapsible']"
     assert_select "button[data-action='click->collapsible#toggle']"
     assert_select "div[data-collapsible-target='content']"
+    assert response.headers["Content-Security-Policy"].present?
+  end
+
+  test "does not restrict the default results to contribution labels" do
+    issue = @project.issues.create!(github_id: 101, number: 101, title: "Regular bug", state: "open", github_url: "https://example.test/101", opened_at: 1.day.ago, updated_at_from_github: Time.current)
+
+    get issues_url
+
+    assert_response :success
+    assert_select "h3 a", text: issue.title
+    assert_select "select[name='labels[]'] option[selected]", count: 0
   end
 
   test "renders pt-BR locale without missing translations" do

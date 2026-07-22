@@ -91,4 +91,8 @@
       </article>
     <% end %>
   </div>
+
+  <div class="mt-8">
+    <%== @pagy.series_nav(aria_label: t("issues.pagination")) if @pagy.pages > 1 %>
+  </div>
 </section>

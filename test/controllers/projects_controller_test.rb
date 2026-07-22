@@ -7,7 +7,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "only renders projects with open issues updated in the last year on index" do
+  test "renders active projects with open issues regardless of update date" do
     active_recent = Project.create!(github_owner: "active", github_repo: "recent", name: "Active Recent", github_url: "https://github.com/active/recent")
     active_recent.issues.create!(github_id: 301, number: 301, title: "Recent issue", state: "open", github_url: "https://example.test/301", opened_at: 2.days.ago, updated_at_from_github: Time.current)
 
@@ -17,7 +17,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     get projects_url
     assert_response :success
     assert_select "article h2 a", text: "Active Recent"
-    assert_select "article h2 a", text: "Active Stale", count: 0
+    assert_select "article h2 a", text: "Active Stale"
   end
 
   test "renders a back link when opened from random selection" do
@@ -41,5 +41,18 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_select "span", text: "Documentation"
     assert_select "select[name=updated_since]"
     assert_select "p", text: /Opened/
+  end
+
+  test "paginates issues on the project page" do
+    project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
+    31.times do |number|
+      project.issues.create!(github_id: 500 + number, number: 500 + number, title: "Issue #{number}", state: "open", github_url: "https://example.test/#{number}", opened_at: 2.days.ago, updated_at_from_github: Time.current)
+    end
+
+    get project_url(project)
+
+    assert_response :success
+    assert_select "article", count: 30
+    assert_select "nav[aria-label]"
   end
 end

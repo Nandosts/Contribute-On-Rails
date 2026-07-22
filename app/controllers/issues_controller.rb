@@ -17,11 +17,12 @@ class IssuesController < ApplicationController
     @projects = active_projects.order(:github_owner, :github_repo)
     @organizations = active_projects.distinct.order(:github_owner).pluck(:github_owner)
     @categories = active_projects.where.not(source_category: nil).distinct.order(:source_category).pluck(:source_category)
-    @all_labels = Label.joins(:issues).distinct.order(:name).pluck(:name)
+    @all_labels = Label.joins(issues: :project).where(projects: { active: true }).distinct.order(:name).pluck(:name)
   end
 
   def random
-    project_ids = IssueSearchQuery.new(Issue.all, search_params.to_h).call.unscope(:order).pluck(:project_id).uniq
+    base_scope = Issue.joins(:project).where(projects: { active: true })
+    project_ids = IssueSearchQuery.new(base_scope, normalized_search_params).call.unscope(:order).distinct.pluck(:project_id)
     project = Project.active.where(id: project_ids).order(Arel.sql("RANDOM()")).first
 
     redirect_to(project ? project_path(project, request.query_parameters.merge(from_random: true)) : projects_path)
@@ -36,7 +37,7 @@ class IssuesController < ApplicationController
   def normalized_search_params
     search_params.to_h.tap do |filters|
       if request.query_parameters.except("page", "locale", "group_by_project").empty?
-        filters["labels"] = Issue::DEFAULT_LABELS
+        filters["labels"] = []
         filters["updated_since"] = "365"
         filters["assignee_status"] = "unassigned"
         filters["sort"] = "recently_updated"
