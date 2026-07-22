@@ -18,9 +18,16 @@ pt-BR:
   app:
     tagline: "Encontre issues acolhedoras em Ruby e Rails"
   layout:
+    skip_to_content: "Pular para o conteúdo principal"
     nav:
+      aria_label: "Navegação principal"
       issues: "Issues"
       projects: "Projetos"
+    language:
+      aria_label: "Idioma"
+    theme:
+      switch_to_light: "Mudar para o tema claro"
+      switch_to_dark: "Mudar para o tema escuro"
   issues:
     random_project: "Escolher projeto aleatório"
     pagination: "Páginas de issues"
@@ -67,6 +74,7 @@ pt-BR:
         other: "%{count} issues"
       group_by_project: "Agrupado por Projeto"
       flat_list: "Lista Simples"
+      toggle_project: "Alternar issues de %{project}"
     filters:
       search: "Buscar nos títulos"
       project: "Projeto"
@@ -102,3 +110,7 @@ pt-BR:
       back_to_issues: "Voltar para issues"
       last_synced: "Última sincronização: %{date}"
       never: "nunca"
+  pagy:
+    nav:
+      prev: "Página anterior"
+      next: "Próxima página"

@@ -25,7 +25,7 @@ select[data-controller="select"][data-enhanced="true"] {
 }
 
 .pagy.series-nav {
-  @apply flex items-center gap-1;
+  @apply flex flex-wrap items-center justify-center gap-1;
 }
 
 .pagy.series-nav a,
@@ -218,6 +218,29 @@ select:focus,
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12), 0 0 8px rgba(99, 102, 241, 0.08) !important;
 }
 
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  article:hover {
+    transform: none;
+  }
+}
+
 /* ── Dark mode overrides ────────────────────────────────────────────── */
 .dark {
   body {
@@ -341,5 +364,12 @@ select:focus,
   .ts-wrapper.focus .ts-control {
     border-color: rgba(99, 102, 241, 0.62) !important;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.26), 0 0 12px rgba(99, 102, 241, 0.14) !important;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  [role="button"]:focus-visible {
+    outline-color: #a5b4fc;
   }
 }

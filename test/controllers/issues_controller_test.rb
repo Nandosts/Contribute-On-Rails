@@ -11,6 +11,12 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
     get issues_url
 
     assert_response :success
+    assert_select "html[lang=en]"
+    assert_select "a[href='#main-content']", text: "Skip to main content"
+    assert_select "main#main-content[tabindex='-1']"
+    assert_select "nav[aria-label='Primary navigation']"
+    assert_select "nav[aria-label=Language] a[hreflang]", count: 2
+    assert_select "button[data-controller=theme][data-theme-light-label-value][data-theme-dark-label-value]"
     assert_select "input[type=search][name=q]"
     assert_select "label[for=input_q]", text: "Search issue titles"
     assert_select "select[data-controller=select]", count: 7
@@ -28,8 +34,8 @@ class IssuesControllerTest < ActionDispatch::IntegrationTest
 
     # Collapsible project issues assertions
     assert_select "section[data-controller='collapsible']"
-    assert_select "button[data-action='click->collapsible#toggle']"
-    assert_select "div[data-collapsible-target='content']"
+    assert_select "button[data-action='click->collapsible#toggle'][aria-expanded=true][aria-controls]"
+    assert_select "div[data-collapsible-target='content'][id]"
     assert response.headers["Content-Security-Policy"].present?
   end
 

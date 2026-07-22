@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="<%= I18n.locale %>">
   <head>
     <title><%= content_for(:title) || "Contribute on Rails" %></title>
     <meta name="description" content="<%= content_for(:description) || "Find the best open-source Ruby on Rails projects to contribute to. Discover 'good first issues' and 'help wanted' tasks." %>">
@@ -66,6 +66,8 @@
   </head>
 
   <body class="relative bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-50">
+    <%= link_to t("layout.skip_to_content"), "#main-content", class: "fixed left-4 top-4 z-[100] -translate-y-20 rounded-lg bg-slate-950 px-4 py-2 font-semibold text-white shadow-lg transition-transform focus:translate-y-0 dark:bg-white dark:text-slate-950" %>
+
     <!-- Animated Neon Background Blobs -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10 select-none">
       <div class="absolute -top-40 -left-40 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-500/8 rounded-full blur-3xl animate-float-slow"></div>
@@ -74,30 +76,31 @@
     </div>
 
     <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-950/80">
-      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <div class="flex items-center gap-8">
-          <%= link_to root_path, class: "group flex items-center gap-3 font-bold text-slate-900 tracking-tight text-lg transition hover:opacity-90 dark:text-white" do %>
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3 sm:flex-nowrap sm:px-6 sm:py-4">
+        <div class="flex w-full items-center justify-between gap-3 sm:w-auto sm:flex-1 sm:justify-start sm:gap-8">
+          <%= link_to root_path, class: "group flex shrink-0 items-center gap-3 font-bold text-slate-900 tracking-tight text-lg transition hover:opacity-90 dark:text-white" do %>
             <div class="relative flex items-center justify-center p-1.5 rounded-xl bg-slate-100 border border-slate-200 group-hover:border-indigo-400/50 transition-colors dark:bg-slate-900 dark:border-slate-800 dark:group-hover:border-indigo-500/50">
               <!-- Cybernetic glowing ring behind the logo on group hover -->
               <div class="absolute inset-0 rounded-xl bg-gradient-to-tr from-indigo-500 via-pink-500 to-cyan-400 opacity-0 blur-xs group-hover:opacity-40 group-hover:animate-spin-slow transition-opacity duration-500"></div>
               <%= image_tag "/icon.png", class: "relative h-6 w-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12", alt: "Logo" %>
             </div>
-            <span>Contribute on Rails</span>
+            <span class="hidden md:inline">Contribute on Rails</span>
           <% end %>
 
-          <nav class="flex items-center gap-6" aria-label="Navigation">
+          <nav class="flex items-center gap-3 sm:gap-6" aria-label="<%= t('layout.nav.aria_label') %>">
             <%= link_to t("layout.nav.issues"), root_path, class: "text-sm font-semibold transition #{controller_name == 'issues' ? 'text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'}" %>
             <%= link_to t("layout.nav.projects"), projects_path, class: "text-sm font-semibold transition #{controller_name == 'projects' ? 'text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'}" %>
           </nav>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="ml-auto flex w-full items-center justify-end gap-2 sm:w-auto sm:gap-4">
           <button
             type="button"
             data-controller="theme"
             data-action="click->theme#toggle"
-            class="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
-            aria-label="Toggle theme"
+            class="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+            data-theme-light-label-value="<%= t('layout.theme.switch_to_light') %>"
+            data-theme-dark-label-value="<%= t('layout.theme.switch_to_dark') %>"
           >
             <svg data-theme-target="lightIcon" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
@@ -107,15 +110,15 @@
             </svg>
           </button>
 
-          <div class="flex items-center gap-1 rounded-full bg-slate-100 p-0.5 border border-slate-200/80 dark:bg-slate-800 dark:border-slate-700">
-            <%= link_to "EN", url_for(params.to_unsafe_h.merge(locale: "en")), class: "rounded-full px-2.5 py-1 text-xs font-bold transition #{I18n.locale == :en ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'}" %>
-            <%= link_to "PT", url_for(params.to_unsafe_h.merge(locale: "pt-BR")), class: "rounded-full px-2.5 py-1 text-xs font-bold transition #{I18n.locale == :"pt-BR" ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'}" %>
-          </div>
+          <nav class="flex items-center gap-1 rounded-full border border-slate-200/80 bg-slate-100 p-0.5 dark:border-slate-700 dark:bg-slate-800" aria-label="<%= t('layout.language.aria_label') %>">
+            <%= link_to "EN", url_for(params.to_unsafe_h.merge(locale: "en")), lang: "en", hreflang: "en", aria: { current: I18n.locale == :en ? "true" : nil }, class: "rounded-full px-2.5 py-1.5 text-xs font-bold transition #{I18n.locale == :en ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-900 dark:text-white' : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'}" %>
+            <%= link_to "PT", url_for(params.to_unsafe_h.merge(locale: "pt-BR")), lang: "pt-BR", hreflang: "pt-BR", aria: { current: I18n.locale == :"pt-BR" ? "true" : nil }, class: "rounded-full px-2.5 py-1.5 text-xs font-bold transition #{I18n.locale == :"pt-BR" ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-900 dark:text-white' : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'}" %>
+          </nav>
         </div>
       </div>
     </header>
 
-    <main class="min-h-[calc(100vh-14rem)]">
+    <main id="main-content" class="min-h-[calc(100vh-14rem)]" tabindex="-1">
       <%= yield %>
     </main>
 

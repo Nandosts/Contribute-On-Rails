@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "content", "icon" ]
+  static targets = [ "button", "content", "icon" ]
   static values = {
     projectId: Number,
     collapsed: { type: Boolean, default: false }
@@ -22,13 +22,13 @@ export default class extends Controller {
   }
 
   updateState() {
+    this.buttonTarget.setAttribute("aria-expanded", (!this.collapsedValue).toString())
+    this.contentTarget.hidden = this.collapsedValue
     if (this.collapsedValue) {
-      this.contentTarget.classList.add("hidden")
       if (this.hasIconTarget) {
         this.iconTarget.classList.add("-rotate-90")
       }
     } else {
-      this.contentTarget.classList.remove("hidden")
       if (this.hasIconTarget) {
         this.iconTarget.classList.remove("-rotate-90")
       }

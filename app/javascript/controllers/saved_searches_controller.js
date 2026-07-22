@@ -120,19 +120,20 @@ export default class extends Controller {
     }
 
     item.append(
-      this.actionButton(this.applyLabelValue, "apply", search.id),
-      this.actionButton(search.id === defaultId ? this.removeDefaultLabelValue : this.defaultLabelValue, "toggleDefault", search.id),
-      this.actionButton(this.deleteLabelValue, "remove", search.id, true),
+      this.actionButton(this.applyLabelValue, "apply", search, false),
+      this.actionButton(search.id === defaultId ? this.removeDefaultLabelValue : this.defaultLabelValue, "toggleDefault", search, false),
+      this.actionButton(this.deleteLabelValue, "remove", search, true),
     )
     return item
   }
 
-  actionButton(label, action, searchId, destructive = false) {
+  actionButton(label, action, search, destructive) {
     const button = document.createElement("button")
     button.type = "button"
-    button.className = destructive ? "cursor-pointer text-xs font-medium text-rose-600 hover:text-rose-700 dark:text-rose-400" : "cursor-pointer text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+    button.className = destructive ? "cursor-pointer rounded px-2 py-1.5 text-xs font-medium text-rose-700 hover:text-rose-800 dark:text-rose-300 dark:hover:text-rose-200" : "cursor-pointer rounded px-2 py-1.5 text-xs font-medium text-indigo-700 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-indigo-200"
     button.textContent = label
-    button.dataset.searchId = searchId
+    button.setAttribute("aria-label", `${label}: ${search.name}`)
+    button.dataset.searchId = search.id
     button.dataset.action = `saved-searches#${action}`
     return button
   }

@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = [ "lightIcon", "darkIcon" ]
+  static values = { lightLabel: String, darkLabel: String }
 
   connect() {
     this.updateIcons()
@@ -21,6 +22,8 @@ export default class extends Controller {
 
   updateIcons() {
     const isDark = document.documentElement.classList.contains("dark")
+    this.element.setAttribute("aria-label", isDark ? this.lightLabelValue : this.darkLabelValue)
+    this.element.setAttribute("aria-pressed", isDark.toString())
     if (isDark) {
       if (this.hasLightIconTarget) this.lightIconTarget.classList.remove("hidden")
       if (this.hasDarkIconTarget) this.darkIconTarget.classList.add("hidden")

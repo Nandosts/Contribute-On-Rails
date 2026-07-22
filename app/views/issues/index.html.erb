@@ -1,6 +1,6 @@
 <% content_for :title, t("issues.index.title") %>
 
-<section class="mx-auto px-6 py-10 max-w-7xl">
+<section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
   <header class="flex md:flex-row flex-col md:justify-between md:items-end gap-4 mb-8 animate-fade-in-up">
     <div>
       <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border dark:border-indigo-800/40 shadow-sm mb-3">
@@ -10,7 +10,7 @@
 
       <h1
         class="
-          mt-2 font-extrabold text-slate-900 text-4xl tracking-tight
+          mt-2 font-extrabold text-slate-900 text-3xl tracking-tight sm:text-4xl
           bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900
           dark:from-white dark:via-indigo-200 dark:to-white
           dark:text-white
@@ -106,24 +106,25 @@
 
   <div
     class="
-      flex justify-between items-center gap-4 mb-6 text-slate-500 text-sm
+      mb-6 flex flex-col items-stretch gap-4 text-sm text-slate-600
+      sm:flex-row sm:items-center sm:justify-between
       dark:text-slate-400
     "
   >
-    <div class="flex items-center gap-4">
+    <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
       <p aria-live="polite">
         <%= t("issues.index.results", count: @pagy.count) %>
       </p>
 
       <div class="flex items-center gap-1.5 bg-slate-100/50 dark:bg-slate-800/50 p-1 rounded-lg border border-slate-200 dark:border-slate-700/50">
-        <%= link_to t("issues.index.group_by_project", default: "Grouped by Project"), url_for(request.query_parameters.merge(group_by_project: true)), class: "px-3 py-1 text-xs font-medium rounded-md transition-colors #{@group_by_project ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}" %>
-        <%= link_to t("issues.index.flat_list", default: "Flat List"), url_for(request.query_parameters.merge(group_by_project: false)), class: "px-3 py-1 text-xs font-medium rounded-md transition-colors #{!@group_by_project ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}" %>
+        <%= link_to t("issues.index.group_by_project", default: "Grouped by Project"), url_for(request.query_parameters.merge(group_by_project: true)), aria: { current: @group_by_project ? "true" : nil }, class: "px-3 py-1.5 text-xs font-medium rounded-md transition-colors #{@group_by_project ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}" %>
+        <%= link_to t("issues.index.flat_list", default: "Flat List"), url_for(request.query_parameters.merge(group_by_project: false)), aria: { current: !@group_by_project ? "true" : nil }, class: "px-3 py-1.5 text-xs font-medium rounded-md transition-colors #{!@group_by_project ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}" %>
       </div>
     </div>
 
     <% if @pagy.pages > 1 %>
       <nav
-        class="flex items-center gap-1"
+        class="hidden items-center gap-1 lg:flex"
         aria-label="<%= t("issues.pagination") %>"
       >
         <% if @pagy.page > 1 %>
@@ -149,6 +150,7 @@
             <%= link_to item, @pagy.page_url(item), class: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800" %>
           <% elsif item.is_a?(String) %>
             <span
+              aria-current="page"
               class="
                 inline-flex justify-center items-center bg-slate-900
                 shadow-sm rounded-lg w-9 h-9 font-medium text-white
@@ -194,12 +196,15 @@
     <div class="space-y-8 animate-fade-in-up">
       <% @grouped_issues.each do |(organization, project), issues| %>
         <section aria-labelledby="project-<%= project.id %>" data-controller="collapsible" data-collapsible-project-id-value="<%= project.id %>">
-          <div class="flex items-center gap-3 mb-3">
+          <div class="mb-3 flex flex-wrap items-center gap-3">
             <button
               type="button"
               class="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500"
               data-action="click->collapsible#toggle"
-              aria-label="Toggle issues list for <%= project.github_repo %>"
+              data-collapsible-target="button"
+              aria-label="<%= t('issues.index.toggle_project', project: project.github_repo) %>"
+              aria-expanded="true"
+              aria-controls="project-issues-<%= project.id %>"
             >
               <svg
                 class="w-5 h-5 transform transition-transform duration-200"
@@ -225,7 +230,7 @@
             <h2
               id="project-<%= project.id %>"
               class="
-                font-semibold text-slate-900 text-xl dark:text-white
+                min-w-0 break-words font-semibold text-slate-900 text-xl dark:text-white
               "
             >
               <%= link_to project.github_repo, project_path(project), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
@@ -240,10 +245,10 @@
               <%= t("issues.index.project_count", count: @project_issue_counts.fetch(project.id, 0)) %>
             </span>
 
-            <div class="flex-1 h-px bg-slate-200 dark:bg-slate-800/60"></div>
+            <div class="hidden h-px flex-1 bg-slate-200 dark:bg-slate-800/60 sm:block"></div>
           </div>
 
-          <div class="space-y-4 animate-fade-in-up" data-collapsible-target="content">
+          <div id="project-issues-<%= project.id %>" class="space-y-4 animate-fade-in-up" data-collapsible-target="content">
             <%= render partial: "issue", collection: issues, locals: { group_by_project: @group_by_project } %>
           </div>
         </section>
