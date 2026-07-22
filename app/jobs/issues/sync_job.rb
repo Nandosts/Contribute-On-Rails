@@ -26,7 +26,8 @@ module Issues
         .limit(FULL_RECONCILIATIONS_PER_RUN)
         .pluck(:id)
 
-      projects.find_each do |project|
+      projects.find_each.with_index(1) do |project, progress|
+        print_progress(project, progress, stats[:projects_total])
         result = SyncService.new.call(
           project,
           force_full:,
@@ -42,8 +43,25 @@ module Issues
         Rails.logger.warn("Issue sync failed for #{project.github_owner}/#{project.github_repo}: #{error.message}")
       end
 
+      print_summary(stats)
       run&.update!(stats)
       stats
+    end
+
+    private
+
+    def print_progress(project, progress, total)
+      return unless $stdout.tty?
+
+      print "\rSyncing Issues: #{progress}/#{total} (#{project.github_owner}/#{project.github_repo})".ljust(100)
+      $stdout.flush
+    end
+
+    def print_summary(stats)
+      return unless $stdout.tty?
+
+      puts "\nCompleted! Synced issues for #{stats[:projects_succeeded]}/#{stats[:projects_total]} projects " \
+        "(upserted: #{stats[:issues_upserted]}, deleted: #{stats[:issues_deleted]}, failed: #{stats[:projects_failed]})."
     end
   end
 end

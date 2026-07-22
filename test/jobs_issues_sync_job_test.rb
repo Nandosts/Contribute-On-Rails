@@ -79,6 +79,22 @@ class IssuesSyncJobTest < ActiveJob::TestCase
     assert_equal [ true ], received_force_full
   end
 
+  test "prints project progress and a summary in interactive terminals" do
+    create_project(owner: "rails", repo: "rails")
+    service = Object.new
+    service.define_singleton_method(:call) do |*_args, **_kwargs|
+      Issues::SyncService::Result.new(issues_upserted: 2, issues_deleted: 1, full_reconciliation: false)
+    end
+
+    output, = capture_io do
+      $stdout.define_singleton_method(:tty?) { true }
+      with_sync_service(service) { Issues::SyncJob.perform_now }
+    end
+
+    assert_includes output, "Syncing Issues: 1/1 (rails/rails)"
+    assert_includes output, "Completed! Synced issues for 1/1 projects (upserted: 2, deleted: 1, failed: 0)."
+  end
+
   private
 
   def create_project(owner:, repo:)
