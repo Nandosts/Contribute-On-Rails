@@ -86,10 +86,23 @@ en:
         oldest: "Oldest (opened longest ago)"
         least_recently_updated: "Least recently updated"
       submit: "Filter"
+      clear: "Clear"
   projects:
+    pagination: "Project pages"
+    filters:
+      search: "Search projects or repositories"
+      category: "Project category"
+      all_categories: "All categories"
+      submit: "Search"
+      clear: "Clear"
     index:
       heading: "Projects"
       meta_description: "Explore curated open-source Ruby and Rails projects with open issues ready for contributors."
+      description: "Browse curated projects across the Ruby and Rails ecosystem and find one that matches your interests."
+      results:
+        one: "%{count} project with open issues"
+        other: "%{count} projects with open issues"
+      empty: "No projects match these filters."
       open_issues:
         one: "%{count} open issue"
         other: "%{count} open issues"

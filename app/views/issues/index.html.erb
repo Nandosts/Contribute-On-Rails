@@ -100,8 +100,11 @@
         <label for="select_labels"><%= t("issues.filters.labels") %></label>
       </div>
 
-      <div>
-        <%= form.submit t("issues.filters.submit"), class: "h-11 w-full cursor-pointer rounded-xl bg-slate-900 px-4 font-medium text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200" %>
+      <div class="flex gap-2">
+        <%= form.submit t("issues.filters.submit"), name: nil, class: "h-11 min-w-0 flex-1 cursor-pointer rounded-xl bg-slate-900 px-4 font-medium text-white shadow-sm transition-colors hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200" %>
+        <% if request.query_parameters.except("locale", "group_by_project", "starter_mode", "page").present? %>
+          <%= link_to t("issues.filters.clear"), issues_path(group_by_project: @group_by_project, starter_mode: starter_mode?), class: "inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 px-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800" %>
+        <% end %>
       </div>
     <% end %>
   </div>

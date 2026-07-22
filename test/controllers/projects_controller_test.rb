@@ -22,6 +22,39 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_select "article h2 a", text: "Active Stale"
   end
 
+  test "filters projects by query and category" do
+    rails = Project.create!(github_owner: "rails", github_repo: "rails", name: "Ruby on Rails", github_url: "https://github.com/rails/rails", source_category: "Frameworks")
+    rails.issues.create!(github_id: 303, number: 303, title: "Rails issue", state: "open", github_url: "https://example.test/303")
+    rubocop = Project.create!(github_owner: "rubocop", github_repo: "rubocop", name: "RuboCop", github_url: "https://github.com/rubocop/rubocop", source_category: "Tooling")
+    rubocop.issues.create!(github_id: 304, number: 304, title: "RuboCop issue", state: "open", github_url: "https://example.test/304")
+
+    get projects_url, params: { q: "rails", category: "Frameworks" }
+
+    assert_response :success
+    assert_select "article h2 a", text: "Ruby on Rails"
+    assert_select "article h2 a", text: "RuboCop", count: 0
+    assert_select "a", text: "Clear"
+  end
+
+  test "removes blank project filters from the url" do
+    get projects_url, params: { q: " rails ", category: "" }
+
+    assert_redirected_to projects_path(q: "rails")
+  end
+
+  test "paginates the project catalog" do
+    25.times do |number|
+      project = Project.create!(github_owner: "org", github_repo: "repo-#{number}", name: "Project #{number}", github_url: "https://github.com/org/repo-#{number}")
+      project.issues.create!(github_id: 1_000 + number, number: number, title: "Issue #{number}", state: "open", github_url: "https://example.test/#{number}")
+    end
+
+    get projects_url
+
+    assert_response :success
+    assert_select "article", count: 24
+    assert_select "nav[aria-label='Project pages']"
+  end
+
   test "renders a back link when opened from random selection" do
     project = Project.create!(github_owner: "rails", github_repo: "rails", name: "Rails", github_url: "https://github.com/rails/rails")
 

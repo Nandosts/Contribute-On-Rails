@@ -102,10 +102,23 @@ pt-BR:
         oldest: "Mais antiga (aberta há mais tempo)"
         least_recently_updated: "Atualizada há mais tempo"
       submit: "Filtrar"
+      clear: "Limpar"
   projects:
+    pagination: "Páginas de projetos"
+    filters:
+      search: "Buscar projetos ou repositórios"
+      category: "Categoria do projeto"
+      all_categories: "Todas as categorias"
+      submit: "Buscar"
+      clear: "Limpar"
     index:
       heading: "Projetos"
       meta_description: "Explore projetos open source Ruby e Rails selecionados com issues abertas prontas para receber contribuições."
+      description: "Explore projetos selecionados do ecossistema Ruby e Rails e encontre um que combine com seus interesses."
+      results:
+        one: "%{count} projeto com issues abertas"
+        other: "%{count} projetos com issues abertas"
+      empty: "Nenhum projeto corresponde a esses filtros."
       open_issues:
         one: "%{count} issue aberta"
         other: "%{count} issues abertas"
