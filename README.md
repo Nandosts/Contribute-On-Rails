@@ -63,7 +63,9 @@ To synchronize the catalog and all active projects locally:
 bin/rails runner 'Syncs::Runner.new.call'
 ```
 
-The production deployment is intentionally queue-free. An external cron service makes one authenticated request and waits for the synchronization result:
+The production deployment is intentionally queue-free. The [scheduled GitHub Actions workflow](.github/workflows/sync.yml) makes one authenticated request every day at 03:17 in the `America/Sao_Paulo` timezone and waits for the synchronization result. It can also be started manually from the Actions tab.
+
+Configure a repository Actions secret named `SYNC_TOKEN` with the same value used by the Fly app, then the workflow will make the equivalent request:
 
 ```bash
 curl --fail-with-body --request POST \
