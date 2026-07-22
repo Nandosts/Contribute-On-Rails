@@ -15,8 +15,8 @@ Run:
 
 ```bash
 bin/rails test
-rubocop -a app test config db
-bundle exec herb lint app/views
+bin/rubocop
+bin/herb lint app/views
 bin/brakeman --no-pager
 bin/bundler-audit
 ```
