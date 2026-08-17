@@ -15,9 +15,13 @@ module Api
           projects_succeeded: run.projects_succeeded,
           projects_failed: run.projects_failed,
           issues_upserted: run.issues_upserted,
-          issues_deleted: run.issues_deleted
+          issues_deleted: run.issues_deleted,
+          failure_summary: failure_summary(run)
         }, status: run.status == "succeeded" ? :ok : :multi_status
       end
+    rescue Github::IssuesClient::AuthenticationError => error
+      Rails.logger.error("Synchronization failed: #{error.message}")
+      render json: { status: "failed", error: error.message }, status: :internal_server_error
     rescue StandardError => error
       Rails.logger.error("Synchronization failed: #{error.message}")
       render json: { status: "failed", error: "Synchronization failed" }, status: :internal_server_error
@@ -27,6 +31,10 @@ module Api
 
     def force_full?
       params[:force_full] == "true" || params[:fetch_all] == "true"
+    end
+
+    def failure_summary(run)
+      run.failure_details.values.tally.map { |message, count| { message:, count: } }
     end
 
     def authenticate_request

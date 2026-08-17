@@ -27,6 +27,19 @@ class IssuesSyncJobTest < ActiveJob::TestCase
     assert_equal "temporary failure", first.reload.last_sync_error
   end
 
+  test "validates shared GitHub configuration before syncing projects" do
+    create_project(owner: "rails", repo: "rails")
+    service = Object.new
+    service.define_singleton_method(:validate!) { raise Github::IssuesClient::AuthenticationError, "GITHUB_TOKEN is missing" }
+    service.define_singleton_method(:call) { |*_args, **_kwargs| flunk "project sync should not start" }
+
+    error = assert_raises(Github::IssuesClient::AuthenticationError) do
+      with_sync_service(service) { Issues::SyncJob.perform_now }
+    end
+
+    assert_equal "GITHUB_TOKEN is missing", error.message
+  end
+
   test "deactivates a project only after three consecutive 404 responses" do
     project = create_project(owner: "missing", repo: "repo")
     error = Github::IssuesClient::RequestError.new("not found", status: 404)

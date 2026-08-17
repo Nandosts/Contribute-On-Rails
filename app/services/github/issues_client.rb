@@ -9,6 +9,8 @@ module Github
     READ_TIMEOUT = 20
     WRITE_TIMEOUT = 20
 
+    class AuthenticationError < StandardError; end
+
     class RequestError < StandardError
       attr_reader :status, :headers
 
@@ -21,6 +23,19 @@ module Github
 
     def initialize(token: ENV["GITHUB_TOKEN"])
       @token = token
+    end
+
+    def validate!
+      raise AuthenticationError, "GITHUB_TOKEN is missing" if token.blank?
+
+      uri = URI("https://api.github.com/rate_limit")
+      request = Net::HTTP::Get.new(uri)
+      add_github_headers(request)
+      response = perform(uri, request)
+      raise AuthenticationError, "GITHUB_TOKEN is invalid or expired" if response.is_a?(Net::HTTPUnauthorized)
+      raise_request_error(response) unless response.is_a?(Net::HTTPSuccess)
+
+      true
     end
 
     def each_issues_page(owner:, repo:, state:, since: nil)

@@ -44,6 +44,29 @@ class Api::SyncsControllerTest < ActionDispatch::IntegrationTest
     assert_equal false, @force_full
   end
 
+  test "summarizes project failures in the authenticated response" do
+    @runner_status = :failed
+    original_runner_new = Syncs::Runner.method(:new)
+    Syncs::Runner.define_singleton_method(:new) do |force_full:|
+      run = SyncRun.create!(
+        status: "failed",
+        started_at: Time.current,
+        finished_at: Time.current,
+        projects_failed: 2,
+        failure_details: { "rails/rails" => "GitHub request failed: 401", "rails/rake" => "GitHub request failed: 401" }
+      )
+      result = Syncs::Runner::Result.new(status: :failed, sync_run: run)
+      Object.new.tap { |runner| runner.define_singleton_method(:call) { result } }
+    end
+
+    post api_syncs_url, headers: { "Authorization" => "Bearer super-secret-token" }
+
+    assert_response :multi_status
+    assert_equal [ { "message" => "GitHub request failed: 401", "count" => 2 } ], JSON.parse(response.body)["failure_summary"]
+  ensure
+    Syncs::Runner.define_singleton_method(:new, original_runner_new)
+  end
+
   test "does not accept a token in the query string" do
     post api_syncs_url(token: "super-secret-token")
 
@@ -89,5 +112,14 @@ class Api::SyncsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :internal_server_error
     assert_equal({ "status" => "failed", "error" => "Synchronization failed" }, JSON.parse(response.body))
+  end
+
+  test "returns an actionable error when GitHub authentication fails" do
+    @runner_error = Github::IssuesClient::AuthenticationError.new("GITHUB_TOKEN is invalid or expired")
+
+    post api_syncs_url, headers: { "Authorization" => "Bearer super-secret-token" }
+
+    assert_response :internal_server_error
+    assert_equal({ "status" => "failed", "error" => "GITHUB_TOKEN is invalid or expired" }, JSON.parse(response.body))
   end
 end

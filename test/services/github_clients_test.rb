@@ -13,6 +13,31 @@ class GithubClientsTest < ActiveSupport::TestCase
     assert_equal "GITHUB_TOKEN is missing", error.message
   end
 
+  test "validates the configured token" do
+    client = Github::IssuesClient.new(token: "token")
+    response = Net::HTTPOK.new("1.1", "200", "OK")
+    captured = nil
+    client.define_singleton_method(:perform) do |uri, request|
+      captured = [ uri, request ]
+      response
+    end
+
+    assert client.validate!
+    uri, request = captured
+    assert_equal "https://api.github.com/rate_limit", uri.to_s
+    assert_equal "Bearer token", request["Authorization"]
+  end
+
+  test "rejects an invalid configured token" do
+    client = Github::IssuesClient.new(token: "expired-token")
+    response = Net::HTTPUnauthorized.new("1.1", "401", "Unauthorized")
+    client.define_singleton_method(:perform) { |*_args| response }
+
+    error = assert_raises(Github::IssuesClient::AuthenticationError) { client.validate! }
+
+    assert_equal "GITHUB_TOKEN is invalid or expired", error.message
+  end
+
   test "streams pages and excludes pull requests" do
     client = Github::IssuesClient.new(token: "token")
     first_page = 99.times.map { |number| { "id" => number, "number" => number } }

@@ -10,6 +10,10 @@ module Issues
       @client = client
     end
 
+    def validate!
+      client.validate!
+    end
+
     def call(project, force_full: false, allow_scheduled_full: true)
       started_at = Time.current
       full_reconciliation = full_reconciliation?(project, force_full:, allow_scheduled_full:, now: started_at)

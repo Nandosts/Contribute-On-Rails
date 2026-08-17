@@ -11,6 +11,8 @@ module Issues
       end
 
       run = SyncRun.find_by(id: sync_run_id)
+      sync_service = SyncService.new
+      sync_service.validate! if sync_service.respond_to?(:validate!)
       projects = Project.active
       stats = {
         projects_total: projects.count,
@@ -28,7 +30,7 @@ module Issues
 
       projects.find_each.with_index(1) do |project, progress|
         print_progress(project, progress, stats[:projects_total])
-        result = SyncService.new.call(
+        result = sync_service.call(
           project,
           force_full:,
           allow_scheduled_full: scheduled_full_ids.include?(project.id)
