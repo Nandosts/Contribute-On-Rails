@@ -80,6 +80,12 @@ select[data-controller="select"][data-enhanced="true"] {
   font-size: 0.75rem;
 }
 
+.floating-label-group select[multiple] ~ label {
+  top: 0;
+  transform: translateY(-50%) scale(0.8);
+  font-size: 0.75rem;
+}
+
 /* Hide selected value in TomSelect control when typing/focused */
 .ts-wrapper.focus .ts-control .item {
   display: none !important;
